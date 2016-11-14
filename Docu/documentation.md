@@ -36,7 +36,7 @@ Es ist möglich gegen andere Nutzer über ein Netzwerk gegeneinander zu spielen.
 
 
 # Nicht funktionale Anforderungen
-1. Das Spiel soll eine gewisse **Robustheit** aufweisen, damit im Falle eines
+1. Das Spiel soll eine gewisse Robustheit aufweisen, damit im Falle eines
 Absturzes das Spiel ohne Datenverlust wieder hergestellt werden kann.
 
 2. Das Spiel sollte möglichst einfach um weitere Funktionen erweitert werden 
