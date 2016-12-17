@@ -34,7 +34,6 @@ Es exisiteren 3x verschiedene Spielmodi zwischen denen der Benuzer wählen kann:
 ### FA#8 Multiplayer
 Es ist möglich gegen andere Nutzer über ein Netzwerk gegeneinander zu spielen.
 
-
 # Nicht funktionale Anforderungen
 1. Das Spiel soll eine gewisse Robustheit aufweisen, damit im Falle eines
 Absturzes das Spiel ohne Datenverlust wieder hergestellt werden kann.
