@@ -9,9 +9,10 @@ Ablauf:
 1. Issue für Feature erstellen
 2. Branch für Feature erstellen
 3. Feature auf eigenem Branch entwickeln
-4. Issues des Features schließen
-5. Codereview
-6. Featurebranch in "develop" mergen
+4. Issue des Features schließen
+5. Pull request auf "develop" erstellen
+6. Codereview
+7. Featurebranch in "develop" mergen
 
 Sind einige Feature zu "develop" hinzugefügt worden wird "develop" in "master"
 gemerged. Die Version auf "master" entspricht einem stabilen Release der App.
@@ -19,7 +20,7 @@ gemerged. Die Version auf "master" entspricht einem stabilen Release der App.
 
 ## Code Style
 
-Der Code Style durch Importieren von "Doku/code-style.xml" in Intellij
+Der Code Style durch Importieren von [Doku/code-style.xml](Doku/code-style.xml) in Intellij
 eingerichtet werden.
 
 Es wird der [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)
@@ -67,7 +68,7 @@ public void do(int a) {
 ## Kommentare
 
 Grundsätzlich sollte jede Methode mit JavaDoc in Englisch kommentiert werden.
-Dabei wird beschreiben **wofür** diese Methode gebraucht wird und welche
+Dabei wird beschrieben **wofür** diese Methode gebraucht wird und welche
 **Seiteneffekte** beim Aufruf der Methode zu erwarten sind. Sind keine
 Seiteneffekte vorhanden müssen diese auch nicht kommentiert werden.
 Alle Parameter und Rückgabewerte einer Methode müssen kommentiert werden.
