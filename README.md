@@ -19,8 +19,12 @@ gemerged. Die Version auf "master" entspricht einem stabilen Release der App.
 
 ## Code Style
 
+Der Code Style durch Importieren von "Doku/code-style.xml" in Intellij
+eingerichtet werden.
+
 Es wird der [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)
 verwendet. Zusätzlich wird nach jedem Methodenkopf eine Leerzeile eingefügt.
+
 
 **Falsch:**
 ```java
@@ -59,8 +63,40 @@ public void do(int a) {
 }
 ```
 
-In Intellij kann der Code Style durch Importieren von
-"Doku/code-style.xml" eingerichtet werden.
+
+## Kommentare
+
+Grundsätzlich sollte jede Methode mit JavaDoc in Englisch kommentiert werden.
+Dabei wird beschreiben **wofür** diese Methode gebraucht wird und welche
+**Seiteneffekte** beim Aufruf der Methode zu erwarten sind. Sind keine
+Seiteneffekte vorhanden müssen diese auch nicht kommentiert werden.
+Alle Parameter und Rückgabewerte einer Methode müssen kommentiert werden.
+
+**Beispiel:**
+```java
+/**
+ * Use this method to load an Image from the SD Card.
+ * If loadAsync is true the method will return immediately
+ * and Loader.result will be set when the image is ready.
+ *
+ * @param uir a valid Uri pointing to an image
+ * @param loadAsync wether to load async or sync
+ *
+ * @returns an Image object or null if called async
+ */
+public Image loadImage(Uri uir, boolean loadAsync) {
+
+    ...
+}
+```
+
+Membervariablen müssen so kommentiert werden, dass klar wird wofür diese
+Variable benötigt wird.
+
+Klassen müssen im Allgemeinen nicht kommentiert werden. Sollte sich eine Klasse
+nicht in das Model-View-Presenter Pattern einordnen lassen, sollte dennoch eine
+kurze Beschreibung hinzugefügt werden.
+
 
 ## Model-View-Presenter
 
