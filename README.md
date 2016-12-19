@@ -3,7 +3,7 @@
 ## Git Workflow
 
 Es wird [Git Flow](http://nvie.com/posts/a-successful-git-branching-model/)
-mit Reviews verwendet. Beispielhafter Ablauf für die Erstellung eine Features:
+mit Reviews verwendet. Beispielhafter Ablauf für die Erstellung eines Features:
 
 1. Issue für Feature erstellen
 2. Branch für Feature erstellen
