@@ -4,6 +4,8 @@
 
 Es wird ein einfaches Git Flow Modell mit Reviews verwendet.
 
+Ablauf:
+
 1. Issue für Feature erstellen
 2. Branch für Feature erstellen
 3. Feature auf eigenem Branch entwickeln
@@ -12,7 +14,7 @@ Es wird ein einfaches Git Flow Modell mit Reviews verwendet.
 6. Featurebranch in "develop" mergen
 
 Sind einige Feature zu "develop" hinzugefügt worden wird "develop" in "master"
-gemerged. Die Version auf "master" entspricht einer Release Version der App.
+gemerged. Die Version auf "master" entspricht einem stabilen Release der App.
 
 
 ## Code Style
@@ -20,8 +22,8 @@ gemerged. Die Version auf "master" entspricht einer Release Version der App.
 Es wird der [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)
 verwendet. Zusätzlich wird nach jedem Methodenkopf eine Leerzeile eingefügt.
 
-Falsch:
-```
+**Falsch:**
+```java
 public void do(int a) {
     doStuff()
     doMoreStuff()
@@ -29,8 +31,8 @@ public void do(int a) {
 }
 ```
 
-Richtig:
-```
+**Richtig:**
+```java
 public void do(int a) {
 
     doStuff()
@@ -42,15 +44,15 @@ public void do(int a) {
 Bei Methoden deren Rumpf nur eine Zeile umfasst kann die zusätzliche Leerzeile
 weggelassen werden.
 
-Richtig:
-```
+**Richtig:**
+```java
 public void do(int a) {
     doStuff()
 }
 ```
 
-Richtig:
-```
+**Richtig:**
+```java
 public void do(int a) {
 
     doStuff()
@@ -58,48 +60,48 @@ public void do(int a) {
 ```
 
 
-## Model View Presenter
+## Model-View-Presenter
 
-Jedes Feature wird in einem eigenen Package mit dem Model View Presenter
-Pattern entwickelt.
+Jedes Feature wird in einem eigenen Package mit dem **Model-View-Presenter
+Pattern** entwickelt.
 
 Jedes Feature Package enthält folgenden Klassen:
 
-- FeatureView: ein Fragment, implementiert View Interface
-- FeaturePresenter: eine Klasse, implementiert Presenter Interface
-- FeatureActivity: eine Unterklasse von Activity, erzeugt und verbindet
-  Komponenten, implementiert Interactor Interface
-- FeatureContract: ein Interface, beinhaltet Presenter, View und
+- *FeatureView*: ein Fragment, implementiert View Interface
+- *FeaturePresenter*: eine Klasse, implementiert Presenter Interface
+- *FeatureActivity*: eine Unterklasse von Activity, erzeugt und verbindet
+  *Komponenten*, implementiert Interactor Interface
+- *FeatureContract*: ein Interface, beinhaltet Presenter, View und
   Interactor als innere Interfaces
 
-Das Model ist nicht enthalten da es **nicht** für jedes Feature neu implementiert
+Das Model ist nicht enthalten, da es **nicht** für jedes Feature neu implementiert
 wird. Die Klassen des Package "data" stellen das Model da und können global
 verwendet werden. Allerdings sollte der Zugriff auf diese Klassen entweder in
-FeatureActivity oder in FeaturePresenter aber nicht in FeatureView geschehen.
+*FeatureActivity* oder in *FeaturePresenter* aber **nicht** in *FeatureView* geschehen.
 
-Das Presenter Interface und das View Interface müssen Untertypen von
-util.BasePresenter bzw. util.BaseView sein.
+Das *Presenter* Interface und das *View* Interface müssen Untertypen von
+*util.BasePresenter* bzw. *util.BaseView* sein.
 
-Das Interactor Interface kann vom Presenter verwendet werden um auf Funktionalität
+Das *Interactor* Interface kann vom Presenter verwendet werden um auf Funktionalität
 der Android Activity zu zugreifen.
 
 Jede Komponente kann den Activity Context im Konstruktor als Parameter erhalten.
 
 ---
 
-Bei Unklarheiten gelten die Konventionen des
+Bei Unklarheiten an das
 [todo-mvp](https://github.com/googlesamples/android-architecture/tree/todo-mvp/)
-Beispiels.
+Beispiel halten.
 
 
 ## Inversion of Control
 
-Komponenten sollten nicht selbst die Komponenten erzeugen die sie benötigen.
+Objekte sollten benötigte Komponenten **nicht** selbst erzeugen.
 Stattdessen sollten Abhängigkeiten im Konstruktor oder über Setter übergeben
 werden.
 
-Falsch:
-```
+**Falsch:**
+```java
 class Presenter {
 
     View view = new View();
@@ -112,8 +114,8 @@ class Presenter {
 }
 ```
 
-Richtig:
-```
+**Richtig:**
+```java
 class Presenter(View view, Model model, Other other) {
 
     View view;
@@ -131,8 +133,8 @@ class Presenter(View view, Model model, Other other) {
 }
 ```
 
-Richtig:
-```
+**Richtig:**
+```java
 class Presenter {
 
     View view;
@@ -163,32 +165,32 @@ Insbesondere wird die View dem Presenter im Konstruktor übergeben. Die View
 erhält den Presenter über setPresenter(...) aus dem BaseView Interface.
 
 
-## Ressourcen Benennung
+## Ressourcen
 
 Der Name einer Ressource wird vollständig klein geschrieben.
 Es werden Unterstriche als Trennzeichen verwendet.
 
-Falsch:
+**Falsch:**
 ```
 myGraphic.png
 SomeString
 ThIsIsSoMeReS
 ```
 
-Richtig:
+**Richtig:**
 ```
 my_graphic.png
 some_string
 this_is_some_res
 ```
 
-## Icons und Graphiken
+## Icons
 
 Soweit möglich werden nur die offiziellen
 [Material Icons](https://material.io/icons/) verwendet.
-Alles Icons sollten in 48dp heruntergeladen werden. Es wird jeweils nur das Icon
+Alle Icons sollten in 48dp heruntergeladen werden. Es wird jeweils nur das Icon
 mit der höchsten Auflösung (aus dem drawable-xxxhdpi Ordner) verwendet. Alle
-icons werden direkt in "res/drawable" gespeichert. Es werden keine weiteren
+Icons werden direkt in "res/drawable" gespeichert. Es werden keine weiteren
 Versionen in unterschiedlichen Auflösungen gespeichert.
 
 
@@ -197,13 +199,13 @@ Versionen in unterschiedlichen Auflösungen gespeichert.
 Alle Strings, die in GUIs verwendet werden, werden in "res/values/strings.xml
 definiert und nur über "R.string.name" referenziert.
 
-Falsch:
-```
+**Falsch:**
+```java
 start_button.setText("Press me!")
 ```
 
-Richtig:
-```
+**Richtig:**
+```java
 start_button.setText(R.string.start_button);
 ```
 
@@ -211,23 +213,25 @@ Die Einträge in strings.xml werden nach Package gruppiert und jede
 Gruppe wird mit eine Kommentar mit dem Name des Package versehen.
 
 ```
-<!-- gamesettings -->
-<string name="start_button">Start Game!</string>
-<string name="end_button">End Game!</string>
-...
+<resources>
+    <!-- gamesettings -->
+    <string name="start_button">Start Game!</string>
+    <string name="end_button">End Game!</string>
+    ...
 
-<!-- mainmenu -->
-<string name="welcome_msg">Hello, World!</string>
-<string name="test_msg">This is a test message!</string>
-...
+    <!-- mainmenu -->
+    <string name="welcome_msg">Hello, World!</string>
+    <string name="test_msg">This is a test message!</string>
+    ...
+</resources>
 
 ```
 
 ## Styles und Farben
 
-Alles Styles eines GUI Elements werden in der "res/values/styles.xml" festgelegt.
-Dabei werden für GUI Element separate Styles angelegt, die dann zum "AppTheme"
+Alle Styles eines GUI Elements werden in der "res/values/styles.xml" festgelegt.
+Dabei werden für GUI Elemente separate Styles angelegt, die dann zum "AppTheme"
 Style hinzugefügt werden.
 
-Alles Farben werden in "res/values/colors.xml" definiert und nur über
+Alle Farben werden in "res/values/colors.xml" definiert und nur über
 "R.color.name" referenziert.
