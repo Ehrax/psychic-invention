@@ -2,26 +2,25 @@
 
 ## Git Workflow
 
-Es wird ein einfaches Git Flow Modell mit Reviews verwendet.
-
-Ablauf:
+Es wird [Git Flow](http://nvie.com/posts/a-successful-git-branching-model/)
+mit Reviews verwendet. Beispielhafter Ablauf für die Erstellung eine Features:
 
 1. Issue für Feature erstellen
 2. Branch für Feature erstellen
 3. Feature auf eigenem Branch entwickeln
 4. Issue des Features schließen
-5. Pull request auf "develop" erstellen
+5. Pull request auf *develop* erstellen
 6. Codereview
-7. Featurebranch in "develop" mergen
+7. Featurebranch in *develop* mergen
 
-Sind einige Feature zu "develop" hinzugefügt worden wird "develop" in "master"
-gemerged. Die Version auf "master" entspricht einem stabilen Release der App.
+Sind genügend Feature zu *develop* hinzugefügt worden, wird *develop* in *master*
+gemerged. Die Version auf *master* entspricht einem stabilen Release der App.
 
 
 ## Code Style
 
-Der Code Style durch Importieren von [Doku/code-style.xml](Doku/code-style.xml) in Intellij
-eingerichtet werden.
+Der Code Style kann durch Importieren von [Doku/code-style.xml](Doku/code-style.xml)
+in Intellij eingerichtet werden.
 
 Es wird der [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)
 verwendet. Zusätzlich wird nach jedem Methodenkopf eine Leerzeile eingefügt.
@@ -119,7 +118,8 @@ verwendet werden. Allerdings sollte der Zugriff auf diese Klassen entweder in
 *FeatureActivity* oder in *FeaturePresenter* aber **nicht** in *FeatureView* geschehen.
 
 Das *Presenter* Interface und das *View* Interface müssen Untertypen von
-*util.BasePresenter* bzw. *util.BaseView* sein.
+[BasePresenter](Quartett/app/src/main/java/de/in/uulm/map/quartett/util/BasePresenter.java)
+bzw. [BaseView](Quartett/app/src/main/java/de/in/uulm/map/quartett/util/BaseView.java) sein.
 
 Das *Interactor* Interface kann vom Presenter verwendet werden um auf Funktionalität
 der Android Activity zu zugreifen.
@@ -201,8 +201,8 @@ class Presenter {
 Meist werden die benötigen Komponenten in der Activity eines Features erzeugt
 und dann über Konstruktoren oder Setter mit anderen Komponenten verbunden.
 Insbesondere wird die View dem Presenter im Konstruktor übergeben. Die View
-erhält den Presenter über setPresenter(...) aus dem BaseView Interface.
-
+erhält den Presenter über `setPresenter(...)` aus dem
+[BaseView](Quartett/app/src/main/java/de/in/uulm/map/quartett/util/BaseView.java) Interface.
 
 ## Ressourcen
 
@@ -229,13 +229,14 @@ Soweit möglich werden nur die offiziellen
 [Material Icons](https://material.io/icons/) verwendet.
 Alle Icons sollten in 48dp heruntergeladen werden. Es wird jeweils nur das Icon
 mit der höchsten Auflösung (aus dem drawable-xxxhdpi Ordner) verwendet. Alle
-Icons werden direkt in "res/drawable" gespeichert. Es werden keine weiteren
-Versionen in unterschiedlichen Auflösungen gespeichert.
+Icons werden direkt in [res/drawable](Quartett/app/src/main/res/layout/drawable)
+gespeichert. Es werden keine weiteren Versionen in unterschiedlichen Auflösungen gespeichert.
 
 
 ## Strings
 
-Alle Strings, die in GUIs verwendet werden, werden in "res/values/strings.xml
+Alle Strings, die in GUIs verwendet werden, werden in
+[res/values/strings.xml](Quartett/app/src/main/res/values/strings.xml)
 definiert und nur über "R.string.name" referenziert.
 
 **Falsch:**
@@ -248,7 +249,8 @@ start_button.setText("Press me!")
 start_button.setText(R.string.start_button);
 ```
 
-Die Einträge in strings.xml werden nach Package gruppiert und jede
+Die Einträge in [strings.xml](Quartett/app/src/main/res/values/strings.xml)
+werden nach Package gruppiert und jede
 Gruppe wird mit eine Kommentar mit dem Name des Package versehen.
 
 ```
@@ -268,9 +270,10 @@ Gruppe wird mit eine Kommentar mit dem Name des Package versehen.
 
 ## Styles und Farben
 
-Alle Styles eines GUI Elements werden in der "res/values/styles.xml" festgelegt.
+Alle Styles eines GUI Elements werden in der 
+[res/values/styles.xml](Quartett/app/src/main/res/values/styles.xml) festgelegt.
 Dabei werden für GUI Elemente separate Styles angelegt, die dann zum "AppTheme"
 Style hinzugefügt werden.
 
-Alle Farben werden in "res/values/colors.xml" definiert und nur über
-"R.color.name" referenziert.
+Alle Farben werden in [res/values/colors.xml](Quartett/app/src/main/res/values/colors.xml)
+definiert und nur über "R.color.name" referenziert.
