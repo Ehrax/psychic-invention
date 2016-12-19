@@ -59,6 +59,8 @@ public void do(int a) {
 }
 ```
 
+In Intellij kann der Code Style durch Importieren von
+"Doku/code-style.xml" eingerichtet werden.
 
 ## Model-View-Presenter
 
