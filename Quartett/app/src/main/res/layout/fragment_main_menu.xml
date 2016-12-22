@@ -12,11 +12,11 @@
 
     <ImageView
             android:layout_width="match_parent"
-            android:layout_height="97dp"
+            android:layout_height="0dp"
             android:layout_weight="0.95"
             android:scaleType="centerCrop"
             android:paddingLeft="4dp"
-            android:contentDescription="@string/content_description"
+            android:contentDescription="@string/content_description_main_menu"
             android:paddingRight="4dp"
             android:background="@drawable/main_menu_car"
             android:cropToPadding="true"
