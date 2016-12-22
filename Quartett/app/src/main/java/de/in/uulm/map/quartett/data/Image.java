@@ -9,13 +9,16 @@ import com.orm.SugarRecord;
  */
 
 public class Image extends SugarRecord {
+
     public Uri mUri;
     public String mDescription;
 
     public Image() {
+
     }
 
     public Image(Uri mUri, String mDescription) {
+
         this.mUri = mUri;
         this.mDescription = mDescription;
     }

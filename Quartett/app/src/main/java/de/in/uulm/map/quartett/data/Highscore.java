@@ -14,10 +14,11 @@ public class Highscore extends SugarRecord {
 
     public enum HighScoreType {
 
-        ROUND, POINT, TIME, ONLINE;
+        ROUND, POINT, TIME, ONLINE
     }
 
     public Highscore() {
+
     }
 
     public Highscore(int value, int pos, String name, HighScoreType type) {
