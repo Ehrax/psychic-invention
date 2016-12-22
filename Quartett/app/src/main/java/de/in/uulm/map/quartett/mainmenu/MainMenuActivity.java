@@ -1,27 +1,56 @@
 package de.in.uulm.map.quartett.mainmenu;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 
 import de.in.uulm.map.quartett.R;
-import de.in.uulm.map.quartett.data.Attribute;
-import de.in.uulm.map.quartett.data.AttributeValue;
-import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.Deck;
-import de.in.uulm.map.quartett.data.Highscore;
-import de.in.uulm.map.quartett.data.Image;
+import de.in.uulm.map.quartett.factory.EntityFactory;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainMenuActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        StringWriter stringWriter = new StringWriter();
+
+        try(InputStream in = getResources().openRawResource(R.raw.tuning)) {
+
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(in));
+
+            char[] buffer = new char[1024];
+
+            int n;
+            while ((n = reader.read(buffer)) != -1) {
+                stringWriter.write(buffer, 0, n);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        EntityFactory entityFactory = new EntityFactory();
+
+        Deck deck = null;
+
+        try {
+            deck = entityFactory.getDeck(new JSONObject(stringWriter.toString()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(deck);
     }
 }
