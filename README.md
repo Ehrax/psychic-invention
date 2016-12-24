@@ -137,6 +137,7 @@ Beispiel halten.
 Um eine Activity mit Drawer anzulegen sind folgende Schritte auszuführen:
 
 1. Die angelegte Activity muss von `DrawerActivity` erben.
+   (Nicht vergessen ins Manifest einzutragen)	
 2. In der `onCreate(Bundle savedInstanceState)` Methode muss zuerst `super.onCreate(savedInstanceState)`
    aufgerufen werden. Dadurch wird der Drawer initialisiert und die contentView gesetzt.
 3. Initialisiere die View (Fragment) für die Activity:
