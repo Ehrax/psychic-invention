@@ -2,14 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+
+    <com.bartoszlipinski.flippablestackview.FlippableStackView
+            android:id="@+id/deck_stack_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TEST123"/>
-
-    <com.bartoszlipinski.flippablestackview.FlippableStackView
-            android:id="@+id/stack"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
 </LinearLayout>
