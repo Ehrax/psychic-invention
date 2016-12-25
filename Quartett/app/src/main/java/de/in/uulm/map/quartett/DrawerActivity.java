@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import de.in.uulm.map.quartett.gallery.GalleryActivity;
 import de.in.uulm.map.quartett.mainmenu.MainMenuActivity;
 
 /**
@@ -90,6 +91,10 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             case R.id.nav_editor:
                 break;
             case R.id.nav_gallery:
+                if (!this.getClass().getSimpleName().equals
+                        ("GalleryActivity")) {
+                    startActivity(new Intent(this, GalleryActivity.class));
+                }
                 break;
             case R.id.nav_help:
                 break;
