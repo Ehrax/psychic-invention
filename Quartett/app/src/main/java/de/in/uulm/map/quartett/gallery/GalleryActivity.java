@@ -17,11 +17,12 @@ public class GalleryActivity extends DrawerActivity {
     @Override protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        GalleryFragment galleryFragment = (GalleryFragment)getFragmentManager
+        GalleryFragment galleryFragment = (GalleryFragment)
+                getSupportFragmentManager
                 ().findFragmentById(R.id.contentFrame);
         if(galleryFragment == null){
             galleryFragment = GalleryFragment.newInstance();
-            ActivityUtils.addFragmentToActivity(getFragmentManager(),
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     galleryFragment,R.id.contentFrame);
         }
 

@@ -27,11 +27,11 @@ public class MainMenuActivity extends DrawerActivity {
         /*Initialise Fragment and set Presenter (contentFrame is a
         FrameLayout in app_bar.xml)*/
         MainMenuFragment mainMenuFragment = (MainMenuFragment)
-                getFragmentManager().findFragmentById(R.id
+                getSupportFragmentManager().findFragmentById(R.id
                         .contentFrame);
         if (mainMenuFragment == null) {
             mainMenuFragment = MainMenuFragment.newInstance();
-            ActivityUtils.addFragmentToActivity(getFragmentManager(),
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     mainMenuFragment, R.id.contentFrame);
         }
 
