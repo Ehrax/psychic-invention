@@ -1,5 +1,6 @@
 package de.in.uulm.map.quartett.gallery;
 
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
@@ -10,23 +11,38 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bartoszlipinski.flippablestackview.FlippableStackView;
+import com.bartoszlipinski.flippablestackview.StackPageTransformer;
+
 import de.in.uulm.map.quartett.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Created by maxka on 25.12.2016.
+ * Created by maxka on 25.12.2016. This Fragment displays all cards of a given
+ * deck in a animated stack view.
  */
 
 public class DeckFragment extends Fragment implements GalleryContract.View {
 
     private GalleryContract.Presenter mPresenter;
+    private long currentDeckID;
+
+    private FlippableStackView mFlippableStack;
+    private CardFragmentAdapter mCardFragmentAdapter;
+    private List<Fragment> mDeckCards;
 
     public static DeckFragment newInstance() {
 
         return new DeckFragment();
+    }
+
+    public void setCurrentDeckID(long currentDeckID) {
+
+        this.currentDeckID = currentDeckID;
     }
 
     @Override
@@ -35,11 +51,47 @@ public class DeckFragment extends Fragment implements GalleryContract.View {
         mPresenter = checkNotNull(presenter);
     }
 
+
     @Override
     public void onActivityCreated(Bundle savedInstance) {
 
         super.onActivityCreated(savedInstance);
 
+        mDeckCards = mPresenter.createCardFragments(currentDeckID);
+        //just for testing
+        if (mDeckCards == null) {
+            mDeckCards = populateTestFragments();
+        }
+        mCardFragmentAdapter = new CardFragmentAdapter(getActivity()
+                .getSupportFragmentManager(), mDeckCards);
+
+        /*
+        Initialise the FlippableStackView witch holds the cards
+         */
+        mFlippableStack = (FlippableStackView) getActivity().findViewById(R
+                .id.deck_stack_view);
+        boolean portrait = getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_PORTRAIT;
+        mFlippableStack.initStack(mDeckCards.size(), portrait ?
+                StackPageTransformer.Orientation.VERTICAL : StackPageTransformer.Orientation.HORIZONTAL);
+        mFlippableStack.setAdapter(mCardFragmentAdapter);
+    }
+
+    /**
+     * just for testing
+     *
+     * @return list of card fragments
+     */
+    private List<Fragment> populateTestFragments() {
+
+        List<Fragment> cards = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+
+            cards.add(CardFragment.newInstance());
+        }
+
+        return cards;
     }
 
     @Nullable
@@ -50,6 +102,9 @@ public class DeckFragment extends Fragment implements GalleryContract.View {
         return inflater.inflate(R.layout.fragment_deck, container, false);
     }
 
+    /**
+     * Adapter for the FlippableStackView
+     */
     private class CardFragmentAdapter extends FragmentPagerAdapter {
 
         private List<Fragment> fragments;

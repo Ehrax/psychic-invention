@@ -93,7 +93,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
             @Override
             public void onClick(View v) {
 
-                mItemListener.showDeckDetailView(currentDeck.getId());
+                mItemListener.showDeckDetailView(/*currentDeck.getId()*/0);
             }
         });
 

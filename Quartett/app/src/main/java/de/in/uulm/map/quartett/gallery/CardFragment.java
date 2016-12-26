@@ -1,63 +1,78 @@
 package de.in.uulm.map.quartett.gallery;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import android.widget.ViewSwitcher;
+import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.Attribute;
+import de.in.uulm.map.quartett.data.AttributeValue;
+import de.in.uulm.map.quartett.data.Image;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by maxka on 25.12.2016.
+ * Created by maxka on 25.12.2016. Represents a single card. Used to show cards
+ * in the deck detail view.
  */
 
 public class CardFragment extends Fragment {
 
-    private ImageSwitcher mImageSwitcher;
-    private Button btnPrev,btnNext;
+    private List<Image> mCardImages = new ArrayList<>();
+    private List<Attribute> mCardAttributes = new ArrayList<>();
+    private List<AttributeValue> mAttributeValues = new ArrayList<>();
+    private String mCardTitle;
 
+    private ImageView mImageView;
+    private TextView mTitleTextView;
+    private TextView[] mAttrTitleTextViews = new TextView[4];
+    private TextView[] mAttrValueTextViews = new TextView[4];
+
+
+    public static CardFragment newInstance() {
+
+        return new CardFragment();
+    }
+
+    /**
+     * Initialising the views and setting images and attributes.
+     *
+     * @param savedInstanceState standard bundle contains intent information
+     */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
+        mImageView = (ImageView) getActivity().findViewById(R.id.img_card);
+        mTitleTextView = (TextView) getActivity().findViewById(R.id
+                .txt_card_title);
+        for (int i = 0; i < mAttrTitleTextViews.length; i++) {
+            String textViewTitleID = "txt_attr_title_" + i;
+            String textViewValueID = "txt_attr_value_" + i;
 
-        btnNext=(Button) getActivity().findViewById(R.id.btn_next);
-        btnPrev=(Button) getActivity().findViewById(R.id.btn_prev);
+            int resIDTitle = getResources().getIdentifier(textViewTitleID, "id",
+                    getActivity().getPackageName());
+            int resIDValue = getResources().getIdentifier(textViewValueID,
+                    "id", getActivity().getPackageName());
 
-        mImageSwitcher = (ImageSwitcher) getActivity().findViewById(R.id.img_switcher_card);
-        mImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
-            @Override
-            public View makeView() {
+            mAttrTitleTextViews[i] = (TextView) getActivity().findViewById(resIDTitle);
+            mAttrValueTextViews[i] = (TextView) getActivity().findViewById(resIDValue);
 
-                ImageView imgView = new ImageView(getActivity()
-                        .getApplicationContext());
-                imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imgView.setLayoutParams(new ImageSwitcher.LayoutParams
-                        (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup
-                                .LayoutParams.WRAP_CONTENT));
-                return imgView;
-            }
-        });
+            mAttrTitleTextViews[i].setText(mAttributeValues.get(i).mAttribute.mName);
+            mAttrValueTextViews[i].setText(mAttributeValues.get(i).mValue + " " + mAttributeValues.get(i).mAttribute.mUnit);
+        }
 
-        btnNext.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                mImageSwitcher.setImageResource(R.drawable.ic_cards_playing);
-            }
-        });
+        //TODO: Implement multiple images and slide animation
+        mImageView.setImageURI(mCardImages.get(0).mUri);
+        mTitleTextView.setText(mCardTitle);
 
-        btnPrev.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                mImageSwitcher.setImageResource(R.drawable.ic_menu_editor);
-            }
-        });
+
     }
 
     @Nullable
@@ -66,6 +81,26 @@ public class CardFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         return inflater.inflate(R.layout.fragment_card, container, false);
+    }
+
+    public void setCardImageUris(List<Image> images) {
+
+        mCardImages = images;
+    }
+
+    public void setCardAttributes(List<Attribute> attr) {
+
+        mCardAttributes = attr;
+    }
+
+    public void setCardAttributeValues(List<AttributeValue> values) {
+
+        mAttributeValues = values;
+    }
+
+    public void setCardTitle(String cardTitle) {
+
+        this.mCardTitle = cardTitle;
     }
 
 }

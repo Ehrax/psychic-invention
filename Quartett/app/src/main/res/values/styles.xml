@@ -17,9 +17,26 @@
     <style name="ImageTitleTextView" parent="android:Widget.TextView">
         <item name="android:textSize">20sp</item>
         <item name="android:layout_gravity">bottom</item>
-        <item name="android:background">#CE000000</item>
+        <item name="android:background">@color/colorBlackTransparent</item>
         <item name="android:padding">15dp</item>
         <item name="android:textColor">@color/colorGalleryTitle</item>
+    </style>
+
+    <style name="TextViewCardAttributesTitle" parent="android:Widget.TextView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">0.7</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:background">@color/colorCardAttributesBackground
+        </item>
+
+    </style>
+
+    <style name="TextViewCardAttributesValue" parent="@style/TextViewCardAttributesTitle">
+        <item name="android:layout_weight">0.3</item>
+        <item name="android:textAlignment">viewEnd</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

@@ -39,7 +39,13 @@ public class ActivityUtils {
         checkNotNull(fragmentManager);
         checkNotNull(fragment);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(frameId, fragment);
+        Fragment checkFragment = fragmentManager.findFragmentById(frameId);
+        if (checkFragment == null) {
+            transaction.add(frameId, fragment);
+        } else {
+            transaction.replace(frameId, fragment);
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
     }
 

@@ -1,6 +1,6 @@
 package de.in.uulm.map.quartett.gallery;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.util.BasePresenter;
@@ -16,8 +16,10 @@ public interface GalleryContract {
 
     interface Presenter extends BasePresenter {
 
-        List<Fragment> createCardFragments(int deckID);
+        List<Fragment> createCardFragments(long deckID);
+
         List<Deck> populateDeckList();
+
         void showDeckDetail(long deckID);
     }
 

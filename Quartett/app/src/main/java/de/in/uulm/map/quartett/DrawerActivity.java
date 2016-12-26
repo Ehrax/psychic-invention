@@ -15,10 +15,9 @@ import de.in.uulm.map.quartett.gallery.GalleryActivity;
 import de.in.uulm.map.quartett.mainmenu.MainMenuActivity;
 
 /**
- * Base class for all activities with navigation drawer.
- * Just extend this Class with your own activity and call
- * super.onCreate(savedInstanceState) from the onCreate Method of your own
- * activity.
+ * Base class for all activities with navigation drawer. Just extend this Class
+ * with your own activity and call super.onCreate(savedInstanceState) from the
+ * onCreate Method of your own activity.
  */
 public class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 

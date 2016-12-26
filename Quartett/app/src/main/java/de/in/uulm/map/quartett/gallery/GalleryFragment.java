@@ -18,8 +18,8 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Created by maxka on 25.12.2016.
- * This fragment uses a simple RecyclerView to display all deck images + title
+ * Created by maxka on 25.12.2016. This fragment uses a simple RecyclerView to
+ * display all deck images + title
  */
 
 public class GalleryFragment extends Fragment implements GalleryContract.View {
@@ -38,6 +38,7 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
     GalleryItemListener mItemListener = new GalleryItemListener() {
         @Override
         public void showDeckDetailView(long deckID) {
+
             mPresenter.showDeckDetail(deckID);
         }
     };
@@ -70,7 +71,7 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new GalleryAdapter(deckList,mItemListener);
+        mAdapter = new GalleryAdapter(deckList, mItemListener);
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -85,6 +86,7 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
     }
 
     public interface GalleryItemListener {
+
         void showDeckDetailView(long deckID);
     }
 

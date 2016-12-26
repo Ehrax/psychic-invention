@@ -1,11 +1,10 @@
 package de.in.uulm.map.quartett.gallery;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 
-import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Attribute;
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.Deck;
@@ -22,12 +21,17 @@ public class GalleryPresenter implements GalleryContract.Presenter {
 
     @NonNull
     private final GalleryContract.View mView;
-    private final Context ctx;
+    private final Context mCtx;
 
-    public GalleryPresenter(@NonNull GalleryContract.View galleryView, Context ctx) {
+    private GalleryActivity.ViewSwitcher mViewSwitcher;
+
+    public GalleryPresenter(@NonNull GalleryContract.View galleryView,
+                            Context ctx, GalleryActivity.ViewSwitcher
+                                    viewSwitcher) {
 
         mView = galleryView;
-        this.ctx = ctx;
+        this.mCtx = ctx;
+        mViewSwitcher = viewSwitcher;
     }
 
     @Override
@@ -43,9 +47,26 @@ public class GalleryPresenter implements GalleryContract.Presenter {
      * @return A ArrayList of fragments which hold the cards.
      */
     @Override
-    public List<Fragment> createCardFragments(int deckID) {
+    public List<Fragment> createCardFragments(long deckID) {
+        //try catch just for testing until json parser is available
+        try {
+            Deck currentDeck = Deck.findById(Deck.class, deckID);
+            List<Card> cards = currentDeck.mCards;
+            List<Fragment> cardFragments = new ArrayList<>();
 
-        return null;
+            for (Card card : cards) {
+                CardFragment currentCard = CardFragment.newInstance();
+                currentCard.setCardImageUris(card.mImages);
+                currentCard.setCardAttributes(currentDeck.mAttributes);
+                currentCard.setCardTitle(card.mTitle);
+                currentCard.setCardAttributeValues(card.mAttributeValues);
+                cardFragments.add(currentCard);
+
+            }
+            return cardFragments;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -65,20 +86,20 @@ public class GalleryPresenter implements GalleryContract.Presenter {
         /* just for testing can be removed if json parser is implemented ;) */
         if (decks.size() == 0) {
             decks.add(new Deck("TestDeck", "Test description", new Image(Uri.parse
-                    ("android.resource://" + ctx.getPackageName()
+                    ("android.resource://" + mCtx.getPackageName()
                             + "/drawable/main_menu_car"), "the description"),
                     new ArrayList<Card>(), new ArrayList<Attribute>()));
             decks.add(new Deck("TestDeck", "Test description", new Image(Uri.parse
-                    ("android.resource://" + ctx.getPackageName()
+                    ("android.resource://" + mCtx.getPackageName()
+                            + "/drawable/test"), "the description"),
+                    new ArrayList<Card>(), new ArrayList<Attribute>()));
+            decks.add(new Deck("TestDeck", "Test description", new Image(Uri.parse
+                    ("android.resource://" + mCtx.getPackageName()
                             + "/drawable/main_menu_car"), "the description"),
                     new ArrayList<Card>(), new ArrayList<Attribute>()));
             decks.add(new Deck("TestDeck", "Test description", new Image(Uri.parse
-                    ("android.resource://" + ctx.getPackageName()
-                            + "/drawable/main_menu_car"), "the description"),
-                    new ArrayList<Card>(), new ArrayList<Attribute>()));
-            decks.add(new Deck("TestDeck", "Test description", new Image(Uri.parse
-                    ("android.resource://" + ctx.getPackageName()
-                            + "/drawable/main_menu_car"), "the description"),
+                    ("android.resource://" + mCtx.getPackageName()
+                            + "/drawable/test"), "the description"),
                     new ArrayList<Card>(), new ArrayList<Attribute>()));
         }
         return decks;
@@ -92,5 +113,8 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     @Override
     public void showDeckDetail(long deckID) {
 
+        DeckFragment deckFragment = DeckFragment.newInstance();
+        deckFragment.setCurrentDeckID(deckID);
+        mViewSwitcher.switchToView(deckFragment);
     }
 }
