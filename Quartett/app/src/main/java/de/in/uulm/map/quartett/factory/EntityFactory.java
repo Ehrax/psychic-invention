@@ -3,6 +3,7 @@ package de.in.uulm.map.quartett.factory;
 import com.google.common.collect.Lists;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.net.Uri;
 
 import de.in.uulm.map.quartett.data.Attribute;
@@ -15,6 +16,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -31,7 +37,7 @@ public class EntityFactory {
      * This is the context the Factory lives in.
      * It is usually given by the activity.
      */
-    Context context;
+    private Context context;
 
     /**
      * Simple constructor to hand over the current Context.
@@ -45,14 +51,15 @@ public class EntityFactory {
 
     /**
      * Use this method to construct a Deck object from a JSON file.
-     * All images linked in the JSON file will be stored in internal storage.
-     * This method can take some time so call it async.
+     * No image paths in the JSON file will be touched.
+     * This may result in incorrect paths when using relative paths in the
+     * JSON file or when loading from an online source.
      *
      * @param jsonDeck the JSONObject to construct the Deck from
      * @return a fully constructed and filled Deck
      * @throws JSONException
      */
-    public Deck getDeck(JSONObject jsonDeck) throws JSONException {
+    private Deck getDeck(JSONObject jsonDeck) throws JSONException {
 
         // maybe add the names of the elements to strings.xml
 
@@ -74,12 +81,54 @@ public class EntityFactory {
             cards.add(getCard((JSONObject) jsonCards.get(i), attrs));
         }
 
-        Deck deck = new Deck(
+        return new Deck(
                 jsonDeck.getString("name"),
                 jsonDeck.getString("description"),
                 null,
                 cards,
                 Lists.newArrayList(attrs.values()));
+    }
+
+    /**
+     * This method will construct a Deck from a folder in the assets directory.
+     * Also the image paths will be altered to point to the correct image
+     * locations.
+     *
+     * @param path the path of the JSON file e.g. "bikes/bikes.json"
+     * @return a fully constructed and filled Deck
+     * @throws JSONException
+     */
+    public Deck getDeckFromAssets(String path) throws JSONException, IOException {
+
+        // read in the JSON file
+        // no sure if this is still a task to be done by a factory ...
+
+        AssetManager am = context.getAssets();
+
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(am.open(path)));
+
+        StringWriter stringWriter = new StringWriter();
+
+        char[] buffer = new char[1024];
+
+        int n;
+        while ((n = reader.read(buffer)) != -1) {
+            stringWriter.write(buffer, 0, n);
+        }
+
+        Deck deck = getDeck(new JSONObject(stringWriter.toString()));
+
+        // alter all the image paths to point to the right location
+        // in the assets directory
+
+        String dir = new File("file:///android_asset/" + path).getParent();
+
+        for(Card c : deck.mCards) {
+            for(Image i : c.mImages) {
+                i.mUri = Uri.parse(dir + "/" + i.mUri.getPath());
+            }
+        }
 
         return deck;
     }
@@ -115,12 +164,10 @@ public class EntityFactory {
                     attrs));
         }
 
-        Card card = new Card(
+        return new Card(
                 jsonCard.getString("name"),
                 images,
                 attributeValues);
-
-        return card;
     }
 
     /**
@@ -133,12 +180,10 @@ public class EntityFactory {
     private Attribute getAttribute(JSONObject jsonAttribute)
             throws JSONException {
 
-        Attribute attribute = new Attribute(
+        return new Attribute(
                 jsonAttribute.getString("text"),
                 jsonAttribute.getString("unit"),
                 (jsonAttribute.getInt("compare") == 1));
-
-        return attribute;
     }
 
     /**
@@ -154,33 +199,25 @@ public class EntityFactory {
             JSONObject jsonAttributeValue,
             HashMap<Integer, Attribute> attrs) throws JSONException {
 
-        AttributeValue attributeValue = new AttributeValue(
+        return new AttributeValue(
                 (float) jsonAttributeValue.getDouble("value"),
                 attrs.get(jsonAttributeValue.getInt("propertyId")));
-
-        return attributeValue;
     }
 
     /**
-     * Use this method to create an Image from a JSONObject and store the
-     * associated image in internal storage for later use.
-     * This may take some time, as the image may be loaded from online sources.
+     * Use this method to create an Image from a JSONObject.
+     * The paths of the object may point to locations not known by the system.
+     * Therefore further processing is needed to alter the paths so that they
+     * point to a valid location.
      *
      * @param jsonImage the JSONObject to construct the Image from
-     * @return a Image object linked with the locally stored image
+     * @return an Image object with the image path from the JSON object
      * @throws JSONException
      */
     private Image getImage(JSONObject jsonImage) throws JSONException {
 
-        String path = jsonImage.getString("filename");
-
-        // load the image into local storage here
-        // and use the local uri instead of path
-
-        Image image = new Image(
-                Uri.parse(path),
+        return new Image(
+                Uri.parse(jsonImage.getString("filename")),
                 jsonImage.optString("description"));
-
-        return image;
     }
 }

@@ -24,6 +24,8 @@ public class MainMenuActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
+        /**
+
         StringWriter stringWriter = new StringWriter();
 
         try(InputStream in = getResources().openRawResource(R.raw.tuning)) {
@@ -41,7 +43,7 @@ public class MainMenuActivity extends Activity {
             e.printStackTrace();
         }
 
-        EntityFactory entityFactory = new EntityFactory();
+        EntityFactory entityFactory = new EntityFactory(this);
 
         Deck deck = null;
 
@@ -51,6 +53,16 @@ public class MainMenuActivity extends Activity {
             e.printStackTrace();
         }
 
-        System.out.println(deck);
+         */
+
+        EntityFactory entityFactory = new EntityFactory(this);
+
+        try {
+            entityFactory.getDeckFromAssets("decks/bikes/bikes.json");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
