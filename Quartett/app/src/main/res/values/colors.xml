@@ -6,7 +6,9 @@
     <color name="colorButtonNormal">#028ac9</color>
     <color name="colorButtonText">#fff</color>
     <color name="colorGalleryTitle">#fff</color>
-    <color name="colorCardBorder">#000000</color>
+    <color name="colorCardBorder">#000</color>
     <color name="colorBlackTransparent">#CE000000</color>
-    <color name="colorCardAttributesBackground">#303030</color>
+    <color name="colorCardAttributesBackground">#000000</color>
+    <color name="colorCardTitle">#838e8e8d</color>
+    <color name="colorCardTitle2">#b971402f</color>
 </resources>

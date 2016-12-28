@@ -25,7 +25,7 @@
     <style name="TextViewCardAttributesTitle" parent="android:Widget.TextView">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">0.7</item>
+        <item name="android:layout_weight">0.6</item>
         <item name="android:padding">10dp</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">22sp</item>
@@ -35,7 +35,7 @@
     </style>
 
     <style name="TextViewCardAttributesValue" parent="@style/TextViewCardAttributesTitle">
-        <item name="android:layout_weight">0.3</item>
+        <item name="android:layout_weight">0.4</item>
         <item name="android:textAlignment">viewEnd</item>
     </style>
 

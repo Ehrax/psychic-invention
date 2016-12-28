@@ -12,5 +12,5 @@
     <dimen name="nav_header_height">160dp</dimen>
 
     <!--The width of a cards border -->
-    <dimen name="card_border_width">8dp</dimen>
+    <dimen name="card_border_width">15dp</dimen>
 </resources>

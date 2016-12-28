@@ -1,8 +1,11 @@
 package de.in.uulm.map.quartett.gallery;
 
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +52,7 @@ public class CardFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
+
         mImageView = (ImageView) getActivity().findViewById(R.id.img_card);
         mTitleTextView = (TextView) getActivity().findViewById(R.id
                 .txt_card_title);
