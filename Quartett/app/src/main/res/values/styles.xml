@@ -2,20 +2,25 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!--enable activity transitions-->
         <item name="android:windowContentTransitions">true</item>
-        
-    </style>
+        <!--specify enter and exit transitions-->
+        <item name="android:windowEnterTransition">@transition/slide</item>
+        <item name="android:windowExitTransition">@transition/slide</item>
 
+    </style>
+    <!--style for the main menu buttons-->
     <style name="MainMenuButtonStyle" parent="android:Widget.Material.Button.Colored">
         <item name="android:textSize">18sp</item>
         <item name="android:backgroundTint">@color/colorButtonNormal</item>
         <item name="android:textColor">@color/colorButtonText</item>
     </style>
 
+    <!--This TextView style is used for the gallery to show a black
+    transparent TextView containing the DeckTitle over the Deck Image-->
     <style name="ImageTitleTextView" parent="android:Widget.TextView">
         <item name="android:textSize">20sp</item>
         <item name="android:layout_gravity">bottom</item>
@@ -24,6 +29,8 @@
         <item name="android:textColor">@color/colorGalleryTitle</item>
     </style>
 
+
+    <!--Style for the card attributes title-->
     <style name="TextViewCardAttributesTitle" parent="android:Widget.TextView">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -33,9 +40,8 @@
         <item name="android:textSize">22sp</item>
         <item name="android:background">@color/colorCardAttributesBackground
         </item>
-
     </style>
-
+    <!--style for the card attributes value-->
     <style name="TextViewCardAttributesValue" parent="@style/TextViewCardAttributesTitle">
         <item name="android:layout_weight">0.4</item>
         <item name="android:textAlignment">viewEnd</item>
@@ -45,6 +51,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

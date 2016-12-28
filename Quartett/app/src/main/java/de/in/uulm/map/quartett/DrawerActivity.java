@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -92,14 +93,22 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             case R.id.nav_gallery:
                 if (!this.getClass().getSimpleName().equals
                         ("GalleryActivity")) {
-                    startActivity(new Intent(this, GalleryActivity.class));
+                    Intent intent = new Intent(this, GalleryActivity.class);
+                    ActivityOptionsCompat options = ActivityOptionsCompat
+                            .makeSceneTransitionAnimation(this);
+
+                    startActivity(intent, options.toBundle());
                 }
                 break;
             case R.id.nav_help:
                 break;
             case R.id.nav_main_menu:
                 if (!this.getClass().getSimpleName().equals("MainMenuActivity")) {
-                    startActivity(new Intent(this, MainMenuActivity.class));
+                    Intent intent = new Intent(this, MainMenuActivity.class);
+                    ActivityOptionsCompat options = ActivityOptionsCompat
+                            .makeSceneTransitionAnimation(this);
+
+                    startActivity(intent, options.toBundle());
                 }
                 break;
             case R.id.nav_settings:

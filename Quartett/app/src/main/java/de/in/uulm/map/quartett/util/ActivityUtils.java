@@ -21,6 +21,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.annotation.NonNull;
 
 
+import de.in.uulm.map.quartett.R;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -43,6 +45,10 @@ public class ActivityUtils {
         if (checkFragment == null) {
             transaction.add(frameId, fragment);
         } else {
+            transaction.setCustomAnimations(R.anim.fragment_slide_left_enter,
+                    R.anim.fragment_slide_left_exit,R.anim
+                            .fragment_slide_right_enter,R.anim
+                            .fragment_slide_right_exit);
             transaction.replace(frameId, fragment);
             transaction.addToBackStack(null);
         }

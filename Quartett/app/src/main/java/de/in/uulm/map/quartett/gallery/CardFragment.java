@@ -53,7 +53,7 @@ public class CardFragment extends Fragment {
 
         super.onActivityCreated(savedInstanceState);
 
-        mImageView = (ImageView) getActivity().findViewById(R.id.img_card);
+        /*mImageView = (ImageView) getActivity().findViewById(R.id.img_card);
         mTitleTextView = (TextView) getActivity().findViewById(R.id
                 .txt_card_title);
         for (int i = 0; i < mAttrTitleTextViews.length; i++) {
@@ -75,7 +75,7 @@ public class CardFragment extends Fragment {
         //TODO: Implement multiple images and slide animation
         mImageView.setImageURI(mCardImages.get(0).mUri);
         mTitleTextView.setText(mCardTitle);
-
+        */
 
     }
 
