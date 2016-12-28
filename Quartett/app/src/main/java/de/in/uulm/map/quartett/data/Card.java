@@ -9,15 +9,18 @@ import java.util.List;
  */
 
 public class Card extends SugarRecord {
+
     public String mTitle;
     public List<Image> mImages;
     public List<AttributeValue> mAttributeValues;
 
     public Card() {
+
     }
 
     public Card(String mTitle, List<Image> mImages, List<AttributeValue>
             mAttributeValues) {
+
         this.mTitle = mTitle;
         this.mImages = mImages;
         this.mAttributeValues = mAttributeValues;

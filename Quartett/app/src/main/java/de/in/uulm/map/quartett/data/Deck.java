@@ -9,6 +9,7 @@ import java.util.List;
  */
 
 public class Deck extends SugarRecord {
+
     public String mTitle;
     public String mDescription;
     public Image mImage;
@@ -16,10 +17,12 @@ public class Deck extends SugarRecord {
     public List<Attribute> mAttributes;
 
     public Deck() {
+
     }
 
     public Deck(String mTitle, String mDescription, Image mImage, List<Card>
             mCards, List<Attribute> mAttributes) {
+
         this.mTitle = mTitle;
         this.mDescription = mDescription;
         this.mImage = mImage;

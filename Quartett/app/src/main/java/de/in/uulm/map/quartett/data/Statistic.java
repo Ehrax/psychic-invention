@@ -7,14 +7,17 @@ import com.orm.SugarRecord;
  */
 
 public class Statistic extends SugarRecord {
+
     public String mTitle;
     public float mValue;
     public String mDescription;
 
     public Statistic() {
+
     }
 
     public Statistic(String title, float value, String description) {
+
         this.mTitle = title;
         this.mValue = value;
         this.mDescription = description;
