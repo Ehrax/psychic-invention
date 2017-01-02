@@ -12,6 +12,7 @@ import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 
+
 public class MainMenuActivity extends DrawerActivity {
 
     private MainMenuPresenter mMainMenuPresenter;
