@@ -2,13 +2,16 @@ package de.in.uulm.map.quartett.factory;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.net.Uri;
+
+import com.orm.SugarRecord;
+import com.orm.SugarTransactionHelper;
 
 import de.in.uulm.map.quartett.data.Attribute;
 import de.in.uulm.map.quartett.data.AttributeValue;
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.CardImage;
 import de.in.uulm.map.quartett.data.Deck;
+import de.in.uulm.map.quartett.data.DeckInfo;
 import de.in.uulm.map.quartett.data.Image;
 
 import org.json.JSONArray;
@@ -20,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -32,58 +37,118 @@ import java.util.HashMap;
 public class EntityFactory {
 
     /**
-     * This is the context the Factory lives in. It is usually given by the
-     * activity.
+     * This will be set to the currently loaded Deck.
      */
-    private Context context;
+    private Deck deck;
 
     /**
-     * Simple constructor to hand over the current Context.
-     *
-     * @param context the current Context
+     * This will be set to the currently loaded DeckInfo.
      */
-    public EntityFactory(Context context) {
-
-        this.context = context;
-    }
+    private DeckInfo deckInfo;
 
     /**
-     * Use this method to construct a Deck object from a JSON file. No image
+     * All cards that are loaded by the factory are registered here. This is
+     * needed as the objects must be known later for saving.
+     */
+    private ArrayList<Card> cards;
+
+    /**
+     * All Attribute objects that have been loaded.
+     */
+    private ArrayList<Attribute> attributes;
+
+    /**
+     * All AttributeValue objects that have been loaded.
+     */
+    private ArrayList<AttributeValue> attributeValues;
+
+    /**
+     * All Image objects that have been loaded.
+     */
+    private ArrayList<Image> images;
+
+    /**
+     * All Card objects that have been loaded.
+     */
+    private ArrayList<CardImage> cardImages;
+
+    /**
+     * The constructor will construct a Deck object from a JSON file. No image
      * paths in the JSON file will be touched. This may result in incorrect
      * paths when using relative paths in the JSON file or when loading from an
      * online source.
      *
      * @param jsonDeck the JSONObject to construct the Deck from
+     * @param source   the source the Deck was loaded from e.g.
+     *                 "http://asdf..."
      * @return a fully constructed and filled Deck
      */
-    private Deck importDeck(JSONObject jsonDeck) throws JSONException {
+    public EntityFactory(JSONObject jsonDeck, String source)
+            throws JSONException {
+
+        deck = null;
+        deckInfo = null;
+        attributes = new ArrayList<>();
+        attributeValues = new ArrayList<>();
+        images = new ArrayList<>();
+        cardImages = new ArrayList<>();
+        cards = new ArrayList<>();
 
         // maybe add the names of the elements to strings.xml
 
         JSONArray jsonCards = jsonDeck.getJSONArray("cards");
         JSONArray jsonAttributes = jsonDeck.getJSONArray("properties");
 
-        Deck deck = new Deck(
+        deck = new Deck(
                 jsonDeck.getString("name"),
                 jsonDeck.getString("description"),
                 null);
 
-        deck.save();
+        deckInfo = new DeckInfo(
+                deck,
+                source,
+                jsonDeck.toString().hashCode(),
+                new Date(new java.util.Date().getTime()));
 
         HashMap<Integer, Attribute> attrs = new HashMap<>();
 
         for (int i = 0; i < jsonAttributes.length(); i++) {
             JSONObject jsonAttr = (JSONObject) jsonAttributes.get(i);
-            Attribute attr = importAttribute(jsonAttr, deck);
+            Attribute attr = loadAttribute(jsonAttr, deck);
             int id = jsonAttr.getInt("id");
             attrs.put(id, attr);
         }
 
         for (int i = 0; i < jsonCards.length(); i++) {
-            importCard((JSONObject) jsonCards.get(i), attrs, deck);
+            loadCard((JSONObject) jsonCards.get(i), attrs, deck);
         }
+    }
 
-        return deck;
+    /**
+     * This will save the all the Entities that factory has loaded earlier in
+     * the correct order. It is discouraged to save entities any other way.
+     */
+    protected void save() {
+
+        SugarTransactionHelper.doInTransaction(
+                new SugarTransactionHelper.Callback() {
+
+                    @Override
+                    public void manipulateInTransaction() {
+
+                        if (deck == null) {
+                            return;
+                        }
+
+                        deck.save();
+                        deckInfo.save();
+                        SugarRecord.saveInTx(attributes);
+                        SugarRecord.saveInTx(cards);
+                        SugarRecord.saveInTx(attributeValues);
+                        SugarRecord.saveInTx(images);
+                        SugarRecord.saveInTx(cardImages);
+                    }
+                });
     }
 
     /**
@@ -114,7 +179,7 @@ public class EntityFactory {
             stringWriter.write(buffer, 0, n);
         }
 
-        Deck deck = importDeck(new JSONObject(stringWriter.toString()));
+        Deck deck = loadDeck(new JSONObject(stringWriter.toString()));
 
         // alter all the image paths to point to the right location
         // in the assets directory
@@ -132,28 +197,28 @@ public class EntityFactory {
     }
 
     /**
-     * Use this method to import a Card from a JSONObject into the database.
+     * Use this method to construct a Card from a JSONObject.
      *
      * @param jsonCard the JSONObject to construct the Card from
      * @param attrs    the Attribute of the Deck the card is associated with
      * @return a fully constructed Card object
      */
-    private Card importCard(JSONObject jsonCard,
-                            HashMap<Integer, Attribute> attrs,
-                            Deck deck) throws JSONException {
+    private Card loadCard(JSONObject jsonCard,
+                          HashMap<Integer, Attribute> attrs,
+                          Deck deck) throws JSONException {
 
         JSONArray jsonImages = jsonCard.getJSONArray("images");
         JSONArray jsonAttributeValues = jsonCard.getJSONArray("values");
 
         Card card = new Card(jsonCard.getString("name"), deck);
-        card.save();
+        cards.add(card);
 
         for (int i = 0; i < jsonImages.length(); i++) {
-            importCardImage((JSONObject) jsonImages.get(i), card);
+            loadCardImage((JSONObject) jsonImages.get(i), card);
         }
 
         for (int i = 0; i < jsonAttributeValues.length(); i++) {
-            importAttributeValue((JSONObject) jsonAttributeValues.get(i),
+            loadAttributeValue((JSONObject) jsonAttributeValues.get(i),
                     attrs, card);
         }
 
@@ -161,13 +226,12 @@ public class EntityFactory {
     }
 
     /**
-     * Use this method to construct an Attribute Object from a JSONObject. The
-     * created object will also be save to the database.
+     * Use this method to construct an Attribute Object from a JSONObject.
      *
      * @param jsonAttribute the JSONObject to construct the Attribute from
      * @return a fully constructed Attribute object
      */
-    private Attribute importAttribute(JSONObject jsonAttribute, Deck deck)
+    private Attribute loadAttribute(JSONObject jsonAttribute, Deck deck)
             throws JSONException {
 
         Attribute attr = new Attribute(
@@ -176,7 +240,7 @@ public class EntityFactory {
                 (jsonAttribute.getInt("compare") == 1),
                 deck);
 
-        attr.save();
+        attributes.add(attr);
 
         return attr;
     }
@@ -193,58 +257,58 @@ public class EntityFactory {
      *                           associated with
      * @return a fully constructed AttributeValue object
      */
-    private AttributeValue importAttributeValue(JSONObject jsonAttributeValue,
-                                                HashMap<Integer, Attribute> attrs,
-                                                Card card) throws JSONException {
+    private AttributeValue loadAttributeValue(JSONObject jsonAttributeValue,
+                                              HashMap<Integer, Attribute> attrs,
+                                              Card card) throws JSONException {
 
         AttributeValue attributeValue = new AttributeValue(
                 (float) jsonAttributeValue.getDouble("value"),
                 attrs.get(jsonAttributeValue.getInt("propertyId")),
                 card);
 
-        attributeValue.save();
+        attributeValues.add(attributeValue);
 
         return attributeValue;
     }
 
     /**
-     * Use this method to import an Image from a JSONObject into the database.
-     * The paths of the object may point to locations not known by the system.
-     * Therefore further processing is needed to alter the paths so that they
-     * point to a valid location.
+     * Use this method to construct an Image from a JSONObject. The paths of the
+     * object may point to locations not known by the system. Therefore further
+     * processing is needed to alter the paths so that they point to a valid
+     * location.
      *
      * @param jsonImage the JSONObject to construct the Image from
      * @return an Image object with the image path from the JSON object
      */
-    private Image importImage(JSONObject jsonImage)
+    private Image loadImage(JSONObject jsonImage)
             throws JSONException {
 
         Image image = new Image(
                 jsonImage.getString("filename"),
                 jsonImage.optString("description"));
 
-        image.save();
+        images.add(image);
 
         return image;
     }
 
     /**
-     * Use this method to import a CardImage from a JSONObject into the
-     * database. The paths of the image member variable may point to locations
-     * not known by the system. Therefore further processing is needed to alter
-     * the paths so that they point to a valid location.
+     * Use this method to construct a CardImage from a JSONObject. The paths of
+     * the image member variable may point to locations not known by the system.
+     * Therefore further processing is needed to alter the paths so that they
+     * point to a valid location.
      *
      * @param jsonCardImage the JSONObject to construct the CardImage from
      * @param card          the Card object the CardImage will be associated
      *                      with
      * @return an Image object with the image path from the JSON object
      */
-    private CardImage importCardImage(JSONObject jsonCardImage, Card card)
+    private CardImage loadCardImage(JSONObject jsonCardImage, Card card)
             throws JSONException {
 
-        CardImage cardImage = new CardImage(card, importImage(jsonCardImage));
+        CardImage cardImage = new CardImage(card, loadImage(jsonCardImage));
 
-        cardImage.save();
+        cardImages.add(cardImage);
 
         return cardImage;
     }
