@@ -72,7 +72,7 @@ public class CardFragment extends Fragment {
             mAttrValueTextViews[i].setText(mAttributeValues.get(i).mValue + " " + mAttributeValues.get(i).mAttribute.mUnit);
         }
 
-        //TODO: Implement multiple images and slide animation
+        //TODO: Implement multiple images and fade animation
         mImageView.setImageURI(mCardImages.get(0).mUri);
         mTitleTextView.setText(mCardTitle);
         */
