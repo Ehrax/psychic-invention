@@ -91,7 +91,7 @@ public class EntityFactory {
      * Also the image paths will be altered to point to the correct image
      * locations.
      *
-     * @param path the path of the JSON file e.g. "bikes/bikes.json"
+     * @param path the path of the JSON file e.g. "decks/bikes/bikes.json"
      * @return a fully constructed and filled Deck
      */
     public Deck importDeckFromAssets(String path)
@@ -123,8 +123,7 @@ public class EntityFactory {
 
         for (Card c : deck.getCards()) {
             for (CardImage ci : c.getCardImages()) {
-                ci.mImage.mUri =
-                        Uri.parse(dir + "/" + ci.mImage.mUri.getPath());
+                ci.mImage.mUri = dir + "/" + ci.mImage.mUri;
                 ci.mImage.save();
             }
         }
@@ -221,7 +220,7 @@ public class EntityFactory {
             throws JSONException {
 
         Image image = new Image(
-                Uri.parse(jsonImage.getString("filename")),
+                jsonImage.getString("filename"),
                 jsonImage.optString("description"));
 
         image.save();
