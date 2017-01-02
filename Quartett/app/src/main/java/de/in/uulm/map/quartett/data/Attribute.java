@@ -7,16 +7,22 @@ import com.orm.SugarRecord;
  */
 
 public class Attribute extends SugarRecord {
+
     public String mName;
     public String mUnit;
-    public boolean mLagerWins;
+    public boolean mLargerWins;
+    public Deck mDeck;
 
     public Attribute() {
+
     }
 
-    public Attribute(String mName, String mUnit, boolean mLagerWins) {
+    public Attribute(String mName, String mUnit, boolean mLargerWins,
+                     Deck mDeck) {
+
         this.mName = mName;
         this.mUnit = mUnit;
-        this.mLagerWins = mLagerWins;
+        this.mLargerWins = mLargerWins;
+        this.mDeck = mDeck;
     }
 }

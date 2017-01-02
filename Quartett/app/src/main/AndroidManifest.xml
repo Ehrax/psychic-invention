@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="de.in.uulm.map.quartett">
+        package="de.in.uulm.map.quartett">
 
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name="com.orm.SugarApp">
+            android:name="com.orm.SugarApp"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
         <meta-data
-            android:name="DATABASE"
-            android:value="quartett.db"/>
+                android:name="DATABASE"
+                android:value="quartett.db" />
         <meta-data
-            android:name="VERSION"
-            android:value="2"/>
+                android:name="VERSION"
+                android:value="2" />
         <meta-data
-            android:name="QUERY_LOG"
-            android:value="false"/>
+                android:name="QUERY_LOG"
+                android:value="false" />
         <meta-data
-            android:name="DOMAIN_PACKAGE_NAME"
-            android:value="de.in.uulm.map.quartett.data"/>
+                android:name="DOMAIN_PACKAGE_NAME"
+                android:value="de.in.uulm.map.quartett.data" />
 
         <activity android:name=".mainmenu.MainMenuActivity">
             <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER"/>
-                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
     </application>

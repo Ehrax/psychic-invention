@@ -8,9 +8,19 @@ import de.in.uulm.map.quartett.util.BaseView;
  */
 
 public interface MainMenuContract {
+
     interface Presenter extends BasePresenter {
+
+        void startNewLocalGame();
+
+        void startNewOnlineGame();
+
+        void startAchievements();
+
+        void startSettings();
     }
 
-    interface View extends BaseView {
+    interface View extends BaseView<Presenter> {
+
     }
 }

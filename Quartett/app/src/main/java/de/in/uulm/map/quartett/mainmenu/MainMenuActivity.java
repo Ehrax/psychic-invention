@@ -1,26 +1,45 @@
 package de.in.uulm.map.quartett.mainmenu;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-
+import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
-import de.in.uulm.map.quartett.data.Deck;
-import de.in.uulm.map.quartett.factory.EntityFactory;
+import de.in.uulm.map.quartett.util.ActivityUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
-public class MainMenuActivity extends Activity {
+public class MainMenuActivity extends DrawerActivity {
+
+    private MainMenuPresenter mMainMenuPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /*
+        Call super.onCreate to initialise the navigation drawer and set the
+        contentView
+         */
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_menu);
+
+        /*Initialise Fragment and set Presenter (contentFrame is a
+        FrameLayout in app_bar.xml)*/
+        MainMenuFragment mainMenuFragment = (MainMenuFragment)
+                getFragmentManager().findFragmentById(R.id
+                        .contentFrame);
+        if (mainMenuFragment == null) {
+            mainMenuFragment = MainMenuFragment.newInstance();
+            ActivityUtils.addFragmentToActivity(getFragmentManager(),
+                    mainMenuFragment, R.id.contentFrame);
+        }
+
+        mMainMenuPresenter = new MainMenuPresenter(mainMenuFragment, this);
+        mainMenuFragment.setPresenter(mMainMenuPresenter);
+
     }
+
+
 }

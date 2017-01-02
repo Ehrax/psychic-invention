@@ -132,6 +132,47 @@ Bei Unklarheiten an das
 [todo-mvp](https://github.com/googlesamples/android-architecture/tree/todo-mvp/)
 Beispiel halten.
 
+## Drawer Activity
+
+Um eine Activity mit Drawer anzulegen sind folgende Schritte auszuführen:
+
+1. Die angelegte Activity muss von `DrawerActivity` erben.
+   (Nicht vergessen ins Manifest einzutragen)	
+2. In der `onCreate(Bundle savedInstanceState)` Methode muss zuerst `super.onCreate(savedInstanceState)`
+   aufgerufen werden. Dadurch wird der Drawer initialisiert und die contentView gesetzt.
+3. Initialisiere die View (Fragment) für die Activity:
+   
+   ```java
+   MainMenuFragment mainMenuFragment = (MainMenuFragment)
+                getFragmentManager().findFragmentById(R.id
+                        .contentFrame);
+        if (mainMenuFragment == null) {
+            mainMenuFragment = MainMenuFragment.newInstance();
+            ActivityUtils.addFragmentToActivity(getFragmentManager(),
+                    mainMenuFragment, R.id.contentFrame);
+        }
+   ```	
+   
+   Wobei natürlich `MainMenuFragment` durch das jeweils passende Fragment zu ersetzen ist.
+4. Das Fragment braucht die Methode `newInstance()`:
+   
+   ```java
+   public static MainMenuFragment newInstance() {
+
+        return new MainMenuFragment();
+    }
+   ``` 
+   
+5. Presenter erzeugen und für die View setzen:
+   
+   ```java
+   mMainMenuPresenter = new MainMenuPresenter(mainMenuFragment, this);
+   mainMenuFragment.setPresenter(mMainMenuPresenter);
+   ```
+   
+6. Layout files für das Fragment anlegen. Hier ist darauf zu achten, dass im Root-Element
+   `tools.context="de.in.uulm.map.quartett.myactivity.MyActivityFragment"`gesetzt ist.
+   
 
 ## Inversion of Control
 

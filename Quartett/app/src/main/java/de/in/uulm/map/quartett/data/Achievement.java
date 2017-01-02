@@ -7,14 +7,17 @@ import com.orm.SugarRecord;
  */
 
 public class Achievement extends SugarRecord {
+
     public String mTitle;
     public float mValue;
     public float mTargetValue;
 
     public Achievement() {
+
     }
 
     public Achievement(String mTitle, float mValue, float mTargetValue) {
+
         this.mTitle = mTitle;
         this.mValue = mValue;
         this.mTargetValue = mTargetValue;

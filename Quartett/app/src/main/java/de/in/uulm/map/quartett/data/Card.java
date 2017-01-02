@@ -9,17 +9,43 @@ import java.util.List;
  */
 
 public class Card extends SugarRecord {
+
     public String mTitle;
-    public List<Image> mImages;
+    public List<CardImage> mCardImages;
     public List<AttributeValue> mAttributeValues;
+    public Deck mDeck;
 
     public Card() {
+
     }
 
-    public Card(String mTitle, List<Image> mImages, List<AttributeValue>
-            mAttributeValues) {
+    public Card(String mTitle, List<CardImage> mCardImages, Deck mDeck,
+                List<AttributeValue> mAttributeValues) {
+
         this.mTitle = mTitle;
-        this.mImages = mImages;
+        this.mCardImages = mCardImages;
         this.mAttributeValues = mAttributeValues;
+        this.mDeck = mDeck;
+    }
+
+    /**
+     * Use this method to get a List of all CardImage objects of this Card.
+     *
+     * @return a List of CardImage objects
+     */
+    public List<CardImage> getCardImages() {
+
+        return CardImage.find(CardImage.class, "m_card = ?", ""+this.getId());
+    }
+
+    /**
+     * Use this method to get a List of all AttributeValue objects of this Card.
+     *
+     * @return a List of AttributeValue objects
+     */
+    public List<AttributeValue> getAttributeValues() {
+
+        return AttributeValue.find(
+                AttributeValue.class, "m_card = ?", ""+this.getId());
     }
 }
