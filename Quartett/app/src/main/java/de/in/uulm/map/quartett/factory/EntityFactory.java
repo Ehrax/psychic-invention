@@ -32,24 +32,24 @@ import java.util.HashMap;
  * This class can be used to construct a Deck object from a given JSON file.
  */
 public class EntityFactory {
-/*
-    *//**
+
+    /**
      * This is the context the Factory lives in.
      * It is usually given by the activity.
-     *//*
+     */
     private Context context;
 
-    *//**
+    /**
      * Simple constructor to hand over the current Context.
      *
      * @param context the current Context
-     *//*
+     */
     public EntityFactory(Context context) {
 
         this.context = context;
     }
 
-    *//**
+    /**
      * Use this method to construct a Deck object from a JSON file.
      * No image paths in the JSON file will be touched.
      * This may result in incorrect paths when using relative paths in the
@@ -58,7 +58,7 @@ public class EntityFactory {
      * @param jsonDeck the JSONObject to construct the Deck from
      * @return a fully constructed and filled Deck
      * @throws JSONException
-     *//*
+     */
     private Deck getDeck(JSONObject jsonDeck) throws JSONException {
 
         // maybe add the names of the elements to strings.xml
@@ -89,7 +89,7 @@ public class EntityFactory {
                 Lists.newArrayList(attrs.values()));
     }
 
-    *//**
+    /**
      * This method will construct a Deck from a folder in the assets directory.
      * Also the image paths will be altered to point to the correct image
      * locations.
@@ -97,7 +97,7 @@ public class EntityFactory {
      * @param path the path of the JSON file e.g. "bikes/bikes.json"
      * @return a fully constructed and filled Deck
      * @throws JSONException
-     *//*
+     */
     public Deck getDeckFromAssets(String path) throws JSONException, IOException {
 
         // read in the JSON file
@@ -133,7 +133,7 @@ public class EntityFactory {
         return deck;
     }
 
-    *//**
+    /**
      * Use this method to construct a Card object from a JSONObject.
      * The method will store all images linked in the JSON file in internal
      * storage. This call may take some time.
@@ -142,7 +142,7 @@ public class EntityFactory {
      * @param attrs the Attribute of the Deck the card is associated with
      * @return a fully constructed Card object
      * @throws JSONException
-     *//*
+     */
     private Card getCard(
             JSONObject jsonCard,
             HashMap<Integer, Attribute> attrs) throws JSONException {
@@ -170,13 +170,13 @@ public class EntityFactory {
                 attributeValues);
     }
 
-    *//**
+    /**
      * Use this method to construct an Attribute Object from a JSONObject.
      *
      * @param jsonAttribute the JSONObject to construct the Attribute from
      * @return a fully constructed Attribute object
      * @throws JSONException
-     *//*
+     */
     private Attribute getAttribute(JSONObject jsonAttribute)
             throws JSONException {
 
@@ -186,7 +186,7 @@ public class EntityFactory {
                 (jsonAttribute.getInt("compare") == 1));
     }
 
-    *//**
+    /**
      * Use this method to construct an AttributeValue from a JSONObject.
      *
      * @param jsonAttributeValue the JSONObject to construct the
@@ -194,7 +194,7 @@ public class EntityFactory {
      * @param attrs the Attribute of the Card the AttributeValue belongs to
      * @return a fully constructed AttributeValue object
      * @throws JSONException
-     *//*
+     */
     private AttributeValue getAttributeValue(
             JSONObject jsonAttributeValue,
             HashMap<Integer, Attribute> attrs) throws JSONException {
@@ -204,7 +204,7 @@ public class EntityFactory {
                 attrs.get(jsonAttributeValue.getInt("propertyId")));
     }
 
-    *//**
+    /**
      * Use this method to create an Image from a JSONObject.
      * The paths of the object may point to locations not known by the system.
      * Therefore further processing is needed to alter the paths so that they
@@ -213,11 +213,11 @@ public class EntityFactory {
      * @param jsonImage the JSONObject to construct the Image from
      * @return an Image object with the image path from the JSON object
      * @throws JSONException
-     *//*
+     */
     private Image getImage(JSONObject jsonImage) throws JSONException {
 
         return new Image(
                 Uri.parse(jsonImage.getString("filename")),
                 jsonImage.optString("description"));
-   }*/
+    }
 }
