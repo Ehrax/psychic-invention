@@ -1,5 +1,8 @@
 package de.in.uulm.map.quartett.factory;
 
+import android.support.annotation.Nullable;
+import android.telecom.Call;
+
 import com.orm.SugarRecord;
 import com.orm.SugarTransactionHelper;
 
@@ -16,7 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,7 +120,7 @@ public class EntityFactory {
                 mDeck,
                 mJsonLoader.getSource(),
                 mJsonLoader.getHash(),
-                new Date(new java.util.Date().getTime()));
+                new Date().getTime());
 
         HashMap<Integer, Attribute> attrs = new HashMap<>();
 
@@ -150,11 +153,12 @@ public class EntityFactory {
 
     /**
      * This will save the all the Entities that factory has loaded earlier in
-     * the correct order. It is discouraged to save entities any other way.
+     * the correct order. It is discouraged to save entities any other way. The
+     * methods is async and returns immediately.
      *
-     * The methods is async and returns immediately.
+     * @param callback be notified when the transaction is completed
      */
-    protected void save() {
+    protected void save(@Nullable final Callback callback) {
 
         SugarTransactionHelper.doInTransaction(
                 new SugarTransactionHelper.Callback() {
@@ -173,6 +177,10 @@ public class EntityFactory {
                         SugarRecord.saveInTx(mAttributeValues);
                         SugarRecord.saveInTx(mImages);
                         SugarRecord.saveInTx(mCardImages);
+
+                        if (callback != null) {
+                            callback.onSaved();
+                        }
                     }
                 });
     }
@@ -292,5 +300,14 @@ public class EntityFactory {
         mCardImages.add(cardImage);
 
         return cardImage;
+    }
+
+    /**
+     * Use this interface to be notified when the deck has be fully saved to the
+     * database.
+     */
+    public interface Callback {
+
+        void onSaved();
     }
 }

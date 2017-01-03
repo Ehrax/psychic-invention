@@ -12,6 +12,9 @@ import android.widget.Toast;
 
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.AttributeValue;
+import de.in.uulm.map.quartett.data.Card;
+import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.factory.EntityFactory;
 import de.in.uulm.map.quartett.factory.EntityImportTask;
 import de.in.uulm.map.quartett.util.ActivityUtils;
@@ -20,6 +23,7 @@ import org.json.JSONException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 
 public class MainMenuActivity extends DrawerActivity {
@@ -48,8 +52,14 @@ public class MainMenuActivity extends DrawerActivity {
         mMainMenuPresenter = new MainMenuPresenter(mainMenuFragment, this);
         mainMenuFragment.setPresenter(mMainMenuPresenter);
 
-        EntityImportTask importTask = new EntityImportTask(this);
-        importTask.execute();
+        new EntityImportTask(this, new EntityImportTask.Callback() {
+            @Override
+            public void onImportFinished() {
+
+                // do stuff with the decks and cards here ...
+                // in this callback all decks are loaded, i promise :P
+            }
+        }).execute();
     }
 
 }

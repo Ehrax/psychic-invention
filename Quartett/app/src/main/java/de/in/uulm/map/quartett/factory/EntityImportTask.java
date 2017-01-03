@@ -2,7 +2,7 @@ package de.in.uulm.map.quartett.factory;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
+import android.support.annotation.Nullable;
 
 import de.in.uulm.map.quartett.data.DeckInfo;
 import de.in.uulm.map.quartett.data.Image;
@@ -11,7 +11,7 @@ import org.json.JSONException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by jona on 1/2/17.
@@ -19,66 +19,110 @@ import java.util.List;
 
 /**
  * This class will attempt to import any not imported Decks from the assets
- * directory into the local database.
+ * directory into the local database. Simply run it anywhere and all decks in
+ * the assets directory will be imported.
  */
-public class EntityImportTask extends AsyncTask<Void, Void, Void> {
+public class EntityImportTask extends AsyncTask<Void, Void, Integer> {
 
     /**
-     * Keep the context for the EntityFactory.
+     * Keep the mContext for the EntityFactory.
      */
-    private Context context;
+    private Context mContext;
+
+    /**
+     * This will be called when the Task is finished.
+     */
+    private Callback mCallback;
 
     /**
      * Simple constructor to initialize member variables.
      *
-     * @param context the current application context
+     * @param mContext  the current application mContext
+     * @param mCallback a function to be called when the task has finished
      */
-    public EntityImportTask(Context context) {
+    public EntityImportTask(Context mContext, @Nullable Callback mCallback) {
 
-        this.context = context;
+        this.mContext = mContext;
+        this.mCallback = mCallback;
     }
 
+    /**
+     * This method will search through the decks directory in the the assets
+     * folder and will attempt to load a deck for each found folder.
+     *
+     * @param voids just pass nothing, parameters are not used
+     * @return null
+     */
     @Override
-    protected Void doInBackground(Void... voids) {
+    protected Integer doInBackground(Void... voids) {
+
+        final String[] strings;
 
         try {
-            String[] strings = context.getAssets().list("decks");
+            strings = mContext.getAssets().list("decks");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
 
-            if (strings == null) {
-                return null;
+        CountDownLatch saveLatch = new CountDownLatch(strings.length);
+
+        for (String s : strings) {
+
+            if (isCancelled()) {
+                break;
             }
 
-            for (String s : strings) {
-                if (!this.isCancelled()) {
-                    importDeck(s);
-                }
+            if (isImported(s)) {
+                saveLatch.countDown();
+                continue;
             }
-        } catch (IOException | JSONException e) {
-            /*Toast.makeText(context, "Decks konnten nicht geladen werden!",
-                    Toast.LENGTH_LONG);*/
+
+            try {
+                importDeck(s, saveLatch);
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+                saveLatch.countDown();
+            }
+        }
+
+        try {
+            saveLatch.await();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        return null;
+        if(mCallback != null) {
+            mCallback.onImportFinished();
+        }
+
+        return strings.length;
     }
 
-    private void importDeck(String deckName)
+    /**
+     * This function is used to determine if a Deck has already been imported.
+     *
+     * @param deckFolder the name of the Deck folder
+     * @return true: deck is imported, false: deck is not imported
+     */
+    private boolean isImported(String deckFolder) {
+
+        return DeckInfo.find(DeckInfo.class, "m_source = ?",
+                "file:///android_asset/decks/" + deckFolder + "/" + deckFolder +
+                        ".json").size() > 0;
+    }
+
+    /**
+     * Use this method to import a deck into the database. The deck will only be
+     * imported if the it does not already exist in the database.
+     *
+     * @param deckFolder the name of the Deck folder
+     */
+    private void importDeck(String deckFolder, final CountDownLatch saveLatch)
             throws IOException, JSONException {
 
-        String source = "decks/" + deckName + "/" + deckName + ".json";
-
-        AssetJsonLoader jsonLoader =
-                new AssetJsonLoader(source, context);
-
-        List<DeckInfo> deckInfoList =
-                DeckInfo.find(DeckInfo.class, "m_source = ?",
-                        jsonLoader.getSource());
-
-        List<DeckInfo> deckInfos = DeckInfo.listAll(DeckInfo.class);
-
-        if (deckInfoList.size() > 0) {
-            return;
-        }
+        AssetJsonLoader jsonLoader = new AssetJsonLoader(
+                "decks/" + deckFolder + "/" + deckFolder + ".json", mContext);
 
         EntityFactory entityFactory = new EntityFactory(jsonLoader);
         entityFactory.loadDeck();
@@ -89,6 +133,21 @@ public class EntityImportTask extends AsyncTask<Void, Void, Void> {
             i.mUri = path + "/" + i.mUri;
         }
 
-        entityFactory.save();
+        entityFactory.save(new EntityFactory.Callback() {
+
+            @Override
+            public void onSaved() {
+
+                saveLatch.countDown();
+            }
+        });
+    }
+
+    /**
+     * Use this interface to get notified when all Decks are fully imported.
+     */
+    public interface Callback {
+
+        void onImportFinished();
     }
 }
