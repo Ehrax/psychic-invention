@@ -1,8 +1,5 @@
 package de.in.uulm.map.quartett.factory;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-
 import com.orm.SugarRecord;
 import com.orm.SugarTransactionHelper;
 
@@ -18,14 +15,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by jona on 12/22/16.
@@ -39,94 +33,126 @@ public class EntityFactory {
     /**
      * This will be set to the currently loaded Deck.
      */
-    private Deck deck;
+    private Deck mDeck;
 
     /**
      * This will be set to the currently loaded DeckInfo.
      */
-    private DeckInfo deckInfo;
+    private DeckInfo mDeckInfo;
 
     /**
-     * All cards that are loaded by the factory are registered here. This is
+     * All mCards that are loaded by the factory are registered here. This is
      * needed as the objects must be known later for saving.
      */
-    private ArrayList<Card> cards;
+    private ArrayList<Card> mCards;
 
     /**
      * All Attribute objects that have been loaded.
      */
-    private ArrayList<Attribute> attributes;
+    private ArrayList<Attribute> mAttributes;
 
     /**
      * All AttributeValue objects that have been loaded.
      */
-    private ArrayList<AttributeValue> attributeValues;
+    private ArrayList<AttributeValue> mAttributeValues;
 
     /**
      * All Image objects that have been loaded.
      */
-    private ArrayList<Image> images;
+    private ArrayList<Image> mImages;
 
     /**
      * All Card objects that have been loaded.
      */
-    private ArrayList<CardImage> cardImages;
+    private ArrayList<CardImage> mCardImages;
 
     /**
-     * The constructor will construct a Deck object from a JSON file. No image
-     * paths in the JSON file will be touched. This may result in incorrect
-     * paths when using relative paths in the JSON file or when loading from an
-     * online source.
+     * A Json Loader the Deck definition can be loaded from.
+     */
+    private JsonLoader mJsonLoader;
+
+    /**
+     * Simple constructor to initialize the member Variables.
      *
-     * @param jsonDeck the JSONObject to construct the Deck from
-     * @param source   the source the Deck was loaded from e.g.
-     *                 "http://asdf..."
+     * @param mJsonLoader a JsonLoader to load the Deck definition from
+     */
+    public EntityFactory(JsonLoader mJsonLoader) {
+
+        mDeck = null;
+        mDeckInfo = null;
+        mAttributes = new ArrayList<>();
+        mAttributeValues = new ArrayList<>();
+        mImages = new ArrayList<>();
+        mCardImages = new ArrayList<>();
+        mCards = new ArrayList<>();
+
+        this.mJsonLoader = mJsonLoader;
+    }
+
+    /**
+     * This method will construct a Deck object from a JSON file. No image paths
+     * in the JSON file will be touched. This may result in incorrect paths when
+     * using relative paths in the JSON file or when loading from an online
+     * source.
+     *
      * @return a fully constructed and filled Deck
      */
-    public EntityFactory(JSONObject jsonDeck, String source)
-            throws JSONException {
+    public Deck loadDeck() throws JSONException, IOException {
 
-        deck = null;
-        deckInfo = null;
-        attributes = new ArrayList<>();
-        attributeValues = new ArrayList<>();
-        images = new ArrayList<>();
-        cardImages = new ArrayList<>();
-        cards = new ArrayList<>();
+        if (mDeck != null) {
+            return mDeck;
+        }
 
-        // maybe add the names of the elements to strings.xml
+        JSONObject jsonDeck = mJsonLoader.getJson();
 
         JSONArray jsonCards = jsonDeck.getJSONArray("cards");
         JSONArray jsonAttributes = jsonDeck.getJSONArray("properties");
 
-        deck = new Deck(
+        mDeck = new Deck(
                 jsonDeck.getString("name"),
                 jsonDeck.getString("description"),
                 null);
 
-        deckInfo = new DeckInfo(
-                deck,
-                source,
-                jsonDeck.toString().hashCode(),
+        mDeckInfo = new DeckInfo(
+                mDeck,
+                mJsonLoader.getSource(),
+                mJsonLoader.getHash(),
                 new Date(new java.util.Date().getTime()));
 
         HashMap<Integer, Attribute> attrs = new HashMap<>();
 
         for (int i = 0; i < jsonAttributes.length(); i++) {
             JSONObject jsonAttr = (JSONObject) jsonAttributes.get(i);
-            Attribute attr = loadAttribute(jsonAttr, deck);
+            Attribute attr = loadAttribute(jsonAttr, mDeck);
             int id = jsonAttr.getInt("id");
             attrs.put(id, attr);
         }
 
         for (int i = 0; i < jsonCards.length(); i++) {
-            loadCard((JSONObject) jsonCards.get(i), attrs, deck);
+            loadCard((JSONObject) jsonCards.get(i), attrs, mDeck);
         }
+
+        return mDeck;
+    }
+
+    /**
+     * This will expose all loaded images of this EntityFactory. That is, all
+     * images of the currently loaded Deck or no images if no Deck has been
+     * loaded. This is needed to alter the image paths as they may point to
+     * invalid locations.
+     *
+     * @return a List of all currently loaded Imgages
+     */
+    public List<Image> getImages() {
+
+        return mImages;
     }
 
     /**
      * This will save the all the Entities that factory has loaded earlier in
      * the correct order. It is discouraged to save entities any other way.
+     *
+     * The methods is async and returns immediately.
      */
     protected void save() {
 
@@ -136,64 +162,19 @@ public class EntityFactory {
                     @Override
                     public void manipulateInTransaction() {
 
-                        if (deck == null) {
+                        if (mDeck == null) {
                             return;
                         }
 
-                        deck.save();
-                        deckInfo.save();
-                        SugarRecord.saveInTx(attributes);
-                        SugarRecord.saveInTx(cards);
-                        SugarRecord.saveInTx(attributeValues);
-                        SugarRecord.saveInTx(images);
-                        SugarRecord.saveInTx(cardImages);
+                        mDeck.save();
+                        mDeckInfo.save();
+                        SugarRecord.saveInTx(mAttributes);
+                        SugarRecord.saveInTx(mCards);
+                        SugarRecord.saveInTx(mAttributeValues);
+                        SugarRecord.saveInTx(mImages);
+                        SugarRecord.saveInTx(mCardImages);
                     }
                 });
-    }
-
-    /**
-     * This method will construct a Deck from a folder in the assets directory.
-     * Also the image paths will be altered to point to the correct image
-     * locations.
-     *
-     * @param path the path of the JSON file e.g. "decks/bikes/bikes.json"
-     * @return a fully constructed and filled Deck
-     */
-    public Deck importDeckFromAssets(String path)
-            throws JSONException, IOException {
-
-        // read in the JSON file
-        // no sure if this is still a task to be done by a factory ...
-
-        AssetManager am = context.getAssets();
-
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(am.open(path)));
-
-        StringWriter stringWriter = new StringWriter();
-
-        char[] buffer = new char[1024];
-
-        int n;
-        while ((n = reader.read(buffer)) != -1) {
-            stringWriter.write(buffer, 0, n);
-        }
-
-        Deck deck = loadDeck(new JSONObject(stringWriter.toString()));
-
-        // alter all the image paths to point to the right location
-        // in the assets directory
-
-        String dir = new File("file:///android_asset/" + path).getParent();
-
-        for (Card c : deck.getCards()) {
-            for (CardImage ci : c.getCardImages()) {
-                ci.mImage.mUri = dir + "/" + ci.mImage.mUri;
-                ci.mImage.save();
-            }
-        }
-
-        return deck;
     }
 
     /**
@@ -211,7 +192,7 @@ public class EntityFactory {
         JSONArray jsonAttributeValues = jsonCard.getJSONArray("values");
 
         Card card = new Card(jsonCard.getString("name"), deck);
-        cards.add(card);
+        mCards.add(card);
 
         for (int i = 0; i < jsonImages.length(); i++) {
             loadCardImage((JSONObject) jsonImages.get(i), card);
@@ -240,7 +221,7 @@ public class EntityFactory {
                 (jsonAttribute.getInt("compare") == 1),
                 deck);
 
-        attributes.add(attr);
+        mAttributes.add(attr);
 
         return attr;
     }
@@ -266,7 +247,7 @@ public class EntityFactory {
                 attrs.get(jsonAttributeValue.getInt("propertyId")),
                 card);
 
-        attributeValues.add(attributeValue);
+        mAttributeValues.add(attributeValue);
 
         return attributeValue;
     }
@@ -287,7 +268,7 @@ public class EntityFactory {
                 jsonImage.getString("filename"),
                 jsonImage.optString("description"));
 
-        images.add(image);
+        mImages.add(image);
 
         return image;
     }
@@ -308,7 +289,7 @@ public class EntityFactory {
 
         CardImage cardImage = new CardImage(card, loadImage(jsonCardImage));
 
-        cardImages.add(cardImage);
+        mCardImages.add(cardImage);
 
         return cardImage;
     }

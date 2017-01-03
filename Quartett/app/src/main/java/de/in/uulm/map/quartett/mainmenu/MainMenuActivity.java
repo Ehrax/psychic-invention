@@ -13,6 +13,7 @@ import android.widget.Toast;
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.factory.EntityFactory;
+import de.in.uulm.map.quartett.factory.EntityImportTask;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 
 import org.json.JSONException;
@@ -47,26 +48,8 @@ public class MainMenuActivity extends DrawerActivity {
         mMainMenuPresenter = new MainMenuPresenter(mainMenuFragment, this);
         mainMenuFragment.setPresenter(mMainMenuPresenter);
 
-        importDecksFromAssets();
+        EntityImportTask importTask = new EntityImportTask(this);
+        importTask.execute();
     }
-
-    private void importDecksFromAssets() {
-
-        try {
-            String[] strings = getAssets().list("decks");
-
-            for (String s : strings) {
-                EntityFactory e = new EntityFactory(this);
-                e.importDeckFromAssets("decks/"+s+"/"+s+".json");
-                Log.d("Deck", ""+new File(
-                                "file:///android_asset/decks/"+s+"/"+s+".json")
-                                .lastModified());
-            }
-        } catch (IOException | JSONException e) {
-            Toast.makeText(this, "Decks konnten nicht geladen werden!",
-                    Toast.LENGTH_LONG);
-        }
-    }
-
 
 }
