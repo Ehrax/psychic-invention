@@ -65,8 +65,6 @@ public class EntityImportTask extends AsyncTask<Void, Void, Integer> {
             return null;
         }
 
-        CountDownLatch saveLatch = new CountDownLatch(strings.length);
-
         for (String s : strings) {
 
             if (isCancelled()) {
@@ -74,26 +72,22 @@ public class EntityImportTask extends AsyncTask<Void, Void, Integer> {
             }
 
             if (isImported(s)) {
-                saveLatch.countDown();
                 continue;
             }
 
             try {
-                importDeck(s, saveLatch);
+                importDeck(s);
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
-                saveLatch.countDown();
             }
         }
 
-        try {
-            saveLatch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         if(mCallback != null) {
-            mCallback.onImportFinished();
+            try {
+                mCallback.onImportFinished();
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
         }
 
         return strings.length;
@@ -118,7 +112,7 @@ public class EntityImportTask extends AsyncTask<Void, Void, Integer> {
      *
      * @param deckFolder the name of the Deck folder
      */
-    private void importDeck(String deckFolder, final CountDownLatch saveLatch)
+    private void importDeck(String deckFolder)
             throws IOException, JSONException {
 
         AssetJsonLoader jsonLoader = new AssetJsonLoader(
@@ -133,14 +127,7 @@ public class EntityImportTask extends AsyncTask<Void, Void, Integer> {
             i.mUri = path + "/" + i.mUri;
         }
 
-        entityFactory.save(new EntityFactory.Callback() {
-
-            @Override
-            public void onSaved() {
-
-                saveLatch.countDown();
-            }
-        });
+        entityFactory.save();
     }
 
     /**
