@@ -71,7 +71,7 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new GalleryAdapter(deckList, mItemListener);
+        mAdapter = new GalleryAdapter(deckList, mItemListener,getContext());
         mRecyclerView.setAdapter(mAdapter);
 
 

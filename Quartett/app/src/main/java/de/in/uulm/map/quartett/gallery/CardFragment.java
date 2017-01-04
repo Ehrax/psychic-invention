@@ -1,21 +1,26 @@
 package de.in.uulm.map.quartett.gallery;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Attribute;
 import de.in.uulm.map.quartett.data.AttributeValue;
+import de.in.uulm.map.quartett.data.CardImage;
 import de.in.uulm.map.quartett.data.Image;
+import de.in.uulm.map.quartett.util.AssetUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +32,13 @@ import java.util.List;
 
 public class CardFragment extends Fragment {
 
-    private List<Image> mCardImages = new ArrayList<>();
-    private List<Attribute> mCardAttributes = new ArrayList<>();
+    private List<CardImage> mCardImages = new ArrayList<>();
     private List<AttributeValue> mAttributeValues = new ArrayList<>();
     private String mCardTitle;
 
+    private LinearLayout mLinearLayoutCard;
     private ImageView mImageView;
     private TextView mTitleTextView;
-    private TextView[] mAttrTitleTextViews = new TextView[4];
-    private TextView[] mAttrValueTextViews = new TextView[4];
 
 
     public static CardFragment newInstance() {
@@ -53,30 +56,6 @@ public class CardFragment extends Fragment {
 
         super.onActivityCreated(savedInstanceState);
 
-        /*mImageView = (ImageView) getActivity().findViewById(R.id.img_card);
-        mTitleTextView = (TextView) getActivity().findViewById(R.id
-                .txt_card_title);
-        for (int i = 0; i < mAttrTitleTextViews.length; i++) {
-            String textViewTitleID = "txt_attr_title_" + i;
-            String textViewValueID = "txt_attr_value_" + i;
-
-            int resIDTitle = getResources().getIdentifier(textViewTitleID, "id",
-                    getActivity().getPackageName());
-            int resIDValue = getResources().getIdentifier(textViewValueID,
-                    "id", getActivity().getPackageName());
-
-            mAttrTitleTextViews[i] = (TextView) getActivity().findViewById(resIDTitle);
-            mAttrValueTextViews[i] = (TextView) getActivity().findViewById(resIDValue);
-
-            mAttrTitleTextViews[i].setText(mAttributeValues.get(i).mAttribute.mName);
-            mAttrValueTextViews[i].setText(mAttributeValues.get(i).mValue + " " + mAttributeValues.get(i).mAttribute.mUnit);
-        }
-
-        //TODO: Implement multiple images and fade animation
-        mImageView.setImageURI(mCardImages.get(0).mUri);
-        mTitleTextView.setText(mCardTitle);
-        */
-
     }
 
     @Nullable
@@ -84,17 +63,55 @@ public class CardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_card, container, false);
+        View view = inflater.inflate(R.layout.fragment_card, container, false);
+
+        mImageView = (ImageView) view.findViewById(R.id.img_card);
+        mTitleTextView = (TextView) view.findViewById(R.id
+                .txt_card_title);
+        mLinearLayoutCard = (LinearLayout) view.findViewById(R.id
+                .lin_layout_card);
+
+        for (int i = 0; i < mAttributeValues.size(); i++) {
+            AttributeValue currentAttrValue = mAttributeValues.get(i);
+
+            LinearLayout linearLayout = new LinearLayout(getContext());
+            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup
+                    .LayoutParams.MATCH_PARENT, 0,(float)1/mAttributeValues.size
+                    ()));
+
+            TextView textViewAttrTitle = new TextView(getContext(),null,R
+                    .style.TextViewCardAttributesTitle);
+            textViewAttrTitle.setText(currentAttrValue.mAttribute.mName);
+            linearLayout.addView(textViewAttrTitle);
+
+            TextView textViewAttrValue = new TextView(getContext(),null,R
+                    .style.TextViewCardAttributesValue);
+            textViewAttrValue.setText(currentAttrValue.mValue+" " +
+                    ""+currentAttrValue.mAttribute.mUnit);
+            linearLayout.addView(textViewAttrValue);
+
+            mLinearLayoutCard.addView(linearLayout);
+        }
+
+        //TODO: Implement multiple images and fade animation
+        Uri cardImageUri = Uri.parse(mCardImages.get(0).mImage.mUri);
+        if(!cardImageUri.getPath().contains("android_asset")) {
+            mImageView.setImageURI(cardImageUri);
+        }
+        else{
+            Drawable drawable = AssetUtils.getDrawableFromAssetUri(getContext
+                    (),cardImageUri);
+            mImageView.setImageDrawable(drawable);
+        }
+
+        mTitleTextView.setText(mCardTitle);
+
+        return view;
     }
 
-    public void setCardImageUris(List<Image> images) {
+    public void setCardImageUris(List<CardImage> images) {
 
         mCardImages = images;
-    }
-
-    public void setCardAttributes(List<Attribute> attr) {
-
-        mCardAttributes = attr;
     }
 
     public void setCardAttributeValues(List<AttributeValue> values) {

@@ -51,15 +51,14 @@ public class GalleryPresenter implements GalleryContract.Presenter {
         //try catch just for testing until json parser is available
         try {
             Deck currentDeck = Deck.findById(Deck.class, deckID);
-            List<Card> cards = currentDeck.mCards;
+            List<Card> cards = currentDeck.getCards();
             List<Fragment> cardFragments = new ArrayList<>();
 
             for (Card card : cards) {
                 CardFragment currentCard = CardFragment.newInstance();
-                currentCard.setCardImageUris(card.mImages);
-                currentCard.setCardAttributes(currentDeck.mAttributes);
+                currentCard.setCardImageUris(card.getCardImages());
                 currentCard.setCardTitle(card.mTitle);
-                currentCard.setCardAttributeValues(card.mAttributeValues);
+                currentCard.setCardAttributeValues(card.getAttributeValues());
                 cardFragments.add(currentCard);
 
             }
@@ -67,6 +66,7 @@ public class GalleryPresenter implements GalleryContract.Presenter {
         } catch (Exception e) {
             return null;
         }
+
     }
 
     /**
@@ -77,30 +77,12 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     @Override
     public List<Deck> populateDeckList() {
 
-        List<Deck> decks = new ArrayList<>();
+        List<Deck> decks;
         try {
             decks = Deck.listAll(Deck.class);
         } catch (Exception e) {
-
-        }
-        /* just for testing can be removed if json parser is implemented ;) */
-        if (decks.size() == 0) {
-            decks.add(new Deck("TestDeck", "Test description", new Image(Uri.parse
-                    ("android.resource://" + mCtx.getPackageName()
-                            + "/drawable/main_menu_car"), "the description"),
-                    new ArrayList<Card>(), new ArrayList<Attribute>()));
-            decks.add(new Deck("TestDeck", "Test description", new Image(Uri.parse
-                    ("android.resource://" + mCtx.getPackageName()
-                            + "/drawable/test"), "the description"),
-                    new ArrayList<Card>(), new ArrayList<Attribute>()));
-            decks.add(new Deck("TestDeck", "Test description", new Image(Uri.parse
-                    ("android.resource://" + mCtx.getPackageName()
-                            + "/drawable/main_menu_car"), "the description"),
-                    new ArrayList<Card>(), new ArrayList<Attribute>()));
-            decks.add(new Deck("TestDeck", "Test description", new Image(Uri.parse
-                    ("android.resource://" + mCtx.getPackageName()
-                            + "/drawable/test"), "the description"),
-                    new ArrayList<Card>(), new ArrayList<Attribute>()));
+            e.printStackTrace();
+            return null;
         }
         return decks;
     }

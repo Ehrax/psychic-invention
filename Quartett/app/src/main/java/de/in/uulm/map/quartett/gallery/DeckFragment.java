@@ -58,10 +58,7 @@ public class DeckFragment extends Fragment implements GalleryContract.View {
         super.onActivityCreated(savedInstance);
 
         mDeckCards = mPresenter.createCardFragments(currentDeckID);
-        //just for testing
-        if (mDeckCards == null) {
-            mDeckCards = populateTestFragments();
-        }
+
         mCardFragmentAdapter = new CardFragmentAdapter(getActivity()
                 .getSupportFragmentManager(), mDeckCards);
 
@@ -75,23 +72,6 @@ public class DeckFragment extends Fragment implements GalleryContract.View {
         mFlippableStack.initStack(mDeckCards.size(), portrait ?
                 StackPageTransformer.Orientation.VERTICAL : StackPageTransformer.Orientation.HORIZONTAL);
         mFlippableStack.setAdapter(mCardFragmentAdapter);
-    }
-
-    /**
-     * just for testing
-     *
-     * @return list of card fragments
-     */
-    private List<Fragment> populateTestFragments() {
-
-        List<Fragment> cards = new ArrayList<>();
-
-        for (int i = 0; i < 10; i++) {
-
-            cards.add(CardFragment.newInstance());
-        }
-
-        return cards;
     }
 
     @Nullable

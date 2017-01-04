@@ -26,9 +26,7 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
 
     @Override
     public void start() {
-        if(Deck.findAll(Deck.class) == null){
 
-        }
     }
 
     /**

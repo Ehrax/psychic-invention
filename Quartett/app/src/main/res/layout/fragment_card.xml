@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
+        android:id="@+id/lin_layout_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/card_border"
@@ -10,7 +11,7 @@
     <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
+            android:layout_marginBottom="15dp">
 
         <ImageView
                 android:layout_width="match_parent"
@@ -29,99 +30,6 @@
                 android:textSize="30sp"
                 android:background="@color/colorCardTitle" />
     </FrameLayout>
-
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:layout_weight="0.25"
-            android:layout_marginTop="25dp">
-
-        <TextView
-                style="@style/TextViewCardAttributesTitle"
-                android:text="Leistung"
-                android:id="@+id/txt_attr_title_0" />
-
-        <TextView
-                style="@style/TextViewCardAttributesValue"
-                android:text="1222 PS"
-                android:id="@+id/txt_attr_value_0" />
-
-    </LinearLayout>
-
-    <View
-
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
-
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:layout_weight="0.25">
-
-        <TextView
-                style="@style/TextViewCardAttributesTitle"
-                android:text="Leistung"
-                android:id="@+id/txt_attr_title_1" />
-
-        <TextView
-                style="@style/TextViewCardAttributesValue"
-                android:text="1222 PS"
-                android:id="@+id/txt_attr_value_1" />
-
-    </LinearLayout>
-
-    <View
-
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:layout_weight="0.25">
-
-        <TextView
-                style="@style/TextViewCardAttributesTitle"
-                android:text="Leistung"
-                android:id="@+id/txt_attr_title_2" />
-
-        <TextView
-                style="@style/TextViewCardAttributesValue"
-                android:text="1222 PS"
-                android:id="@+id/txt_attr_value_2" />
-
-    </LinearLayout>
-
-    <View
-
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:layout_weight="0.25">
-
-        <TextView
-                style="@style/TextViewCardAttributesTitle"
-                android:text="Leistung"
-                android:id="@+id/txt_attr_title_3" />
-
-        <TextView
-                style="@style/TextViewCardAttributesValue"
-                android:text="1222 PS"
-                android:id="@+id/txt_attr_value_3" />
-
-    </LinearLayout>
 
 
 </LinearLayout>

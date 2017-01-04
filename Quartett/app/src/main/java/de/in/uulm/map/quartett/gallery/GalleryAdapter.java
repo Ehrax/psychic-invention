@@ -1,5 +1,11 @@
 package de.in.uulm.map.quartett.gallery;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,7 +16,10 @@ import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Deck;
+import de.in.uulm.map.quartett.util.AssetUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -23,6 +32,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
 
     private List<Deck> mDeckList;
     private GalleryFragment.GalleryItemListener mItemListener;
+
+    private Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -47,10 +58,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
      *                     GalleryFragment) to call methods from the presenter.
      */
     public GalleryAdapter(List<Deck> deckList, GalleryFragment
-            .GalleryItemListener itemListener) {
+            .GalleryItemListener itemListener, Context ctx) {
 
         mDeckList = deckList;
         mItemListener = itemListener;
+        context = ctx;
     }
 
     @Override
@@ -78,11 +90,22 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
 
         final Deck currentDeck = mDeckList.get(position);
         if (currentDeck.mImage != null) {
-            viewHolder.mImageView.setImageURI(currentDeck.mImage.mUri);
+            if (!currentDeck.mImage.mUri.contains("android_asset")) {
+                viewHolder.mImageView.setImageURI(Uri.parse(currentDeck.mImage
+                        .mUri));
+            } else {
+                setAssetDrawable(viewHolder, Uri.parse(currentDeck.mImage.mUri));
+            }
         } else {
-            viewHolder.mImageView.setImageURI(currentDeck.mCards.get(0)
-                    .mImages.get(0).mUri);
+            Uri imageCardUri = Uri.parse(currentDeck.getCards()
+                    .get(0).getCardImages().get(0).mImage.mUri);
+            if (!imageCardUri.getPath().contains("android_asset")) {
+                viewHolder.mImageView.setImageURI(imageCardUri);
+            } else {
+                setAssetDrawable(viewHolder, imageCardUri);
+            }
         }
+
         if (currentDeck.mTitle != null) {
             viewHolder.mTextView.setText(currentDeck.mTitle);
         } else {
@@ -93,11 +116,30 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
             @Override
             public void onClick(View v) {
 
-                mItemListener.showDeckDetailView(/*currentDeck.getId()*/0);
+                mItemListener.showDeckDetailView(currentDeck.getId());
             }
         });
 
+    }
 
+    /**
+     * this method is called by onBindViewHolder to set a imageviews source by
+     * an asset uri.
+     *
+     * @param viewHolder the current ViewHolder for getting the ImageViews
+     *                   reference
+     * @param uri        the uri of the asset you want to load.
+     */
+    private void setAssetDrawable(ViewHolder viewHolder, Uri uri) {
+
+        Drawable drawable = AssetUtils.getDrawableFromAssetUri
+                (context, uri);
+        if (drawable != null) {
+            viewHolder.mImageView.setImageDrawable(drawable);
+        } else {
+            viewHolder.mImageView.setImageDrawable(context.getDrawable(R.drawable
+                    .ic_cards_playing));
+        }
     }
 
     @Override
