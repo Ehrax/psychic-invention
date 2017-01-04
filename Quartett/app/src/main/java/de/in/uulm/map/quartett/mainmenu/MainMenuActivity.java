@@ -1,29 +1,11 @@
 package de.in.uulm.map.quartett.mainmenu;
 
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.widget.Toast;
 
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
-import de.in.uulm.map.quartett.data.AttributeValue;
-import de.in.uulm.map.quartett.data.Card;
-import de.in.uulm.map.quartett.data.Deck;
-import de.in.uulm.map.quartett.factory.EntityFactory;
 import de.in.uulm.map.quartett.factory.EntityImportTask;
 import de.in.uulm.map.quartett.util.ActivityUtils;
-
-import org.json.JSONException;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 
 public class MainMenuActivity extends DrawerActivity {
