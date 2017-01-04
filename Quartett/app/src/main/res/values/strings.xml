@@ -1,6 +1,20 @@
 <resources>
     <string name="app_name">Quartett</string>
+    <string name="content_description_main_menu">Car</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- main menu button text -->
+    <string name="new_local_game">New Game</string>
+    <string name="new_online_game">Multiplayer</string>
+    <string name="achievements">Achievements</string>
+    <string name="setting">Settings</string>
+
+    <!--drawer navigation links -->
+    <string name="main_menu">Main Menu</string>
+    <string name="gallery">Gallery</string>
+    <string name="editor">Deck Editor</string>
+    <string name="statistic">Statistic</string>
+    <string name="help">Help</string>
+    <!--drawer misc -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

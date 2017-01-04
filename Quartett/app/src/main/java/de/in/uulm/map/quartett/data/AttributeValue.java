@@ -7,14 +7,19 @@ import com.orm.SugarRecord;
  */
 
 public class AttributeValue extends SugarRecord {
+
     public float mValue;
     public Attribute mAttribute;
+    public Card mCard;
 
     public AttributeValue() {
+
     }
 
-    public AttributeValue(float mValue, Attribute mAttribute) {
+    public AttributeValue(float mValue, Attribute mAttribute, Card mCard) {
+
         this.mValue = mValue;
         this.mAttribute = mAttribute;
+        this.mCard = mCard;
     }
 }

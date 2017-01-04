@@ -1,6 +1,7 @@
 package de.in.uulm.map.quartett.data;
 
 import com.orm.SugarRecord;
+import com.orm.SugarTransactionHelper;
 
 import java.util.List;
 
@@ -9,17 +10,67 @@ import java.util.List;
  */
 
 public class Card extends SugarRecord {
+
     public String mTitle;
-    public List<Image> mImages;
-    public List<AttributeValue> mAttributeValues;
+    public Deck mDeck;
 
     public Card() {
+
     }
 
-    public Card(String mTitle, List<Image> mImages, List<AttributeValue>
-            mAttributeValues) {
+    public Card(String mTitle, Deck mDeck) {
+
         this.mTitle = mTitle;
-        this.mImages = mImages;
-        this.mAttributeValues = mAttributeValues;
+        this.mDeck = mDeck;
+    }
+
+    /**
+     * Use this method to delete a Card an all associated AttributeValues and
+     * CardImages that are not used by another card.
+     *
+     * @return true
+     */
+    @Override
+    public boolean delete() {
+
+        SugarTransactionHelper.doInTransaction(new SugarTransactionHelper.Callback() {
+            @Override
+            public void manipulateInTransaction() {
+
+                Card.super.delete();
+
+                for (CardImage c : getCardImages()) {
+                    c.delete();
+                }
+
+                for (AttributeValue a : getAttributeValues()) {
+                    a.delete();
+                }
+            }
+        });
+
+        return true;
+    }
+
+    /**
+     * Use this method to get a List of all CardImage objects of this Card.
+     *
+     * @return a List of CardImage objects
+     */
+    public List<CardImage> getCardImages() {
+
+        return CardImage.find(CardImage.class, "m_card = ?", "" + this.getId());
+    }
+
+    /**
+     * Use this method to get a List of all AttributeValue objects of this
+     * Card.
+     *
+     * @return a List of AttributeValue objects
+     */
+    public List<AttributeValue> getAttributeValues() {
+
+        return AttributeValue.find(
+                AttributeValue.class, "m_card = ?", "" + this.getId());
     }
 }

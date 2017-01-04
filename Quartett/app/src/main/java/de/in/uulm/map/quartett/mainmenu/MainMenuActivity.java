@@ -1,27 +1,47 @@
 package de.in.uulm.map.quartett.mainmenu;
 
-import android.app.Activity;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
-import de.in.uulm.map.quartett.data.Attribute;
-import de.in.uulm.map.quartett.data.AttributeValue;
-import de.in.uulm.map.quartett.data.Card;
-import de.in.uulm.map.quartett.data.Deck;
-import de.in.uulm.map.quartett.data.Highscore;
-import de.in.uulm.map.quartett.data.Image;
+import de.in.uulm.map.quartett.factory.EntityImportTask;
+import de.in.uulm.map.quartett.util.ActivityUtils;
 
-public class MainMenuActivity extends Activity {
+
+public class MainMenuActivity extends DrawerActivity {
+
+    private MainMenuPresenter mMainMenuPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /*
+        Call super.onCreate to initialise the navigation drawer and set the
+        contentView
+         */
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_menu);
+
+        /*Initialise Fragment and set Presenter (contentFrame is a
+        FrameLayout in app_bar.xml)*/
+        MainMenuFragment mainMenuFragment = (MainMenuFragment)
+                getFragmentManager().findFragmentById(R.id
+                        .contentFrame);
+        if (mainMenuFragment == null) {
+            mainMenuFragment = MainMenuFragment.newInstance();
+            ActivityUtils.addFragmentToActivity(getFragmentManager(),
+                    mainMenuFragment, R.id.contentFrame);
+        }
+
+        mMainMenuPresenter = new MainMenuPresenter(mainMenuFragment, this);
+        mainMenuFragment.setPresenter(mMainMenuPresenter);
+
+        new EntityImportTask(this, new EntityImportTask.Callback() {
+            @Override
+            public void onImportFinished() {
+
+                // do stuff with the decks and cards here ...
+                // in this callback all decks are loaded, i promise :P
+            }
+        }).execute();
     }
+
 }
