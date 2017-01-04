@@ -12,12 +12,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import de.in.uulm.map.quartett.mainmenu.MainMenuActivity;
+import de.in.uulm.map.quartett.settings.SettingsActivity;
 
 /**
- * Base class for all activities with navigation drawer.
- * Just extend this Class with your own activity and call
- * super.onCreate(savedInstanceState) from the onCreate Method of your own
- * activity.
+ * Base class for all activities with navigation drawer. Just extend this Class
+ * with your own activity and call super.onCreate(savedInstanceState) from the
+ * onCreate Method of your own activity.
  */
 public class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -99,6 +99,9 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
                 }
                 break;
             case R.id.nav_settings:
+                if (!this.getClass().getSimpleName().equals("SettingsActivity")) {
+                    startActivity(new Intent(this, SettingsActivity.class));
+                }
                 break;
             case R.id.nav_statistic:
                 break;
