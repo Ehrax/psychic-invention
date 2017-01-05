@@ -1,8 +1,9 @@
 package de.in.uulm.map.quartett.settings;
 
 import android.os.Bundle;
-
 import de.in.uulm.map.quartett.DrawerActivity;
+import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.util.ActivityUtils;
 
 /**
  * Created by alexanderrasputin on 03.01.17.
@@ -21,9 +22,16 @@ public class SettingsActivity extends DrawerActivity {
          */
         super.onCreate(savedInstanceState);
 
-        /*
-        Initialise Fragment and set Presenter (contentFramge is a
-        FrameLayout in app_bar.xml
-         */
+        SettingsFragment settingsFragment = (SettingsFragment) getFragmentManager()
+                .findFragmentById(R.id.contentFrame);
+
+        if (settingsFragment == null) {
+            settingsFragment = SettingsFragment.newInstance();
+            ActivityUtils.addFragmentToActivity(getFragmentManager(),
+                    settingsFragment, R.id.contentFrame);
+        }
+
+        mSettingsPresenter = new SettingsPresenter(settingsFragment, this);
+        settingsFragment.setPresenter(mSettingsPresenter);
     }
 }

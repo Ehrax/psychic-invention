@@ -17,4 +17,13 @@
     <!--drawer misc -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--settings navigation links-->
+    <string name="default_user_name">Quartet</string>
+    <string name="sound">Sound</string>
+    <string name="vibration">Vibration</string>
+    <string name="round">Round</string>
+    <string name="point">Point</string>
+    <string name="time">Time</string>
+
 </resources>
