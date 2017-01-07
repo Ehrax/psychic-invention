@@ -1,28 +1,29 @@
 package de.in.uulm.map.quartett.gallery;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
-import de.in.uulm.map.quartett.data.Attribute;
 import de.in.uulm.map.quartett.data.AttributeValue;
 import de.in.uulm.map.quartett.data.CardImage;
-import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.util.AssetUtils;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,16 +34,9 @@ import java.util.List;
 
 public class CardFragment extends Fragment {
 
-    private List<CardImage> mCardImages = new ArrayList<>();
+    private Drawable[] mCardImages;
     private List<AttributeValue> mAttributeValues = new ArrayList<>();
     private String mCardTitle;
-
-    //root element of the fragment
-    private LinearLayout mLinearLayoutCard;
-
-    private ImageView mImageView;
-    private TextView mTitleTextView;
-
 
     public static CardFragment newInstance() {
 
@@ -64,57 +58,61 @@ public class CardFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_card, container, false);
 
-        mImageView = (ImageView) view.findViewById(R.id.img_card);
-        mTitleTextView = (TextView) view.findViewById(R.id
-                .txt_card_title);
-        mLinearLayoutCard = (LinearLayout) view.findViewById(R.id
-                .lin_layout_card);
+        //initializing the viewpager for multiple image support
+        ViewPager viewPagerImages = (ViewPager) view.findViewById(R.id
+                .view_pager_img_card);
+        ImagePagerAdapter imgPagerAdapter = new ImagePagerAdapter(getContext
+                (), mCardImages);
+        viewPagerImages.setAdapter(imgPagerAdapter);
 
-        //TODO: Implement multiple images
-        //Setting the Image, using AssetUtils if image is saved as asset!
-        Uri cardImageUri = Uri.parse(mCardImages.get(0).mImage.mUri);
-        if (!cardImageUri.getPath().contains("android_asset")) {
-            mImageView.setImageURI(cardImageUri);
-        } else {
-            Drawable drawable = AssetUtils.getDrawableFromAssetUri(getContext
-                    (), cardImageUri);
-            mImageView.setImageDrawable(drawable);
-        }
+        TextView titleTextView = (TextView) view.findViewById(R.id
+                .txt_card_title);
+        TableLayout tableLayoutAttributes = (TableLayout) view.findViewById
+                (R.id
+                        .table_layout_card_attr);
+
         //setting the title of the card
-        mTitleTextView.setText(mCardTitle);
+        titleTextView.setText(mCardTitle);
 
         //building the attribute layout
         for (int i = 0; i < mAttributeValues.size(); i++) {
             AttributeValue currentAttrValue = mAttributeValues.get(i);
 
-            //this linear layout holds the attribute title aswell as the
+            //this table row holds the attribute title as well as the
             // attribute value
-            LinearLayout linearLayout = new LinearLayout(getContext());
-            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup
-                    .LayoutParams.MATCH_PARENT, 0, (float) 1 / mAttributeValues.size
-                    ()));
-            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-            linearLayout.setBackgroundColor(getResources().getColor(R.color
-                    .colorCardAttributesBackground));
+            TableRow tableRow = new TableRow(getContext());
+            tableRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup
+                    .LayoutParams.MATCH_PARENT, 0, 1));
+            //row background color appears as bottom border because the
+            // TextViews has darker background color and they are matching
+            // the tableRow except the tableRows padding.
+            tableRow.setBackgroundColor(getResources().getColor(R
+                    .color.colorTableDivider));
+            //setting bottom padding to one except for the last attribute to
+            // define a bottom border
+            if (i < mAttributeValues.size() - 1) {
+                tableRow.setPaddingRelative(0, 0, 0, 1);
+            }
+
+            tableRow.setGravity(Gravity.CENTER_VERTICAL);
 
             //Instantiating the TextViews with the correct style and adding
-            // them to the linear layout
+            // them to the table row
             //TODO: find out why the hell those TextViews don`t accept all of the set styles
-            TextView textViewAttrTitle = new TextView(linearLayout.getContext(), null, 0,
+            TextView textViewAttrTitle = new TextView(tableRow.getContext(), null, 0,
                     R.style.TextViewCardAttributesTitle);
             textViewAttrTitle.setText(currentAttrValue.mAttribute.mName);
-            linearLayout.addView(textViewAttrTitle);
+            tableRow.addView(textViewAttrTitle);
 
-            TextView textViewAttrValue = new TextView(linearLayout.getContext(),
+            TextView textViewAttrValue = new TextView(tableRow.getContext(),
                     null, 0, R
                     .style.TextViewCardAttributesValue);
             textViewAttrValue.setText(currentAttrValue.mValue + " " +
                     "" + currentAttrValue.mAttribute.mUnit);
-            linearLayout.addView(textViewAttrValue);
+            tableRow.addView(textViewAttrValue);
 
-            //finally adding the linear layout holding the attribute to the
-            // root element of the card fragment
-            mLinearLayoutCard.addView(linearLayout);
+            //finally adding the table row holding the attribute to the table
+            tableLayoutAttributes.addView(tableRow);
         }
 
         return view;
@@ -124,10 +122,32 @@ public class CardFragment extends Fragment {
      * Use this method to set the cards images.
      *
      * @param images List of CardImages
+     * @param ctx    the context, this is necessary because at the time we
+     *               usually call this method there is no activity and therefore
+     *               no context available from within this fragment
      */
-    public void setCardImageUris(List<CardImage> images) {
+    public void setCardImageUris(List<CardImage> images, Context ctx) {
 
-        mCardImages = images;
+        mCardImages = new Drawable[images.size()];
+        int i = 0;
+        for (CardImage img : images) {
+            if (img.mImage.mUri.contains("android_asset")) {
+                mCardImages[i] = AssetUtils.getDrawableFromAssetUri
+                        (ctx, Uri.parse(img.mImage.mUri));
+            } else {
+                try {
+                    InputStream inputStream = getActivity()
+                            .getContentResolver().openInputStream((Uri.parse(img
+                                    .mImage.mUri)));
+                    mCardImages[i] = Drawable.createFromStream(inputStream, img
+                            .mImage.mUri);
+                } catch (FileNotFoundException e) {
+                    mCardImages[i] = getResources().getDrawable(R.drawable
+                            .ic_cards_playing);
+                }
+            }
+
+        }
     }
 
     /**
@@ -148,6 +168,64 @@ public class CardFragment extends Fragment {
     public void setCardTitle(String cardTitle) {
 
         this.mCardTitle = cardTitle;
+    }
+
+    /**
+     * This Adapter populates the cards images into a viewpager.
+     */
+    private class ImagePagerAdapter extends PagerAdapter {
+
+        private Drawable[] mImages;
+        private Context mContext;
+
+        /**
+         * Setting the Context and all images
+         *
+         * @param ctx    context where the viewpager runs in
+         * @param images array of drawables representing the images of the card
+         */
+        public ImagePagerAdapter(Context ctx, Drawable[] images) {
+
+            mContext = ctx;
+            mImages = images;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+
+            return view == ((ImageView) object);
+        }
+
+        @Override
+        public int getCount() {
+
+            return mImages.length;
+        }
+
+        /**
+         * This Method is used to instantiate a ImageView per Image and load an
+         * image into it.
+         *
+         * @param container the viewpager
+         * @param position  the position of the current element
+         */
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+
+            mContext = CardFragment.this.getContext();
+            ImageView imgView = new ImageView(mContext);
+            imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imgView.setImageDrawable(mImages[position]);
+            ((ViewPager) container).addView(imgView, 0);
+
+            return imgView;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+
+            ((ViewPager) container).removeView((ImageView) object);
+        }
     }
 
 }

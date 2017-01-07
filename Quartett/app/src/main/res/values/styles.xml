@@ -32,26 +32,29 @@
 
     <!--Style for the card attributes title-->
     <style name="TextViewCardAttributesTitle" parent="android:Widget.TextView">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">0.6</item>
-        <item name="android:padding">5dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingStart">5dp</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:background">@color/colorCardAttributesBackground
         </item>
     </style>
     <!--style for the card attributes value-->
     <style name="TextViewCardAttributesValue" parent="@style/TextViewCardAttributesTitle">
-        <item name="android:layout_weight">0.4</item>
         <item name="android:textAlignment">viewEnd</item>
+        <item name="android:gravity">end</item>
+        <item name="android:paddingEnd">10dp</item>
     </style>
 
     <!-- View working as horizontal divider -->
-    <style name="DividerView" parent="android:Widget">
+    <style name="DividerView" parent="android:Widget.TextView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
-        <item name="android:color">@android:color/white</item>
+        <item name="android:layout_span">2</item>
+        <item name="android:text">""</item>
     </style>
 
 

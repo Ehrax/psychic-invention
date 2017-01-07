@@ -6,7 +6,7 @@
             android:color="@color/colorCardBorder"
             />
     <solid
-        android:color="@color/colorCardBorder"/>
+        android:color="@color/colorCardAttributesBackground"/>
     <corners
         android:radius="10dp"/>
 </shape>

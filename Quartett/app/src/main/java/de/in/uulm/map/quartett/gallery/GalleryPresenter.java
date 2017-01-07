@@ -55,7 +55,7 @@ public class GalleryPresenter implements GalleryContract.Presenter {
 
             for (Card card : cards) {
                 CardFragment currentCard = CardFragment.newInstance();
-                currentCard.setCardImageUris(card.getCardImages());
+                currentCard.setCardImageUris(card.getCardImages(),mCtx);
                 currentCard.setCardTitle(card.mTitle);
                 currentCard.setCardAttributeValues(card.getAttributeValues());
                 cardFragments.add(currentCard);
@@ -64,6 +64,7 @@ public class GalleryPresenter implements GalleryContract.Presenter {
             }
             return cardFragments;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
 

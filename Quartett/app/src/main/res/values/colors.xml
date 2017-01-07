@@ -11,4 +11,5 @@
     <color name="colorCardAttributesBackground">#616161</color>
     <color name="colorCardTitle">#838e8e8d</color>
     <color name="colorCardTitle2">#b971402f</color>
+    <color name="colorTableDivider">#BDBDBD</color>
 </resources>

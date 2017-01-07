@@ -51,6 +51,7 @@ public class GalleryActivity extends DrawerActivity {
     @Override
     public void onBackPressed() {
 
+        //Cancel deck initialization if there is one running
         if (DeckFragment.deckInitializer != null) {
             DeckFragment.deckInitializer.cancel(true);
         }
