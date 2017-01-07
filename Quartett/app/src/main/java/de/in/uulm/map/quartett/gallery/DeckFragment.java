@@ -1,6 +1,7 @@
 package de.in.uulm.map.quartett.gallery;
 
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewManager;
+import android.widget.ProgressBar;
 
 import com.bartoszlipinski.flippablestackview.FlippableStackView;
 import com.bartoszlipinski.flippablestackview.StackPageTransformer;
@@ -35,11 +38,19 @@ public class DeckFragment extends Fragment implements GalleryContract.View {
     private CardFragmentAdapter mCardFragmentAdapter;
     private List<Fragment> mDeckCards;
 
+    protected static AsyncDeckInitializer deckInitializer;
+
     public static DeckFragment newInstance() {
 
         return new DeckFragment();
     }
 
+    /**
+     * This method should be called after you created a new instance of deck
+     * fragment to set the shown decks id.
+     *
+     * @param currentDeckID id of the deck you want to show.
+     */
     public void setCurrentDeckID(long currentDeckID) {
 
         this.currentDeckID = currentDeckID;
@@ -52,34 +63,61 @@ public class DeckFragment extends Fragment implements GalleryContract.View {
     }
 
 
-    @Override
-    public void onActivityCreated(Bundle savedInstance) {
-
-        super.onActivityCreated(savedInstance);
-
-        mDeckCards = mPresenter.createCardFragments(currentDeckID);
-
-        mCardFragmentAdapter = new CardFragmentAdapter(getActivity()
-                .getSupportFragmentManager(), mDeckCards);
-
-        /*
-        Initialise the FlippableStackView witch holds the cards
-         */
-        mFlippableStack = (FlippableStackView) getActivity().findViewById(R
-                .id.deck_stack_view);
-        boolean portrait = getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_PORTRAIT;
-        mFlippableStack.initStack(mDeckCards.size(), portrait ?
-                StackPageTransformer.Orientation.VERTICAL : StackPageTransformer.Orientation.HORIZONTAL);
-        mFlippableStack.setAdapter(mCardFragmentAdapter);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_deck, container, false);
+        View view = inflater.inflate(R.layout.fragment_deck, container, false);
+        mFlippableStack = (FlippableStackView) view.findViewById(R
+                .id.deck_stack_view);
+
+        deckInitializer = new AsyncDeckInitializer();
+        deckInitializer.execute(currentDeckID);
+
+        return view;
+    }
+
+
+    /**
+     * This AsyncTask is used to load the cards from the database and build a
+     * fragment for each card. After the heavy lifting is done this class
+     * initializes the FlippableStack and removes the progress bar.
+     */
+    public class AsyncDeckInitializer extends AsyncTask<Long, Void,
+            Long> {
+
+        @Override
+        protected Long doInBackground(Long... params) {
+
+            mDeckCards = mPresenter.createCardFragments
+                    (params[0]);
+
+            return isCancelled() ? null : params[0];
+        }
+
+
+        @Override
+        protected void onPostExecute(Long deckID) {
+
+            if (deckID!=null && !isCancelled()) {
+                mCardFragmentAdapter = new CardFragmentAdapter(getChildFragmentManager(), mDeckCards);
+
+                //removing the progress bar
+                ProgressBar progressBar = (ProgressBar) getActivity()
+                        .findViewById(R.id.progress_bar_deck);
+                ((ViewManager) progressBar.getParent()).removeView(progressBar);
+                View placeHolderView = getActivity().findViewById(R.id
+                        .deck_placeholder_view);
+                ((ViewManager) placeHolderView.getParent()).removeView(placeHolderView);
+
+                //initialising the flippable stack view
+                mFlippableStack.initStack(mDeckCards.size(),
+                        StackPageTransformer.Orientation.VERTICAL);
+                mFlippableStack.setAdapter(mCardFragmentAdapter);
+            }
+
+        }
     }
 
     /**

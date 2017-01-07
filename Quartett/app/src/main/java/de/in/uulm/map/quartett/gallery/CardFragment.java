@@ -1,6 +1,7 @@
 package de.in.uulm.map.quartett.gallery;
 
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -36,7 +37,9 @@ public class CardFragment extends Fragment {
     private List<AttributeValue> mAttributeValues = new ArrayList<>();
     private String mCardTitle;
 
+    //root element of the fragment
     private LinearLayout mLinearLayoutCard;
+
     private ImageView mImageView;
     private TextView mTitleTextView;
 
@@ -47,17 +50,13 @@ public class CardFragment extends Fragment {
     }
 
     /**
-     * Initialising the views and setting images and attributes.
+     * Creating the Card. Loading the Images and Attributes into the Layout.
      *
-     * @param savedInstanceState standard bundle contains intent information
+     * @param inflater           see onCreateView in Fragment class
+     * @param container          see onCreateView in Fragment class
+     * @param savedInstanceState see onCreateView in Fragment class
+     * @return see onCreateView in Fragment class
      */
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,54 +70,81 @@ public class CardFragment extends Fragment {
         mLinearLayoutCard = (LinearLayout) view.findViewById(R.id
                 .lin_layout_card);
 
+        //TODO: Implement multiple images
+        //Setting the Image, using AssetUtils if image is saved as asset!
+        Uri cardImageUri = Uri.parse(mCardImages.get(0).mImage.mUri);
+        if (!cardImageUri.getPath().contains("android_asset")) {
+            mImageView.setImageURI(cardImageUri);
+        } else {
+            Drawable drawable = AssetUtils.getDrawableFromAssetUri(getContext
+                    (), cardImageUri);
+            mImageView.setImageDrawable(drawable);
+        }
+        //setting the title of the card
+        mTitleTextView.setText(mCardTitle);
+
+        //building the attribute layout
         for (int i = 0; i < mAttributeValues.size(); i++) {
             AttributeValue currentAttrValue = mAttributeValues.get(i);
 
+            //this linear layout holds the attribute title aswell as the
+            // attribute value
             LinearLayout linearLayout = new LinearLayout(getContext());
             linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup
-                    .LayoutParams.MATCH_PARENT, 0,(float)1/mAttributeValues.size
+                    .LayoutParams.MATCH_PARENT, 0, (float) 1 / mAttributeValues.size
                     ()));
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout.setBackgroundColor(getResources().getColor(R.color
+                    .colorCardAttributesBackground));
 
-            TextView textViewAttrTitle = new TextView(getContext(),null,R
-                    .style.TextViewCardAttributesTitle);
+            //Instantiating the TextViews with the correct style and adding
+            // them to the linear layout
+            //TODO: find out why the hell those TextViews don`t accept all of the set styles
+            TextView textViewAttrTitle = new TextView(linearLayout.getContext(), null, 0,
+                    R.style.TextViewCardAttributesTitle);
             textViewAttrTitle.setText(currentAttrValue.mAttribute.mName);
             linearLayout.addView(textViewAttrTitle);
 
-            TextView textViewAttrValue = new TextView(getContext(),null,R
+            TextView textViewAttrValue = new TextView(linearLayout.getContext(),
+                    null, 0, R
                     .style.TextViewCardAttributesValue);
-            textViewAttrValue.setText(currentAttrValue.mValue+" " +
-                    ""+currentAttrValue.mAttribute.mUnit);
+            textViewAttrValue.setText(currentAttrValue.mValue + " " +
+                    "" + currentAttrValue.mAttribute.mUnit);
             linearLayout.addView(textViewAttrValue);
 
+            //finally adding the linear layout holding the attribute to the
+            // root element of the card fragment
             mLinearLayoutCard.addView(linearLayout);
         }
-
-        //TODO: Implement multiple images and fade animation
-        Uri cardImageUri = Uri.parse(mCardImages.get(0).mImage.mUri);
-        if(!cardImageUri.getPath().contains("android_asset")) {
-            mImageView.setImageURI(cardImageUri);
-        }
-        else{
-            Drawable drawable = AssetUtils.getDrawableFromAssetUri(getContext
-                    (),cardImageUri);
-            mImageView.setImageDrawable(drawable);
-        }
-
-        mTitleTextView.setText(mCardTitle);
 
         return view;
     }
 
+    /**
+     * Use this method to set the cards images.
+     *
+     * @param images List of CardImages
+     */
     public void setCardImageUris(List<CardImage> images) {
 
         mCardImages = images;
     }
 
+    /**
+     * Use this method to set the cards AttributeValues
+     *
+     * @param values List of AttributeValues
+     */
     public void setCardAttributeValues(List<AttributeValue> values) {
 
         mAttributeValues = values;
     }
 
+    /**
+     * Use this method to set the cards title
+     *
+     * @param cardTitle String representing the cards title
+     */
     public void setCardTitle(String cardTitle) {
 
         this.mCardTitle = cardTitle;

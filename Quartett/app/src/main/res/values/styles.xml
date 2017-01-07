@@ -35,9 +35,9 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">0.6</item>
-        <item name="android:padding">10dp</item>
+        <item name="android:padding">5dp</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:background">@color/colorCardAttributesBackground
         </item>
     </style>
@@ -46,6 +46,14 @@
         <item name="android:layout_weight">0.4</item>
         <item name="android:textAlignment">viewEnd</item>
     </style>
+
+    <!-- View working as horizontal divider -->
+    <style name="DividerView" parent="android:Widget">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:color">@android:color/white</item>
+    </style>
+
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

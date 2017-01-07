@@ -5,8 +5,6 @@ import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
-import de.in.uulm.map.quartett.R;
-
 import java.io.IOException;
 import java.io.InputStream;
 

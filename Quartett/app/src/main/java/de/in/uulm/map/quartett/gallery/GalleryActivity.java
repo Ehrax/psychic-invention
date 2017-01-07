@@ -48,6 +48,14 @@ public class GalleryActivity extends DrawerActivity {
         galleryFragment.setPresenter(mGalleryPresenter);
     }
 
+    @Override
+    public void onBackPressed() {
+
+        if (DeckFragment.deckInitializer != null) {
+            DeckFragment.deckInitializer.cancel(true);
+        }
+        super.onBackPressed();
+    }
 
     public interface ViewSwitcher {
 

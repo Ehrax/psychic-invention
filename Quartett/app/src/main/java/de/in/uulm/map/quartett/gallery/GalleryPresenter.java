@@ -41,14 +41,13 @@ public class GalleryPresenter implements GalleryContract.Presenter {
 
     /**
      * Use this method to populate the FlippableCardView in the deck detail
-     * fragment.
+     * fragment. This method can run for a while and should be called Async.
      *
      * @param deckID ID of the deck you want to show
      * @return A ArrayList of fragments which hold the cards.
      */
     @Override
     public List<Fragment> createCardFragments(long deckID) {
-        //try catch just for testing until json parser is available
         try {
             Deck currentDeck = Deck.findById(Deck.class, deckID);
             List<Card> cards = currentDeck.getCards();
@@ -60,6 +59,7 @@ public class GalleryPresenter implements GalleryContract.Presenter {
                 currentCard.setCardTitle(card.mTitle);
                 currentCard.setCardAttributeValues(card.getAttributeValues());
                 cardFragments.add(currentCard);
+
 
             }
             return cardFragments;
