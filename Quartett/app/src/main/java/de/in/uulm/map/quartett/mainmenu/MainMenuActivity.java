@@ -12,6 +12,8 @@ import android.util.Log;
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Deck;
+import de.in.uulm.map.quartett.data.Highscore;
+import de.in.uulm.map.quartett.data.LocalGameState;
 import de.in.uulm.map.quartett.factory.EntityImportTask;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 

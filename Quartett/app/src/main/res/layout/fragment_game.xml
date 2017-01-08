@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="?actionBarSize">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/colorPrimaryDark">
+
+        <TextView
+                android:id="@+id/txt_opponent_name"
+                style="@style/TextViewInGameHeader"
+                android:layout_weight="0.6"
+                android:text="Gegner Name" />
+
+        <TextView
+                android:id="@+id/txt_in_game_points"
+                style="@style/TextViewInGameHeaderPoints"
+                android:layout_weight="0.4"
+                android:text="12 : 14" />
+
+    </LinearLayout>
+
+    <View
+            android:id="@+id/place_holder_view_in_game"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1" />
+
+    <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_bar_in_game"
+            android:layout_weight="1" />
+
+    <FrameLayout
+            android:id="@+id/card_frame_in_game"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+
+</LinearLayout>

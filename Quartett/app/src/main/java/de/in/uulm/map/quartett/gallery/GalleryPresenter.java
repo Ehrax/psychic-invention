@@ -60,7 +60,6 @@ public class GalleryPresenter implements GalleryContract.Presenter {
                 currentCard.setCardAttributeValues(card.getAttributeValues());
                 cardFragments.add(currentCard);
 
-
             }
             return cardFragments;
         } catch (Exception e) {

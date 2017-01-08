@@ -49,6 +49,22 @@
         <item name="android:paddingEnd">10dp</item>
     </style>
 
+    <!--In game header text view style for displaying opponents name and
+    current points
+     -->
+    <style name="TextViewInGameHeader" parent="android:Widget.TextView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_weight">0.6</item>
+    </style>
+    <style name="TextViewInGameHeaderPoints"
+            parent="@style/TextViewInGameHeader">
+        <item name="android:textAlignment">viewEnd</item>
+        <item name="android:layout_weight">0.4</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

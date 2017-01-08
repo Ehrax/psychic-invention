@@ -20,6 +20,7 @@ import android.widget.TextView;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.AttributeValue;
 import de.in.uulm.map.quartett.data.CardImage;
+import de.in.uulm.map.quartett.game.GameContract;
 import de.in.uulm.map.quartett.util.AssetUtils;
 import de.in.uulm.map.quartett.views.viewpagerindicator.CirclePageIndicator;
 
@@ -38,10 +39,23 @@ public class CardFragment extends Fragment {
     private Drawable[] mCardImages;
     private List<AttributeValue> mAttributeValues = new ArrayList<>();
     private String mCardTitle;
+    private GameContract.Presenter mGamePresenter;
 
     public static CardFragment newInstance() {
 
         return new CardFragment();
+    }
+
+    /**
+     * This method is used to set the GamePresenter. The GamePresenter is used
+     * to set click listeners for the attributes. So the GamePresenter can
+     * handle the game logic.
+     *
+     * @param presenter the GamePresenter
+     */
+    public void setGamePresenter(GameContract.Presenter presenter) {
+
+        mGamePresenter = presenter;
     }
 
     /**
@@ -84,7 +98,7 @@ public class CardFragment extends Fragment {
 
         //building the attribute layout
         for (int i = 0; i < mAttributeValues.size(); i++) {
-            AttributeValue currentAttrValue = mAttributeValues.get(i);
+            final AttributeValue currentAttrValue = mAttributeValues.get(i);
 
             /*this table row holds the attribute title as well as the
              attribute value*/
@@ -93,7 +107,8 @@ public class CardFragment extends Fragment {
                     .LayoutParams.MATCH_PARENT, 0, 1));
             /*row background color appears as bottom border because the
              TextViews has darker background color and they are matching
-             the tableRow except the tableRows padding.*/
+             the tableRow, except the tableRows padding which we use as
+             "border".*/
             tableRow.setBackgroundColor(getResources().getColor(R
                     .color.colorTableDivider));
             /*setting bottom padding to one except for the last attribute to
@@ -107,17 +122,28 @@ public class CardFragment extends Fragment {
             /*Instantiating the TextViews with the correct style and adding
              them to the table row*/
             //TODO: find out why the hell those TextViews don`t accept all of the set styles
-            TextView textViewAttrTitle = new TextView(tableRow.getContext(), null, 0,
-                    R.style.TextViewCardAttributesTitle);
+            TextView textViewAttrTitle = new TextView(tableRow.getContext(),
+                    null, 0, R.style.TextViewCardAttributesTitle);
             textViewAttrTitle.setText(currentAttrValue.mAttribute.mName);
             tableRow.addView(textViewAttrTitle);
 
             TextView textViewAttrValue = new TextView(tableRow.getContext(),
-                    null, 0, R
-                    .style.TextViewCardAttributesValue);
+                    null, 0, R.style.TextViewCardAttributesValue);
             textViewAttrValue.setText(currentAttrValue.mValue + " " +
                     "" + currentAttrValue.mAttribute.mUnit);
             tableRow.addView(textViewAttrValue);
+
+            //if the card fragment is used in game set a click listener to
+            // the tableRow
+            if (mGamePresenter != null) {
+                tableRow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        mGamePresenter.chooseAttribute(currentAttrValue);
+                    }
+                });
+            }
 
             //finally adding the table row holding the attribute to the table
             tableLayoutAttributes.addView(tableRow);
