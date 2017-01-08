@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingTop="?android:attr/actionBarSize">
+
+    <TextView
+            style="@style/GameSettingsSectionFont"
+            android:paddingTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/game_settings_name"/>
+
+    <EditText
+            android:id="@+id/edit_text_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:hint="Name"
+            android:inputType="text"
+            android:maxLines="1"
+            android:cursorVisible="false"
+            android:imeOptions="actionDone"/>
+
+    <TextView
+            style="@style/GameSettingsSectionFont"
+            android:paddingTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/game_settings_mode"/>
+
+    <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="30dp"
+            android:id="@+id/rg_game_mode">
+        <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/rb_mode_points"
+                android:text="@string/game_settings_mode_points"
+                android:checked="true"/>
+        <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/rb_mode_time"
+                android:text="@string/game_settings_mode_time"/>
+        <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/rb_mode_insane"
+                android:text="@string/game_settings_mode_insane"/>
+    </RadioGroup>
+
+    <NumberPicker
+            android:id="@+id/points_mode_picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
+
+    <NumberPicker
+            android:id="@+id/time_mode_picker"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center|bottom"
+            android:padding="30dp">
+
+        <Button
+                android:id="@+id/btn_ok"
+                style="@style/GameSettingsOkButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/game_settings_btn_ok"
+                android:enabled="false"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

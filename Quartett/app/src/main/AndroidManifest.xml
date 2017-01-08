@@ -23,6 +23,9 @@
                 android:value="de.in.uulm.map.quartett.data" />
 
         <activity android:name=".mainmenu.MainMenuActivity">
+        </activity>
+
+        <activity android:name=".gamesetttings.GameSettingsActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
 
