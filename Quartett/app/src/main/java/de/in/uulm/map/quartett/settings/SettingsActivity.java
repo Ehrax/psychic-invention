@@ -5,9 +5,6 @@ import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 
-/**
- * Created by alexanderrasputin on 03.01.17.
- */
 
 public class SettingsActivity extends DrawerActivity {
 
