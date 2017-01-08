@@ -41,13 +41,15 @@ public class ActivityUtils {
         checkNotNull(fragmentManager);
         checkNotNull(fragment);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
+        //checking if we need to replace an existing fragment with animation
+        // or simply add a fragment to an empty container.
         Fragment checkFragment = fragmentManager.findFragmentById(frameId);
         if (checkFragment == null) {
             transaction.add(frameId, fragment);
         } else {
             transaction.setCustomAnimations(R.anim.fragment_slide_left_enter,
-                    R.anim.fragment_slide_left_exit,R.anim
-                            .fragment_slide_right_enter,R.anim
+                    R.anim.fragment_slide_left_exit, R.anim
+                            .fragment_slide_right_enter, R.anim
                             .fragment_slide_right_exit);
             transaction.replace(frameId, fragment);
             transaction.addToBackStack(null);

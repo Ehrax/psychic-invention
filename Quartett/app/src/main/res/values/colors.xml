@@ -3,13 +3,19 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <!-- main menu button color-->
     <color name="colorButtonNormal">#028ac9</color>
+    <!--Text colors -->
     <color name="colorButtonText">#fff</color>
     <color name="colorGalleryTitle">#fff</color>
+    <!--border color for the cards-->
     <color name="colorCardBorder">#212121</color>
-    <color name="colorBlackTransparent">#CE000000</color>
+    <!--background for the cards attributes -->
     <color name="colorCardAttributesBackground">#616161</color>
-    <color name="colorCardTitle">#838e8e8d</color>
-    <color name="colorCardTitle2">#b971402f</color>
+    <!--the divider color for the cards attributes-->
     <color name="colorTableDivider">#BDBDBD</color>
+    <!-- transparent backgrounds for fancy textViews ;) -->
+    <color name="colorBlackTransparent">#CE000000</color>
+    <color name="colorCardTitle">#838e8e8d</color>
+
 </resources>

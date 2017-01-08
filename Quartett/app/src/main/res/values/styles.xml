@@ -49,15 +49,6 @@
         <item name="android:paddingEnd">10dp</item>
     </style>
 
-    <!-- View working as horizontal divider -->
-    <style name="DividerView" parent="android:Widget.TextView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
-        <item name="android:layout_span">2</item>
-        <item name="android:text">""</item>
-    </style>
-
-
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

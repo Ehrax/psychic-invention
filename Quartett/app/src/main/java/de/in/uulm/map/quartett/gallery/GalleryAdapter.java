@@ -30,6 +30,9 @@ import java.util.List;
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
         .ViewHolder> {
 
+    /*
+    List of all available decks
+     */
     private List<Deck> mDeckList;
     private GalleryFragment.GalleryItemListener mItemListener;
 

@@ -21,6 +21,7 @@ import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.AttributeValue;
 import de.in.uulm.map.quartett.data.CardImage;
 import de.in.uulm.map.quartett.util.AssetUtils;
+import de.in.uulm.map.quartett.views.viewpagerindicator.CirclePageIndicator;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -64,6 +65,13 @@ public class CardFragment extends Fragment {
         ImagePagerAdapter imgPagerAdapter = new ImagePagerAdapter(getContext
                 (), mCardImages);
         viewPagerImages.setAdapter(imgPagerAdapter);
+        /*Setting the circles indicating how many images the card has only if
+         it has more than one image.*/
+        if (mCardImages.length > 1) {
+            CirclePageIndicator indicator = (CirclePageIndicator) view
+                    .findViewById(R.id.page_indicator_card);
+            indicator.setViewPager(viewPagerImages);
+        }
 
         TextView titleTextView = (TextView) view.findViewById(R.id
                 .txt_card_title);
@@ -78,26 +86,26 @@ public class CardFragment extends Fragment {
         for (int i = 0; i < mAttributeValues.size(); i++) {
             AttributeValue currentAttrValue = mAttributeValues.get(i);
 
-            //this table row holds the attribute title as well as the
-            // attribute value
+            /*this table row holds the attribute title as well as the
+             attribute value*/
             TableRow tableRow = new TableRow(getContext());
             tableRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup
                     .LayoutParams.MATCH_PARENT, 0, 1));
-            //row background color appears as bottom border because the
-            // TextViews has darker background color and they are matching
-            // the tableRow except the tableRows padding.
+            /*row background color appears as bottom border because the
+             TextViews has darker background color and they are matching
+             the tableRow except the tableRows padding.*/
             tableRow.setBackgroundColor(getResources().getColor(R
                     .color.colorTableDivider));
-            //setting bottom padding to one except for the last attribute to
-            // define a bottom border
+            /*setting bottom padding to one except for the last attribute to
+             define a bottom border*/
             if (i < mAttributeValues.size() - 1) {
                 tableRow.setPaddingRelative(0, 0, 0, 1);
             }
 
             tableRow.setGravity(Gravity.CENTER_VERTICAL);
 
-            //Instantiating the TextViews with the correct style and adding
-            // them to the table row
+            /*Instantiating the TextViews with the correct style and adding
+             them to the table row*/
             //TODO: find out why the hell those TextViews don`t accept all of the set styles
             TextView textViewAttrTitle = new TextView(tableRow.getContext(), null, 0,
                     R.style.TextViewCardAttributesTitle);
@@ -119,7 +127,8 @@ public class CardFragment extends Fragment {
     }
 
     /**
-     * Use this method to set the cards images.
+     * Use this method to set the cards images. This method opens input streams
+     * to get drawables from the given uris.
      *
      * @param images List of CardImages
      * @param ctx    the context, this is necessary because at the time we

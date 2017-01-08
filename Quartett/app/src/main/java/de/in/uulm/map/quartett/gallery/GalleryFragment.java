@@ -63,7 +63,7 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
         mRecyclerView = (RecyclerView) getActivity().findViewById(R.id
                 .recycler_view_gallery);
 
-        /*set has fixed size to improve performance because the layout size
+        /*set "has fixed size" to improve performance because the layout size
         will never change*/
         mRecyclerView.setHasFixedSize(true);
 

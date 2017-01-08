@@ -87,6 +87,13 @@ public class DeckFragment extends Fragment implements GalleryContract.View {
     public class AsyncDeckInitializer extends AsyncTask<Long, Void,
             Long> {
 
+        /**
+         * Building a card fragment for each card in the given deck.
+         *
+         * @param params just the deck id
+         * @return if the task was canceled return is null otherwise its the
+         * deck id
+         */
         @Override
         protected Long doInBackground(Long... params) {
 
@@ -96,11 +103,16 @@ public class DeckFragment extends Fragment implements GalleryContract.View {
             return isCancelled() ? null : params[0];
         }
 
-
+        /**
+         * This method checks if the task was canceled and if not it removes the
+         * progress bar and initializes the flippable stack view.
+         *
+         * @param deckID the id of the currently loading deck
+         */
         @Override
         protected void onPostExecute(Long deckID) {
 
-            if (deckID!=null && !isCancelled()) {
+            if (deckID != null && !isCancelled()) {
                 mCardFragmentAdapter = new CardFragmentAdapter(getChildFragmentManager(), mDeckCards);
 
                 //removing the progress bar
