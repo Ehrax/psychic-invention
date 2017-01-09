@@ -1,6 +1,7 @@
 package de.in.uulm.map.quartett.settings;
 
 import android.os.Bundle;
+
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.util.ActivityUtils;
@@ -8,7 +9,6 @@ import de.in.uulm.map.quartett.util.ActivityUtils;
 
 public class SettingsActivity extends DrawerActivity {
 
-    private SettingsPresenter mSettingsPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +27,5 @@ public class SettingsActivity extends DrawerActivity {
             ActivityUtils.addFragmentToActivity(getFragmentManager(),
                     settingsFragment, R.id.contentFrame);
         }
-
-        mSettingsPresenter = new SettingsPresenter(settingsFragment, this);
-        settingsFragment.setPresenter(mSettingsPresenter);
     }
 }
