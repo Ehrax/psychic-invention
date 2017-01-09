@@ -1,5 +1,6 @@
-package de.in.uulm.map.quartett.gamesetttings;
+package de.in.uulm.map.quartett.gamesettings;
 
+import android.content.Intent;
 import android.widget.Button;
 
 import de.in.uulm.map.quartett.util.BasePresenter;
@@ -15,16 +16,22 @@ public interface GameSettingsContract {
 
         void onNameChanged(String name, Button okButton);
 
-        void onPointsChanged(int points);
-
-        void onTimeChanged(int time);
-
-        void onModeChanged(GameSettingsActivity.GameMode mode);
-
         void onOkPressed();
     }
 
     interface View extends BaseView<Presenter> {
 
+        String getName();
+
+        int getPoints();
+
+        int getTime();
+
+        GameMode getMode();
+    }
+
+    interface Backend {
+
+        void nextActivity(Intent intent);
     }
 }

@@ -1,6 +1,7 @@
-package de.in.uulm.map.quartett.gamesetttings;
+package de.in.uulm.map.quartett.gamesettings;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 
 import de.in.uulm.map.quartett.DrawerActivity;
@@ -11,17 +12,7 @@ import de.in.uulm.map.quartett.util.ActivityUtils;
  * Created by Jona on 08.01.2017.
  */
 
-public class GameSettingsActivity extends DrawerActivity {
-
-    /**
-     * This enum is used to store the game mode in a type safe way.
-     */
-    public enum GameMode {
-
-        POINTS,
-        TIME,
-        INSANE
-    }
+public class GameSettingsActivity extends DrawerActivity implements GameSettingsContract.Backend {
 
     /**
      * This will be called by the Android API. The function is used to attach
@@ -46,7 +37,20 @@ public class GameSettingsActivity extends DrawerActivity {
                     gameSettingsFragment, R.id.contentFrame);
         }
 
-        GameSettingsPresenter presenter = new GameSettingsPresenter();
+        GameSettingsPresenter presenter =
+                new GameSettingsPresenter(gameSettingsFragment, this, this);
         gameSettingsFragment.setPresenter(presenter);
+    }
+
+    /**
+     * This method is used to go to the next Activity when all game settings are
+     * entered.
+     *
+     * @param intent the intent to start the Activity
+     */
+    @Override
+    public void nextActivity(Intent intent) {
+
+        startActivity(intent);
     }
 }

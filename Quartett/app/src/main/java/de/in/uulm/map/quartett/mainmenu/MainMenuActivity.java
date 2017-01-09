@@ -1,5 +1,6 @@
 package de.in.uulm.map.quartett.mainmenu;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import de.in.uulm.map.quartett.DrawerActivity;
@@ -8,7 +9,7 @@ import de.in.uulm.map.quartett.factory.EntityImportTask;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 
 
-public class MainMenuActivity extends DrawerActivity {
+public class MainMenuActivity extends DrawerActivity implements MainMenuContract.Backend {
 
     private MainMenuPresenter mMainMenuPresenter;
 
@@ -31,7 +32,8 @@ public class MainMenuActivity extends DrawerActivity {
                     mainMenuFragment, R.id.contentFrame);
         }
 
-        mMainMenuPresenter = new MainMenuPresenter(mainMenuFragment, this);
+        mMainMenuPresenter =
+                new MainMenuPresenter(mainMenuFragment, this, this);
         mainMenuFragment.setPresenter(mMainMenuPresenter);
 
         new EntityImportTask(this, new EntityImportTask.Callback() {
@@ -44,4 +46,15 @@ public class MainMenuActivity extends DrawerActivity {
         }).execute();
     }
 
+    /**
+     * This is used to start an Activity from the Presenter without the
+     * presenter explicitly knowing about the Activity object.
+     *
+     * @param intent the start intent
+     */
+    @Override
+    public void startActivity(Intent intent) {
+
+        super.startActivity(intent);
+    }
 }
