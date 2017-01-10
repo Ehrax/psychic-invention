@@ -23,4 +23,17 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
+    <!-- game end -->
+    <style name="GameEndStatusText"
+            parent="android:Widget.Material.TextView">
+        <item name="android:textSize">90dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+    <style name="GameEndStatusSubText"
+            parent="android:Widget.Material.TextView">
+        <item name="android:textSize">50dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
 </resources>
