@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import de.in.uulm.map.quartett.data.Deck;
+
 /**
  * Created by alex on 12/17/16.
  */
@@ -19,6 +21,7 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
 
         mView = mainMenuView;
         this.ctx = ctx;
+        start();
     }
 
     @Override

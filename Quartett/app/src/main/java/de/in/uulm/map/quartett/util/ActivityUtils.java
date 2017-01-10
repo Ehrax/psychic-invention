@@ -15,11 +15,13 @@
  */
 package de.in.uulm.map.quartett.util;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.annotation.NonNull;
 
+
+import de.in.uulm.map.quartett.R;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -32,13 +34,26 @@ public class ActivityUtils {
      * The {@code fragment} is added to the container view with id {@code
      * frameId}. The operation is performed by the {@code fragmentManager}.
      */
-    public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
+    public static void addFragmentToActivity(@NonNull FragmentManager
+                                                     fragmentManager,
                                              @NonNull Fragment fragment, int frameId) {
 
         checkNotNull(fragmentManager);
         checkNotNull(fragment);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(frameId, fragment);
+        //checking if we need to replace an existing fragment with animation
+        // or simply add a fragment to an empty container.
+        Fragment checkFragment = fragmentManager.findFragmentById(frameId);
+        if (checkFragment == null) {
+            transaction.add(frameId, fragment);
+        } else {
+            transaction.setCustomAnimations(R.anim.fragment_slide_left_enter,
+                    R.anim.fragment_slide_left_exit, R.anim
+                            .fragment_slide_right_enter, R.anim
+                            .fragment_slide_right_exit);
+            transaction.replace(frameId, fragment);
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
     }
 
