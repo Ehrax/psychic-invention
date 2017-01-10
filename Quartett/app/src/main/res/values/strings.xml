@@ -18,6 +18,17 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <!--game settings text-->
+    <string name="game_settings_mode">Mode</string>
+    <string name="game_settings_mode_normal">Normal</string>
+    <string name="game_settings_mode_points">Points</string>
+    <string name="game_settings_mode_time">Time</string>
+    <string name="game_settings_mode_rounds">Rounds</string>
+    <string name="game_settings_mode_insane">Insane</string>
+    <string name="game_settings_name">Name</string>
+    <string name="game_settings_btn_ok">Start Game</string>
+  
     <!--gallery-->
     <string name="no_title">No Title</string>
+
 </resources>

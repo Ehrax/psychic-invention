@@ -29,6 +29,12 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+
+
+        <activity android:name=".gamesettings.GameSettingsActivity">
+      
+        </activity>
+
         <activity android:name=".gallery.GalleryActivity">
 
         </activity>

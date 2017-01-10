@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.orm.dsl.NotNull;
+
+import de.in.uulm.map.quartett.gamesettings.GameSettingsActivity;
 import de.in.uulm.map.quartett.data.Deck;
 
 /**
@@ -14,12 +17,19 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
 
     @NonNull
     private final MainMenuContract.View mView;
+
+    @NotNull
+    private final MainMenuContract.Backend mBackend;
+
+    @NotNull
     private final Context ctx;
 
     public MainMenuPresenter(@NonNull MainMenuContract.View mainMenuView,
+                             MainMenuContract.Backend backend,
                              Context ctx) {
 
         mView = mainMenuView;
+        mBackend = backend;
         this.ctx = ctx;
         start();
     }
@@ -30,11 +40,13 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
     }
 
     /**
-     * Starts the local game activity
+     * Starts a new local game by calling the GameSettingsActivity.
      */
     @Override
     public void startNewLocalGame() {
-        //TODO: start local game activity
+
+        Intent intent = new Intent(ctx, GameSettingsActivity.class);
+        mBackend.startActivity(intent);
     }
 
     /**
