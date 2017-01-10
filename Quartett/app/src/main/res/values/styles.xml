@@ -11,15 +11,6 @@
         <item name="android:windowEnterTransition">@transition/fade</item>
         <item name="android:windowExitTransition">@transition/fade</item>
 
-
-    <!-- action bar -->
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
     <!-- main menu -->
     </style>
     <!--style for the main menu buttons-->
@@ -28,7 +19,6 @@
         <item name="android:backgroundTint">@color/colorButtonNormal</item>
         <item name="android:textColor">@color/colorButtonText</item>
     </style>
-
 
     <!-- game settings -->
     <style name="GameSettingsSectionFont"
@@ -73,14 +63,12 @@
         <item name="android:paddingEnd">10dp</item>
     </style>
 
+    <!-- action bar -->
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
-
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>
