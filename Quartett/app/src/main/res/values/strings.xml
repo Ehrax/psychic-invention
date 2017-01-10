@@ -27,5 +27,8 @@
     <string name="game_settings_mode_insane">Insane</string>
     <string name="game_settings_name">Name</string>
     <string name="game_settings_btn_ok">Start Game</string>
+  
+    <!--gallery-->
+    <string name="no_title">No Title</string>
 
 </resources>

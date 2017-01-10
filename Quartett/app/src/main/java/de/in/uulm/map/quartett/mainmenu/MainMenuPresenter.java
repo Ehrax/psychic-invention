@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import com.orm.dsl.NotNull;
 
 import de.in.uulm.map.quartett.gamesettings.GameSettingsActivity;
+import de.in.uulm.map.quartett.data.Deck;
 
 /**
  * Created by alex on 12/17/16.
@@ -30,6 +31,7 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
         mView = mainMenuView;
         mBackend = backend;
         this.ctx = ctx;
+        start();
     }
 
     @Override
