@@ -33,6 +33,15 @@ public class GameEndFragment extends Fragment implements GameEndContract.View {
 
     private Button mMainMenuButton;
 
+    /**
+     * This will be called by the android API. It is used to create the View of
+     * this Fragment and to connect the View components with the presenter.
+     *
+     * @param inflater           the inflater used to create the layout
+     * @param container          the view the layout will be inflated in
+     * @param savedInstanceState some state, unused
+     * @return the inflated view
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,21 +83,48 @@ public class GameEndFragment extends Fragment implements GameEndContract.View {
             }
         });
 
+        mPresenter.onViewCreated();
+
         return v;
     }
 
+    /**
+     * Setter for the presenter component.
+     */
     @Override
     public void setPresenter(@NotNull GameEndContract.Presenter presenter) {
 
         mPresenter = checkNotNull(presenter);
     }
 
+    /**
+     * Setter for the game state. Will update the central status text.
+     * @param endState the game end state
+     */
     @Override
-    public void setStatusText(String text) {
+    public void setStatus(GameEndState endState) {
 
-        mStatusText.setText(text);
+        int id;
+
+        switch (endState) {
+            case WIN:
+                id = R.string.game_end_win;
+                break;
+            case LOSE:
+                id = R.string.game_end_lose;
+                break;
+            default:
+                id = R.string.game_end_draw;
+                break;
+        }
+
+        mStatusText.setText(id);
     }
 
+    /**
+     * Setter for the status text below the main message.
+     * @param text the new sub status text
+     */
     @Override
     public void setSubStatusText(String text) {
 

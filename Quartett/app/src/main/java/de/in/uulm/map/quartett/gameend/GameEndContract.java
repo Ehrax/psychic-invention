@@ -24,7 +24,7 @@ public interface GameEndContract {
 
     interface View extends BaseView<Presenter> {
 
-        void setStatusText(String text);
+        void setStatus(GameEndState endState);
 
         void setSubStatusText(String text);
     }

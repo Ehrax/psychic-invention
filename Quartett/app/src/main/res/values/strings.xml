@@ -21,6 +21,7 @@
     <!-- game settings -->
     <string name="game_end_win">You Win</string>
     <string name="game_end_lose">You Lose</string>
+    <string name="game_end_draw">Draw</string>
     <string name="game_end_restart">Restart</string>
     <string name="game_end_settings">Change Settings</string>
     <string name="game_end_menu">Main Menu</string>

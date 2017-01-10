@@ -15,6 +15,12 @@ import de.in.uulm.map.quartett.util.ActivityUtils;
 
 public class GameEndActivity extends DrawerActivity implements GameEndContract.Backend{
 
+    /**
+     * This method is used to wire up the model and view components.
+     * It's called by the android API.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -32,12 +38,16 @@ public class GameEndActivity extends DrawerActivity implements GameEndContract.B
         }
 
         GameEndContract.Presenter presenter =
-                new GameEndPresenter(gameEndFragment, this, this);
+                new GameEndPresenter(gameEndFragment, this, getIntent(), this);
         gameEndFragment.setPresenter(presenter);
 
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * This allows the presenter the start and Activity.
+     * @param intent the intent the Activity should be started by
+     */
     @Override
     public void startActivity(Intent intent) {
 
