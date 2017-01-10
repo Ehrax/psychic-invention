@@ -11,7 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/game_end_win"
-            android:paddingTop="100dp" />
+            android:paddingTop="50dp" />
 
     <TextView
             android:id="@+id/end_status_sub_text"
@@ -27,12 +27,12 @@
 
         <Button
                 style="@style/MainMenuButtonStyle"
-                android:id="@+id/btn_restart"
+                android:id="@+id/btn_main_menu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="@string/game_end_restart"
-                android:layout_above="@id/btn_restart_settings" />
+                android:text="@string/game_end_menu"
+                android:layout_alignParentBottom="true" />
 
         <Button
                 style="@style/MainMenuButtonStyle"
@@ -45,11 +45,12 @@
 
         <Button
                 style="@style/MainMenuButtonStyle"
-                android:id="@+id/btn_main_menu"
+                android:id="@+id/btn_restart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="@string/game_end_menu"
-                android:layout_alignParentBottom="true" />
+                android:text="@string/game_end_restart"
+                android:layout_above="@id/btn_restart_settings" />
+
     </RelativeLayout>
 </LinearLayout>

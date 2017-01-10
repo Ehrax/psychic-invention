@@ -1,5 +1,7 @@
 package de.in.uulm.map.quartett.gameend;
 
+import android.content.Intent;
+
 import de.in.uulm.map.quartett.util.BasePresenter;
 import de.in.uulm.map.quartett.util.BaseView;
 
@@ -11,9 +13,24 @@ public interface GameEndContract {
 
     interface Presenter extends BasePresenter {
 
+        void onViewCreated();
+
+        void onRestartClicked();
+
+        void onSettingsClicked();
+
+        void onMainMenuClicked();
     }
 
     interface View extends BaseView<Presenter> {
 
+        void setStatusText(String text);
+
+        void setSubStatusText(String text);
+    }
+
+    interface Backend {
+
+        void startActivity(Intent intent);
     }
 }
