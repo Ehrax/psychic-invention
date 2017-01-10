@@ -24,18 +24,15 @@ public class GameSettingsActivity extends DrawerActivity implements GameSettings
 
         super.onCreate(savedInstanceState);
 
-        GameSettingsFragment gameSettingsFragment;
+        GameSettingsFragment gameSettingsFragment = (GameSettingsFragment)
+                getSupportFragmentManager().findFragmentById(R.id.contentFrame);
 
-        Fragment fragment = getFragmentManager().
-                findFragmentById(R.id.contentFrame);
-
-        if (fragment instanceof GameSettingsFragment) {
-            gameSettingsFragment = (GameSettingsFragment) fragment;
-        } else {
+        if (gameSettingsFragment == null) {
             gameSettingsFragment = new GameSettingsFragment();
-            ActivityUtils.addFragmentToActivity(getFragmentManager(),
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     gameSettingsFragment, R.id.contentFrame);
         }
+
 
         GameSettingsPresenter presenter =
                 new GameSettingsPresenter(gameSettingsFragment, this, this);
