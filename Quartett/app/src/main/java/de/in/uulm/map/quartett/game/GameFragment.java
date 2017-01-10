@@ -60,12 +60,22 @@ public class GameFragment extends Fragment implements GameContract.View {
         setEnterTransition(TransitionInflater.from(getContext())
                 .inflateTransition(R.transition.fade_delay));
         mCardLoader = new AsyncCardLoader();
-        mCardLoader.execute();
+        mCardLoader.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        TextView txtViewTurn = (TextView) view.findViewById(R.id.txt_turn);
+        txtViewTurn.setText(mPresenter.getCurrentGameState().mIsUsersTurn ? R
+                .string.your_turn : R.string.ai_turn);
 
         TextView txtViewPoints = (TextView) view.findViewById(R.id
                 .txt_in_game_points);
-        txtViewPoints.setText(mPresenter.getCurrentGameState().mUserPoints+" " +
-                ": "+mPresenter.getCurrentGameState().mAIPoints);
+        txtViewPoints.setText(mPresenter.getCurrentGameState().mUserPoints + " " +
+                ": " + mPresenter.getCurrentGameState().mAIPoints);
+
+        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id
+                .progress_bar_ki_turn);
+
+        progressBar.setVisibility(mPresenter.getCurrentGameState()
+                .mIsUsersTurn ? View.INVISIBLE : View.VISIBLE);
 
 
         return view;
@@ -78,8 +88,11 @@ public class GameFragment extends Fragment implements GameContract.View {
         if (mPresenter.getCurrentGameState() == null) {
             mPresenter.start();
         }
+        mPresenter.startAI();
 
     }
+
+
 
     @Override
     public void onResume() {

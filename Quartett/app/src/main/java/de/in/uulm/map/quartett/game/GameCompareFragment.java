@@ -68,11 +68,9 @@ public class GameCompareFragment extends Fragment implements GameContract.View {
         TextView txtAIAttr = (TextView) view.findViewById(R.id
                 .txt_ai_atrribute_compare);
         txtAIAttr.setText(mComparedAttribute.mName+": "+mPresenter
-                .getCompareAttributeValue(false,
-                mComparedAttribute) + " " + mComparedAttribute.mUnit);
+                .getCompareAttributeValue(false) + " " + mComparedAttribute.mUnit);
         txtUserAttr.setText(mComparedAttribute.mName+": "+mPresenter
-                .getCompareAttributeValue(true,
-                mComparedAttribute) + " " + mComparedAttribute.mUnit);
+                .getCompareAttributeValue(true) + " " + mComparedAttribute.mUnit);
 
         FrameLayout userFrame = (FrameLayout) view.findViewById(R.id
                 .frame_lay_compare_bottom);

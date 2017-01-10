@@ -12,19 +12,10 @@ import de.in.uulm.map.quartett.util.ActivityUtils;
  * Created by maxka on 08.01.2017.
  */
 
-public class GameActivity extends DrawerActivity {
+public class GameActivity extends DrawerActivity implements GameContract
+        .BackEnd {
 
     private GamePresenter mPresenter;
-
-    private CompareViewSwitcher mViewSwitcher = new CompareViewSwitcher() {
-        @Override
-        public void switchToView(GameContract.View view) {
-
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    (Fragment) view, R.id.contentFrame);
-            view.setPresenter(mPresenter);
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +30,7 @@ public class GameActivity extends DrawerActivity {
                     gameFragment, R.id.contentFrame);
         }
 
-        mPresenter = new GamePresenter(gameFragment, this,mViewSwitcher);
+        mPresenter = new GamePresenter(gameFragment, this, this);
         gameFragment.setPresenter(mPresenter);
     }
 
@@ -50,11 +41,19 @@ public class GameActivity extends DrawerActivity {
                 .isCancelled()) {
             GameFragment.mCardLoader.cancel(true);
         }
+        if(mPresenter.mAI != null && !mPresenter.mAI.isCancelled()){
+            mPresenter.mAI.cancel(true);
+        }
         super.onBackPressed();
     }
 
-    public interface CompareViewSwitcher {
+    @Override
+    public void switchToView(GameContract.View view) {
 
-        void switchToView(GameContract.View view);
+        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
+                (Fragment) view, R.id.contentFrame);
+        view.setPresenter(mPresenter);
     }
+
+
 }

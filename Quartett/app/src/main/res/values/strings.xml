@@ -20,4 +20,10 @@
 
     <!--gallery-->
     <string name="no_title">No Title</string>
+
+    <!--In game-->
+    <string name="your_turn">Du bist am Zug</string>
+    <string name="ai_turn">Dein Gegner ist am Zug</string>
+    <!--snack bar text-->
+    <string name="not_your_turn">Du bist nicht am Zug!</string>
 </resources>

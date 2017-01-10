@@ -60,10 +60,10 @@ public class ActivityUtils {
                         R.anim.fragment_slide_left_exit, R.anim
                                 .fragment_slide_right_enter, R.anim
                                 .fragment_slide_right_exit);
-
+                transaction.addToBackStack(null);
             }
             transaction.replace(frameId, fragment);
-            transaction.addToBackStack(null);
+
         }
         transaction.commit();
 

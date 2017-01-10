@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -140,10 +142,17 @@ public class CardFragment extends Fragment {
             //if the card fragment is used in game set a click listener to
             // the tableRow
             if (mGamePresenter != null) {
+                final View finalView = view;
                 tableRow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mGamePresenter.chooseAttribute(currentAttrValue.mAttribute);
+                        if(mGamePresenter.getCurrentGameState().mIsUsersTurn) {
+                            mGamePresenter.chooseAttribute(currentAttrValue.mAttribute);
+                        }else{
+                            Snackbar.make(finalView,R.string.not_your_turn,
+                                    Snackbar
+                                            .LENGTH_SHORT).show();
+                        }
                     }
                 });
             }

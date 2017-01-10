@@ -23,15 +23,15 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     private final GalleryContract.View mView;
     private final Context mCtx;
 
-    private GalleryActivity.ViewSwitcher mViewSwitcher;
+    private GalleryContract.BackEnd mBackEnd;
 
     public GalleryPresenter(@NonNull GalleryContract.View galleryView,
-                            Context ctx, GalleryActivity.ViewSwitcher
+                            Context ctx, GalleryContract.BackEnd
                                     viewSwitcher) {
 
         mView = galleryView;
         this.mCtx = ctx;
-        mViewSwitcher = viewSwitcher;
+        mBackEnd = viewSwitcher;
     }
 
     @Override
@@ -108,6 +108,6 @@ public class GalleryPresenter implements GalleryContract.Presenter {
 
         DeckFragment deckFragment = DeckFragment.newInstance();
         deckFragment.setCurrentDeckID(deckID);
-        mViewSwitcher.switchToView(deckFragment);
+        mBackEnd.switchToView(deckFragment);
     }
 }

@@ -26,14 +26,20 @@ public interface GameContract {
 
         Drawable getCompareImage(boolean fromUser);
 
-        float getCompareAttributeValue(boolean fromUser, Attribute attribute);
+        float getCompareAttributeValue(boolean fromUser);
 
         void onClickCompare(RoundWinner winner);
+
+        void startAI();
 
     }
 
     interface View extends BaseView<Presenter> {
 
+    }
+
+    interface BackEnd{
+        void switchToView(GameContract.View view);
     }
 
 }

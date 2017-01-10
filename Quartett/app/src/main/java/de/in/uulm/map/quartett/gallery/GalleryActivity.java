@@ -11,24 +11,10 @@ import de.in.uulm.map.quartett.util.ActivityUtils;
  * Created by maxka on 25.12.2016.
  */
 
-public class GalleryActivity extends DrawerActivity {
+public class GalleryActivity extends DrawerActivity implements
+        GalleryContract.BackEnd {
 
     private GalleryPresenter mGalleryPresenter;
-    /**
-     * This ViewSwitcher simply replaces the current fragment with the given
-     * one. This is necessary to change the fragments from the presenter.
-     */
-    private ViewSwitcher mViewSwitcher = new ViewSwitcher() {
-        @Override
-        public void switchToView(GalleryContract.View view) {
-
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    (Fragment) view, R.id.contentFrame);
-            mGalleryPresenter = new GalleryPresenter(view,
-                    getApplicationContext(), this);
-            view.setPresenter(mGalleryPresenter);
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +30,7 @@ public class GalleryActivity extends DrawerActivity {
                     galleryFragment, R.id.contentFrame);
         }
 
-        mGalleryPresenter = new GalleryPresenter(galleryFragment, this, mViewSwitcher);
+        mGalleryPresenter = new GalleryPresenter(galleryFragment, this, this);
         galleryFragment.setPresenter(mGalleryPresenter);
     }
 
@@ -58,9 +44,15 @@ public class GalleryActivity extends DrawerActivity {
         super.onBackPressed();
     }
 
-    public interface ViewSwitcher {
+    @Override
+    public void switchToView(GalleryContract.View view) {
 
-        void switchToView(GalleryContract.View view);
+        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
+                (Fragment) view, R.id.contentFrame);
+        mGalleryPresenter = new GalleryPresenter(view,
+                getApplicationContext(), this);
+        view.setPresenter(mGalleryPresenter);
     }
+
 
 }

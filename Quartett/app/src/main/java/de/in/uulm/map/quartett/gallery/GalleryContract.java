@@ -16,7 +16,7 @@ public interface GalleryContract {
 
     interface Presenter extends BasePresenter {
 
-        Fragment createCardFragment(long deckID,int position);
+        Fragment createCardFragment(long deckID, int position);
 
         List<Deck> populateDeckList();
 
@@ -28,6 +28,11 @@ public interface GalleryContract {
 
     interface View extends BaseView<Presenter> {
 
+    }
+
+    interface BackEnd {
+
+        void switchToView(GalleryContract.View view);
     }
 
 }
