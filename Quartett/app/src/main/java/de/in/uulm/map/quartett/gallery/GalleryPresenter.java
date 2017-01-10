@@ -68,14 +68,6 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     @Override
     public Fragment createCardFragment(long deckID, int position) {
 
-<<<<<<< HEAD
-            }
-            return cardFragments;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-=======
         Deck currentDeck = Deck.findById(Deck.class, deckID);
         List<Card> cards = currentDeck.getCards();
         Card card = cards.get(position);
@@ -84,7 +76,6 @@ public class GalleryPresenter implements GalleryContract.Presenter {
         currentCard.setCardImageUris(card.getCardImages(), mCtx);
         currentCard.setCardTitle(card.mTitle);
         currentCard.setCardAttributeValues(card.getAttributeValues());
->>>>>>> #3_gallery
 
         return currentCard;
     }
