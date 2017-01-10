@@ -78,6 +78,7 @@ public class DeckFragment extends Fragment implements GalleryContract.View {
         deckInitializer = new AsyncDeckInitializer();
         deckInitializer.execute(currentDeckID);
 
+
         return view;
     }
 
@@ -100,9 +101,7 @@ public class DeckFragment extends Fragment implements GalleryContract.View {
         @Override
         protected Long doInBackground(Long... params) {
 
-            mDeckCards = mPresenter.createCardFragments
-                    (params[0]);
-
+           mDeckCards=mPresenter.createDummyList(params[0]);
             return isCancelled() ? null : params[0];
         }
 
@@ -156,6 +155,13 @@ public class DeckFragment extends Fragment implements GalleryContract.View {
         @Override
         public Fragment getItem(int position) {
 
+            if (!(fragments.get(position) instanceof CardFragment)) {
+
+                Fragment newFragment = mPresenter.createCardFragment
+                        (currentDeckID, position);
+                fragments.remove(position);
+                fragments.add(position, newFragment);
+            }
             return this.fragments.get(position);
         }
 

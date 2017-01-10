@@ -16,11 +16,14 @@ public interface GalleryContract {
 
     interface Presenter extends BasePresenter {
 
-        List<Fragment> createCardFragments(long deckID);
+        Fragment createCardFragment(long deckID,int position);
 
         List<Deck> populateDeckList();
 
         void showDeckDetail(long deckID);
+
+        List<Fragment> createDummyList(long deckID);
+
     }
 
     interface View extends BaseView<Presenter> {
