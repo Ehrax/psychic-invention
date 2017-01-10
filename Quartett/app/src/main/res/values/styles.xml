@@ -11,8 +11,9 @@
         <item name="android:windowEnterTransition">@transition/fade</item>
         <item name="android:windowExitTransition">@transition/fade</item>
 
-    <!-- main menu -->
     </style>
+    <!-- main menu -->
+
     <!--style for the main menu buttons-->
     <style name="MainMenuButtonStyle" parent="android:Widget.Material.Button.Colored">
         <item name="android:textSize">18sp</item>
