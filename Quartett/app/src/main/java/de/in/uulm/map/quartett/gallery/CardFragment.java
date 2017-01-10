@@ -1,6 +1,7 @@
 package de.in.uulm.map.quartett.gallery;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
@@ -10,8 +11,11 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -102,7 +106,7 @@ public class CardFragment extends Fragment {
 
             /*this table row holds the attribute title as well as the
              attribute value*/
-            TableRow tableRow = new TableRow(getContext());
+            final TableRow tableRow = new TableRow(getContext());
             tableRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup
                     .LayoutParams.MATCH_PARENT, 0, 1));
             /*row background color appears as bottom border because the
@@ -139,8 +143,7 @@ public class CardFragment extends Fragment {
                 tableRow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        mGamePresenter.chooseAttribute(currentAttrValue);
+                        mGamePresenter.chooseAttribute(currentAttrValue.mAttribute);
                     }
                 });
             }

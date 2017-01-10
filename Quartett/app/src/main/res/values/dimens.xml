@@ -13,4 +13,6 @@
 
     <!--The width of a cards border -->
     <dimen name="card_border_width">15dp</dimen>
+    <!--The width of the win and lose frame (green and red border)-->
+    <dimen name="win_lose_border_width">2dp</dimen>
 </resources>

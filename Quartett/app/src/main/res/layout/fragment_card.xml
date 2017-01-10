@@ -17,7 +17,8 @@
                 android:id="@+id/view_pager_img_card"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:backgroundTint="@color/colorAccent" />
+                android:backgroundTint="@color/colorAccent"
+                android:transitionName="img_user_shared_element"/>
         <de.in.uulm.map.quartett.views.viewpagerindicator.CirclePageIndicator
             android:id="@+id/page_indicator_card"
             android:layout_width="match_parent"

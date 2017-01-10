@@ -15,17 +15,24 @@ public class GameCard extends SugarRecord {
     public LocalGameState mGameState;
     public Card mCard;
     public String mOwner;
+    public int mPositionInDeck;
 
     public GameCard(){
 
     }
 
-    public GameCard(Card card, LocalGameState gameState,String owner){
+    public GameCard(Card card, LocalGameState gameState,int position,String
+                    owner){
         mGameState=gameState;
         mCard = card;
         mOwner=owner;
+        mPositionInDeck=position;
 
     }
 
+    @Override
+    public String toString() {
 
+        return "ID: "+getId()+" Position: "+mPositionInDeck;
+    }
 }

@@ -2,6 +2,8 @@ package de.in.uulm.map.quartett.data;
 
 import com.orm.SugarRecord;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -18,6 +20,7 @@ public class LocalGameState extends SugarRecord {
     public long mGameTimeInMillis;
     public int mMaxPoints;
     public int mMaxRounds;
+    public boolean mIsUsersTurn;
     public Highscore.HighScoreType mGameMode;
 
     public LocalGameState() {
@@ -51,6 +54,7 @@ public class LocalGameState extends SugarRecord {
         }
         mUserPoints = 0;
         mAIPoints = 0;
+        mIsUsersTurn=true;
     }
 
     /**
@@ -60,9 +64,16 @@ public class LocalGameState extends SugarRecord {
      */
     public List<GameCard> getUserDeck() {
 
-        return GameCard.find(GameCard.class, "m_game_state = ? and " +
-                        "m_owner = ?",
-                "" + this.getId(), "user");
+        List<GameCard> userDeck = GameCard.find(GameCard.class, "m_game_state " +
+                "= ? and " + "m_owner = ?", "" + this.getId(), "user");
+        Collections.sort(userDeck, new Comparator<GameCard>() {
+            @Override
+            public int compare(GameCard o1, GameCard o2) {
+
+                return Integer.compare(o1.mPositionInDeck, o2.mPositionInDeck);
+            }
+        });
+        return userDeck;
     }
 
     /**
@@ -70,9 +81,16 @@ public class LocalGameState extends SugarRecord {
      */
     public List<GameCard> getAIDeck() {
 
-        return GameCard.find(GameCard.class, "m_game_state = ? and " +
-                        "m_owner = ?",
-                "" + this.getId(), "ai");
+        List<GameCard> aiDeck = GameCard.find(GameCard.class, "m_game_state =" +
+                " ? and " + "m_owner = ?", "" + this.getId(), "ai");
+        Collections.sort(aiDeck, new Comparator<GameCard>() {
+            @Override
+            public int compare(GameCard o1, GameCard o2) {
+
+                return Integer.compare(o1.mPositionInDeck, o2.mPositionInDeck);
+            }
+        });
+        return aiDeck;
     }
 
 }
