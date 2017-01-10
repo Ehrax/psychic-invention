@@ -27,6 +27,8 @@ public interface GameSettingsContract {
 
         int getTime();
 
+        int getRounds();
+
         GameMode getMode();
     }
 

@@ -72,6 +72,7 @@ public class GameSettingsPresenter implements GameSettingsContract.Presenter {
         intent.putExtra("gs-name", mView.getName());
         intent.putExtra("gs-points", mView.getPoints());
         intent.putExtra("gs-time", mView.getTime());
+        intent.putExtra("gs-rounds", mView.getRounds());
         intent.putExtra("gs-mode", mView.getMode());
 
         mBackend.nextActivity(intent);

@@ -38,6 +38,8 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
 
     private NumberPicker mTimePicker;
 
+    private NumberPicker mRoundPicker;
+
     /**
      * This function will be called by the Android Framework when the View of
      * this Fragment should be loaded. It create the corresponding view and
@@ -65,6 +67,8 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
         mPointsPicker = (NumberPicker) v.findViewById(R.id.points_mode_picker);
 
         mTimePicker = (NumberPicker) v.findViewById(R.id.time_mode_picker);
+
+        mRoundPicker = (NumberPicker) v.findViewById(R.id.round_mode_picker);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +132,10 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
             }
         });
 
+        mRoundPicker.setMinValue(2);
+        mRoundPicker.setMaxValue(100);
+        mRoundPicker.setValue(10);
+
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -136,6 +144,8 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
                         i == R.id.rb_mode_points ? View.VISIBLE : View.GONE);
                 mTimePicker.setVisibility(
                         i == R.id.rb_mode_time ? View.VISIBLE : View.GONE);
+                mRoundPicker.setVisibility(
+                        i == R.id.rb_mode_rounds ? View.VISIBLE : View.GONE);
             }
         });
 
@@ -184,6 +194,16 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
     }
 
     /**
+     * Getter for the currently selected rounds.
+     * @return selected round
+     */
+    @Override
+    public int getRounds() {
+
+        return mPointsPicker.getValue();
+    }
+
+    /**
      * Getter for the currently selected mode.
      * @return selected mode
      */
@@ -195,6 +215,8 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
                 return GameMode.INSANE;
             case R.id.rb_mode_time:
                 return GameMode.TIME;
+            case R.id.rb_mode_rounds:
+                return GameMode.ROUNDS;
             default:
                 return GameMode.POINTS;
         }

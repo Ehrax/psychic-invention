@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingLeft="30dp"
+            android:paddingLeft="10dp"
             android:id="@+id/rg_game_mode">
         <RadioButton
                 android:layout_width="match_parent"
@@ -54,6 +54,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:id="@+id/rb_mode_rounds"
+                android:text="@string/game_settings_mode_rounds"/>
+        <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:id="@+id/rb_mode_insane"
                 android:text="@string/game_settings_mode_insane"/>
     </RadioGroup>
@@ -68,6 +74,15 @@
 
     <NumberPicker
             android:id="@+id/time_mode_picker"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
+
+    <NumberPicker
+            android:id="@+id/round_mode_picker"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

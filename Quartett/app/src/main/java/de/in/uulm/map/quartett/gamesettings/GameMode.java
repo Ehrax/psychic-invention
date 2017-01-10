@@ -10,5 +10,6 @@ package de.in.uulm.map.quartett.gamesettings;
 public enum GameMode {
     POINTS,
     TIME,
+    ROUNDS,
     INSANE
 }
