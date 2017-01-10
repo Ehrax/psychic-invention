@@ -40,34 +40,44 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     }
 
     /**
-     * Use this method to populate the FlippableCardView in the deck detail
-     * fragment. This method can run for a while and should be called Async.
+     * Fill a list with empty fragment. This method is used to initialize the
+     * FlippableStackView and load the the Actual card fragments on the fly.
      *
-     * @param deckID ID of the deck you want to show
-     * @return A ArrayList of fragments which hold the cards.
+     * @param deckID the deckID from the deck you later want to load in the
+     *               flippable stack view. This is important to initialise the
+     *               list with the correct size.
      */
     @Override
-    public List<Fragment> createCardFragments(long deckID) {
-        try {
-            Deck currentDeck = Deck.findById(Deck.class, deckID);
-            List<Card> cards = currentDeck.getCards();
-            List<Fragment> cardFragments = new ArrayList<>();
+    public List<Fragment> createDummyList(long deckID) {
 
-            for (Card card : cards) {
-                CardFragment currentCard = CardFragment.newInstance();
-                currentCard.setCardImageUris(card.getCardImages(),mCtx);
-                currentCard.setCardTitle(card.mTitle);
-                currentCard.setCardAttributeValues(card.getAttributeValues());
-                cardFragments.add(currentCard);
-
-
-            }
-            return cardFragments;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        Deck currentDeck = Deck.findById(Deck.class, deckID);
+        List<Fragment> dummyList = new ArrayList<>();
+        for (int i = 0; i < currentDeck.getCards().size(); i++) {
+            dummyList.add(new Fragment());
         }
+        return dummyList;
+    }
 
+    /**
+     * create a card fragment from a card in a given deck on a given position
+     *
+     * @param deckID   the deckId you want the card from
+     * @param position the position of the card you want to load
+     * @return a complete card fragment from the wanted card
+     */
+    @Override
+    public Fragment createCardFragment(long deckID, int position) {
+
+        Deck currentDeck = Deck.findById(Deck.class, deckID);
+        List<Card> cards = currentDeck.getCards();
+        Card card = cards.get(position);
+
+        CardFragment currentCard = CardFragment.newInstance();
+        currentCard.setCardImageUris(card.getCardImages(), mCtx);
+        currentCard.setCardTitle(card.mTitle);
+        currentCard.setCardAttributeValues(card.getAttributeValues());
+
+        return currentCard;
     }
 
     /**
