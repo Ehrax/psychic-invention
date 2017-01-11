@@ -16,6 +16,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import de.in.uulm.map.quartett.mainmenu.MainMenuActivity;
 import de.in.uulm.map.quartett.settings.SettingsActivity;
@@ -50,6 +52,21 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
          */
         mDrawer = (DrawerLayout) findViewById(R.id
                 .drawer_layout_main);
+
+        //Setting profile pic
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences
+                (this);
+        if(sp.contains(SettingsFragment.PROFILE_URI)) {
+            View drawerHeader = getLayoutInflater().inflate(R.layout
+                    .drawer_header,(ViewGroup)this.mDrawer.findViewById(R.id
+                    .drawer_view));
+            CircularImageView profileImageView = (CircularImageView)
+                    drawerHeader.findViewById
+                    (R.id.img_drawer_profile_pic_drawer);
+            profileImageView.setImageURI(Uri.parse(sp.getString(SettingsFragment
+                    .PROFILE_URI,null)));
+        }
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawer,
                 toolbar, R.string.navigation_drawer_open, R.string
                 .navigation_drawer_close);

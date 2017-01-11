@@ -19,7 +19,7 @@
             android:layout_width="80dp"
             />-->
     <de.in.uulm.map.quartett.views.CircularImageView
-            android:id="@+id/img_drawer_profile_pic"
+            android:id="@+id/img_drawer_profile_pic_drawer"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:layout_width="60dp"
             android:layout_height="60dp"
