@@ -1,5 +1,6 @@
 package de.in.uulm.map.quartett;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -15,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +36,7 @@ import java.io.IOException;
 public class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     protected DrawerLayout mDrawer;
+    private CircularImageView mProfilePic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +59,16 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         //Setting profile pic
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences
                 (this);
-        if(sp.contains(SettingsFragment.PROFILE_URI)) {
-            View drawerHeader = getLayoutInflater().inflate(R.layout
-                    .drawer_header,(ViewGroup)this.mDrawer.findViewById(R.id
-                    .drawer_view));
-            CircularImageView profileImageView = (CircularImageView)
-                    drawerHeader.findViewById
-                    (R.id.img_drawer_profile_pic_drawer);
-            profileImageView.setImageURI(Uri.parse(sp.getString(SettingsFragment
-                    .PROFILE_URI,null)));
+
+        View drawerHeader = getLayoutInflater().inflate(R.layout
+                .drawer_header, (ViewGroup) this.mDrawer.findViewById(R.id
+                .drawer_view));
+        mProfilePic = (CircularImageView)
+                drawerHeader.findViewById
+                        (R.id.img_drawer_profile_pic_drawer);
+        if (sp.contains(SettingsFragment.PROFILE_URI)) {
+            mProfilePic.setImageURI(Uri.parse(sp.getString(SettingsFragment
+                    .PROFILE_URI, null)));
         }
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawer,
@@ -126,7 +130,11 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
                 break;
             case R.id.nav_settings:
                 if (!this.getClass().getSimpleName().equals("SettingsActivity")) {
-                    startActivity(new Intent(this, SettingsActivity.class));
+                    Intent intent= new Intent(this,SettingsActivity.class);
+                    ActivityOptions options = ActivityOptions
+                            .makeSceneTransitionAnimation(this,mProfilePic,
+                                    "profile_pic_transition");
+                    startActivity(intent,options.toBundle());
                 }
                 break;
             case R.id.nav_statistic:
