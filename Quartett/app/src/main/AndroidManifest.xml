@@ -38,6 +38,10 @@
         <activity android:name=".gallery.GalleryActivity">
 
         </activity>
+
+        <activity android:name=".stats.StatsActivity">
+
+        </activity>
     </application>
 
 </manifest>
