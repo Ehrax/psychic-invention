@@ -1,14 +1,14 @@
 package de.in.uulm.map.quartett.gallery;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.widget.TextView;
 
-import de.in.uulm.map.quartett.data.Attribute;
+import com.github.lzyzsd.circleprogress.ArcProgress;
+
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.Deck;
-import de.in.uulm.map.quartett.data.Image;
 
 import java.util.ArrayList;
 import java.util.List;

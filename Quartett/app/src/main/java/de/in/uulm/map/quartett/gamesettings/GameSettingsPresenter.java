@@ -3,6 +3,9 @@ package de.in.uulm.map.quartett.gamesettings;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Button;
+import android.widget.TextView;
+
+import com.github.lzyzsd.circleprogress.ArcProgress;
 
 /**
  * Created by Jona on 08.01.2017.

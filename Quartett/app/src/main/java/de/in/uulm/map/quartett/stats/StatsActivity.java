@@ -11,7 +11,7 @@ import de.in.uulm.map.quartett.util.ActivityUtils;
  * Created by alexanderrasputin on 11.01.17.
  */
 
-public class StatsActivity extends DrawerActivity implements StatsContract.Backend {
+public class StatsActivity extends DrawerActivity {
 
     /**
      * This will be called by the Android API. The function is used to attach
@@ -31,17 +31,5 @@ public class StatsActivity extends DrawerActivity implements StatsContract.Backe
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     tabFactoryFragment, R.id.contentFrame);
         }
-    }
-
-    /**
-     * This method is used to go to the next Activity when all game settings are
-     * entered.
-     *
-     * @param intent the intent to start the Activity
-     */
-    @Override
-    public void nextActivity(Intent intent) {
-
-        startActivity(intent);
     }
 }

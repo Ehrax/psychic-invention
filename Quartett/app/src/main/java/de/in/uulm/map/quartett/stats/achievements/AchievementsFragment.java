@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.stats.StatsContract;
+import de.in.uulm.map.quartett.stats.TabFactoryFragment;
 
 /**
  * Created by alexanderrasputin on 11.01.17.
@@ -17,11 +18,18 @@ import de.in.uulm.map.quartett.stats.StatsContract;
 public class AchievementsFragment extends Fragment implements StatsContract
         .AchievementsView {
 
+    private final static String TAB_ACHIEVEMENTS = "Achievements";
+
     StatsContract.AchievementsPresenter mPresenter;
 
     public static AchievementsFragment newInstance() {
 
-        return new AchievementsFragment();
+        AchievementsFragment achievementsFragment = new AchievementsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(TabFactoryFragment.TAB_TITLE, TAB_ACHIEVEMENTS);
+        achievementsFragment.setArguments(bundle);
+
+        return achievementsFragment;
     }
 
     @Override

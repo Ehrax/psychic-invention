@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.stats.StatsContract;
+import de.in.uulm.map.quartett.stats.TabFactoryFragment;
 
 /**
  * Created by alexanderrasputin on 11.01.17.
@@ -16,11 +17,18 @@ import de.in.uulm.map.quartett.stats.StatsContract;
 
 public class RankingFragment extends Fragment implements StatsContract.RankingView {
 
+    private static final String TAB_RANKING = "Ranking";
+
     private StatsContract.RankingPresenter mPresenter;
 
     public static RankingFragment newInstance() {
 
-        return new RankingFragment();
+        RankingFragment rankingFragment = new RankingFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(TabFactoryFragment.TAB_TITLE, TAB_RANKING);
+        rankingFragment.setArguments(bundle);
+
+        return rankingFragment;
     }
 
     @Override

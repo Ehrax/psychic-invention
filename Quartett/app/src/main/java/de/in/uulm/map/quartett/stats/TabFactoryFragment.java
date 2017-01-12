@@ -1,5 +1,6 @@
 package de.in.uulm.map.quartett.stats;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -10,9 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.stats.achievements.AchievementsFragment;
+import de.in.uulm.map.quartett.stats.achievements.AchievementsPresenter;
 import de.in.uulm.map.quartett.stats.ranking.RankingFragment;
+import de.in.uulm.map.quartett.stats.ranking.RankingPresenter;
 import de.in.uulm.map.quartett.stats.stats.StatsFragment;
+import de.in.uulm.map.quartett.stats.stats.StatsPresenter;
 
 import java.util.ArrayList;
 
@@ -21,6 +26,9 @@ import java.util.ArrayList;
  */
 
 public class TabFactoryFragment extends Fragment {
+
+
+    public static final String TAB_TITLE = "tab_title";
 
     /**
      * base constructor for returning a new instance of TabFactoryFragment
@@ -34,23 +42,42 @@ public class TabFactoryFragment extends Fragment {
 
     /**
      * TODO comment here
-     * @param savedInstanceState
      */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
 
+        // creating StatsFragment and his presenter
+        StatsFragment statsFragment = StatsFragment.newInstance();
+        StatsPresenter statsPresenter = new StatsPresenter(statsFragment,
+                getActivity());
+        statsFragment.setPresenter(statsPresenter);
+
+        // creating AchievementsFragment and his presenter
+        AchievementsFragment achievementsFragment = AchievementsFragment
+                .newInstance();
+        AchievementsPresenter achievementsPresenter = new
+                AchievementsPresenter(achievementsFragment, getActivity());
+        achievementsFragment.setPresenter(achievementsPresenter);
+
+        // creating RankingFragment and his presenter
+        RankingFragment rankingFragment = RankingFragment.newInstance();
+        RankingPresenter rankingPresenter = new RankingPresenter();
+        rankingFragment.setPresenter(rankingPresenter);
+
+        // adding fragments to array list which will be passed to the adapter
         ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(StatsFragment.newInstance());
-        fragments.add(RankingFragment.newInstance());
-        fragments.add(AchievementsFragment.newInstance());
+        fragments.add(statsFragment);
+        fragments.add(achievementsFragment);
+        fragments.add(rankingFragment);
 
         ViewPager viewPager = (ViewPager) getActivity().
                 findViewById(R.id.stats_viewpager);
 
         viewPager.setAdapter(new StatsFragmentPageAdapter(getActivity()
-                .getSupportFragmentManager(), getContext(), fragments));
+                .getSupportFragmentManager(), getActivity(),
+                fragments));
 
         TabLayout tabLayout = (TabLayout) getActivity().
                 findViewById(R.id.stats_sliding_tabs);

@@ -1,6 +1,8 @@
 package de.in.uulm.map.quartett.stats;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -35,7 +37,6 @@ public class StatsFragmentPageAdapter extends FragmentPagerAdapter {
      */
     @Override
     public Fragment getItem(int position) {
-
         return mFragments.get(position);
     }
 
@@ -57,7 +58,10 @@ public class StatsFragmentPageAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
 
-        return mTitles[position];
+        Fragment fragment = mFragments.get(position);
+        Bundle args = fragment.getArguments();
+
+        return args.getString(TabFactoryFragment.TAB_TITLE);
     }
 
 }

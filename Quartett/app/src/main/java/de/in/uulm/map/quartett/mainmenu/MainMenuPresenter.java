@@ -3,11 +3,12 @@ package de.in.uulm.map.quartett.mainmenu;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.widget.TextView;
 
+import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.orm.dsl.NotNull;
 
 import de.in.uulm.map.quartett.gamesettings.GameSettingsActivity;
-import de.in.uulm.map.quartett.data.Deck;
 
 /**
  * Created by alex on 12/17/16.
@@ -31,11 +32,11 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
         mView = mainMenuView;
         mBackend = backend;
         this.ctx = ctx;
-        start();
+        start(arcProgressWin, arcProgressAchiev, arcProgressHands, textViewsHandsWon, textViewGamesLost, textViewsHandsWon, textViewHandsLost);
     }
 
     @Override
-    public void start() {
+    public void start(ArcProgress arcProgressWin, ArcProgress arcProgressAchiev, ArcProgress arcProgressHands, TextView textViewsHandsWon, TextView textViewGamesLost, TextView viewsHandsWon, TextView textViewHandsLost) {
 
     }
 

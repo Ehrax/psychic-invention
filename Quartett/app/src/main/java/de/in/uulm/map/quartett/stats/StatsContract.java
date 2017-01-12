@@ -11,21 +11,21 @@ import de.in.uulm.map.quartett.util.BaseView;
 
 public interface StatsContract {
 
+    // Stats view and presenter
+    interface StatsView extends BaseView<StatsPresenter> {}
+
     interface StatsPresenter extends BasePresenter {}
+
+
 
     interface AchievementsPresenter extends BasePresenter {}
 
-    interface RankingPresenter extends BasePresenter{}
-
-    interface StatsView extends BaseView<StatsPresenter> {}
-
     interface AchievementsView extends BaseView<AchievementsPresenter> {}
+
+
+    interface RankingPresenter extends BasePresenter{}
 
     interface RankingView extends BaseView<RankingPresenter> {}
 
-    interface Backend {
-
-        void nextActivity(Intent intent);
-    }
 
 }
