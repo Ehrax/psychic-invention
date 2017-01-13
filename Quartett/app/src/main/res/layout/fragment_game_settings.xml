@@ -7,7 +7,7 @@
 
     <TextView
             style="@style/GameSettingsSectionFont"
-            android:paddingTop="15dp"
+            android:paddingTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/game_settings_name"/>
@@ -18,11 +18,50 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:hint="Name"
+            android:hint="@string/game_settings_name_hint"
             android:inputType="text"
             android:maxLines="1"
             android:cursorVisible="false"
             android:imeOptions="actionDone"/>
+
+    <TextView
+            style="@style/GameSettingsSectionFont"
+            android:paddingTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/game_settings_level"/>
+
+    <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="23dp"
+            android:paddingRight="-32dp"
+            android:id="@+id/rg_game_level">
+
+        <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/rb_level_easy"
+                android:text="@string/game_settings_level_easy"
+                android:checked="true"/>
+
+        <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/rb_level_normal"
+                android:text="@string/game_settings_level_normal"/>
+
+        <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/rb_level_hard"
+                android:text="@string/game_settings_level_hard"/>
+
+    </RadioGroup>
 
     <TextView
             style="@style/GameSettingsSectionFont"
@@ -35,7 +74,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingLeft="10dp"
+            android:paddingLeft="23dp"
+            android:paddingRight="23dp"
             android:id="@+id/rg_game_mode">
         <RadioButton
                 android:layout_width="match_parent"
@@ -65,27 +105,10 @@
     </RadioGroup>
 
     <NumberPicker
-            android:id="@+id/points_mode_picker"
+            android:id="@+id/limit_picker"
+            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"/>
-
-    <NumberPicker
-            android:id="@+id/time_mode_picker"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"/>
-
-    <NumberPicker
-            android:id="@+id/round_mode_picker"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="120dp"
             android:layout_marginTop="15dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"/>
@@ -95,7 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center|bottom"
-            android:padding="30dp">
+            android:padding="25dp">
 
         <Button
                 android:id="@+id/btn_ok"
