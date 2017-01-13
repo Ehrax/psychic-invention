@@ -13,10 +13,25 @@
         <item name="android:windowExitTransition">@transition/slide</item>
 
     </style>
+    <!-- main menu -->
+
     <!--style for the main menu buttons-->
     <style name="MainMenuButtonStyle" parent="android:Widget.Material.Button.Colored">
         <item name="android:textSize">18sp</item>
         <item name="android:backgroundTint">@color/colorButtonNormal</item>
+        <item name="android:textColor">@color/colorButtonText</item>
+    </style>
+
+    <!-- game settings -->
+    <style name="GameSettingsSectionFont"
+           parent="android:Widget.Material.TextView">
+        <item name="android:textSize">24sp</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingBottom">15dp</item>
+    </style>
+    <style name="GameSettingsOkButton"
+           parent="android:Widget.Material.Button.Colored">
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/colorButtonText</item>
     </style>
 
@@ -66,14 +81,26 @@
         <item name="android:layout_weight">0.4</item>
     </style>
 
+    <!-- action bar -->
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <!-- game end -->
+    <style name="GameEndStatusText"
+            parent="android:Widget.Material.TextView">
+        <item name="android:textSize">90dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+    <style name="GameEndStatusSubText"
+            parent="android:Widget.Material.TextView">
+        <item name="android:textSize">50dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
 
 </resources>

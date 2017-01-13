@@ -153,36 +153,28 @@ public class EntityFactory {
 
     /**
      * This will save the all the Entities that factory has loaded earlier in
-     * the correct order. It is discouraged to save entities any other way. The
-     * methods is async and returns immediately.
-     *
-     * @param callback be notified when the transaction is completed
+     * the correct order. It is discouraged to save entities any other way.
      */
-    protected void save(@Nullable final Callback callback) {
+    protected void save() {
 
-        SugarTransactionHelper.doInTransaction(
-                new SugarTransactionHelper.Callback() {
+        SugarTransactionHelper.doInTransaction(new SugarTransactionHelper.Callback() {
 
-                    @Override
-                    public void manipulateInTransaction() {
+            @Override
+            public void manipulateInTransaction() {
 
-                        if (mDeck == null) {
-                            return;
-                        }
+                if (mDeck == null) {
+                    return;
+                }
 
-                        mDeck.save();
-                        mDeckInfo.save();
-                        SugarRecord.saveInTx(mAttributes);
-                        SugarRecord.saveInTx(mCards);
-                        SugarRecord.saveInTx(mAttributeValues);
-                        SugarRecord.saveInTx(mImages);
-                        SugarRecord.saveInTx(mCardImages);
-
-                        if (callback != null) {
-                            callback.onSaved();
-                        }
-                    }
-                });
+                SugarRecord.saveInTx(mImages);
+                mDeck.save();
+                mDeckInfo.save();
+                SugarRecord.saveInTx(mAttributes);
+                SugarRecord.saveInTx(mCards);
+                SugarRecord.saveInTx(mAttributeValues);
+                SugarRecord.saveInTx(mCardImages);
+            }
+        });
     }
 
     /**
@@ -300,14 +292,5 @@ public class EntityFactory {
         mCardImages.add(cardImage);
 
         return cardImage;
-    }
-
-    /**
-     * Use this interface to be notified when the deck has be fully saved to the
-     * database.
-     */
-    public interface Callback {
-
-        void onSaved();
     }
 }
