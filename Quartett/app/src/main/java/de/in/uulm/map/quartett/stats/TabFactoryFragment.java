@@ -1,6 +1,5 @@
 package de.in.uulm.map.quartett.stats;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -11,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.in.uulm.map.quartett.R;
-import de.in.uulm.map.quartett.data.Achievement;
+import de.in.uulm.map.quartett.data.Statistic;
 import de.in.uulm.map.quartett.stats.achievements.AchievementsFragment;
 import de.in.uulm.map.quartett.stats.achievements.AchievementsPresenter;
 import de.in.uulm.map.quartett.stats.ranking.RankingFragment;
@@ -27,8 +26,9 @@ import java.util.ArrayList;
 
 public class TabFactoryFragment extends Fragment {
 
-
     public static final String TAB_TITLE = "tab_title";
+
+    private ArrayList<Fragment> mFragments;
 
     /**
      * base constructor for returning a new instance of TabFactoryFragment
@@ -48,6 +48,37 @@ public class TabFactoryFragment extends Fragment {
 
         super.onActivityCreated(savedInstanceState);
 
+
+        /**
+         * adding some won and lost stats
+         */
+
+        Statistic won = new Statistic();
+        won.mTitle = StatsPresenter.GAME_WON;
+        won.mValue = 40;
+        won.save();
+
+        Statistic lost = new Statistic();
+        lost.mTitle = StatsPresenter.GAME_LOST;
+        lost.mValue = 32;
+        lost.save();
+
+        Statistic handsWon = new Statistic();
+        handsWon.mTitle = StatsPresenter.HAND_WON;
+        handsWon.mValue = 80;
+        handsWon.save();
+
+        Statistic handsLost = new Statistic();
+        handsLost.mTitle = StatsPresenter.HAND_LOST;
+        handsLost.mValue = 60;
+        handsLost.save();
+
+        Statistic total = new Statistic();
+        total.mTitle = StatsPresenter.TOTAL_GAMES;
+        total.mValue = 72;
+        total.save();
+
+
         // creating StatsFragment and his presenter
         StatsFragment statsFragment = StatsFragment.newInstance();
         StatsPresenter statsPresenter = new StatsPresenter(statsFragment,
@@ -66,18 +97,67 @@ public class TabFactoryFragment extends Fragment {
         RankingPresenter rankingPresenter = new RankingPresenter();
         rankingFragment.setPresenter(rankingPresenter);
 
-        // adding fragments to array list which will be passed to the adapter
-        ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(statsFragment);
-        fragments.add(achievementsFragment);
-        fragments.add(rankingFragment);
+        // adding mFragments to array list which will be passed to the adapter
+        mFragments = new ArrayList<>();
+        mFragments.add(statsFragment);
+        mFragments.add(achievementsFragment);
+        mFragments.add(rankingFragment);
 
         ViewPager viewPager = (ViewPager) getActivity().
                 findViewById(R.id.stats_viewpager);
 
         viewPager.setAdapter(new StatsFragmentPageAdapter(getActivity()
                 .getSupportFragmentManager(), getActivity(),
-                fragments));
+                mFragments));
+
+
+        /**
+         * this is needed because onResume is not called if a tab has changed,
+         * onPageSelected calls the corresponding fragment which is now visible
+         */
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                Fragment fragment = mFragments.get(position);
+                Bundle args = fragment.getArguments();
+
+                String title = args.getString(TabFactoryFragment.TAB_TITLE);
+
+                switch (title) {
+                    case StatsFragment.TAB_STATISTICS: {
+                        StatsFragment statsFragment = (StatsFragment) fragment;
+                        statsFragment.fragmentBecomeVisible();
+                        break;
+                    }
+
+                    case AchievementsFragment.TAB_ACHIEVEMENTS: {
+                        AchievementsFragment achievementsFragment =
+                                (AchievementsFragment) fragment;
+                        achievementsFragment.fragmentBecomeVisible();
+                        break;
+                    }
+
+                    case RankingFragment.TAB_RANKING: {
+                        RankingFragment rankingFragment = (RankingFragment) fragment;
+                        rankingFragment.fragmentBecomeVisible();
+                        break;
+                    }
+                }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
 
         TabLayout tabLayout = (TabLayout) getActivity().
                 findViewById(R.id.stats_sliding_tabs);

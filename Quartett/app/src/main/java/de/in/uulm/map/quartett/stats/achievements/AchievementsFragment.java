@@ -18,7 +18,7 @@ import de.in.uulm.map.quartett.stats.TabFactoryFragment;
 public class AchievementsFragment extends Fragment implements StatsContract
         .AchievementsView {
 
-    private final static String TAB_ACHIEVEMENTS = "Achievements";
+    public final static String TAB_ACHIEVEMENTS = "Achievements";
 
     StatsContract.AchievementsPresenter mPresenter;
 
@@ -46,5 +46,10 @@ public class AchievementsFragment extends Fragment implements StatsContract
         View v = inflater.inflate(R.layout.fragment_stats_achievments, container, false);
 
         return v;
+    }
+
+    @Override
+    public void fragmentBecomeVisible() {
+
     }
 }

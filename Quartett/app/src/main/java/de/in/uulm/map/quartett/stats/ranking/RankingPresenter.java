@@ -13,7 +13,7 @@ import de.in.uulm.map.quartett.stats.StatsContract;
 public class RankingPresenter implements StatsContract.RankingPresenter{
 
     @Override
-    public void start(ArcProgress arcProgressWin, ArcProgress arcProgressAchiev, ArcProgress arcProgressHands, TextView textViewsHandsWon, TextView textViewGamesLost, TextView viewsHandsWon, TextView textViewHandsLost) {
+    public void start() {
 
     }
 }

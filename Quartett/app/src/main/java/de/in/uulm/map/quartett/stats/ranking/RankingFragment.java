@@ -17,7 +17,7 @@ import de.in.uulm.map.quartett.stats.TabFactoryFragment;
 
 public class RankingFragment extends Fragment implements StatsContract.RankingView {
 
-    private static final String TAB_RANKING = "Ranking";
+    public static final String TAB_RANKING = "Ranking";
 
     private StatsContract.RankingPresenter mPresenter;
 
@@ -44,5 +44,10 @@ public class RankingFragment extends Fragment implements StatsContract.RankingVi
         View v = inflater.inflate(R.layout.fragment_stats_ranking, container, false);
 
         return v;
+    }
+
+    @Override
+    public void fragmentBecomeVisible() {
+
     }
 }

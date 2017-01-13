@@ -1,9 +1,6 @@
 package de.in.uulm.map.quartett.stats.achievements;
 
 import android.content.Context;
-import android.widget.TextView;
-
-import com.github.lzyzsd.circleprogress.ArcProgress;
 
 import de.in.uulm.map.quartett.stats.StatsContract;
 
@@ -31,7 +28,7 @@ public class AchievementsPresenter implements StatsContract.AchievementsPresente
     }
 
     @Override
-    public void start(ArcProgress arcProgressWin, ArcProgress arcProgressAchiev, ArcProgress arcProgressHands, TextView textViewsHandsWon, TextView textViewGamesLost, TextView viewsHandsWon, TextView textViewHandsLost) {
+    public void start() {
 
     }
 }

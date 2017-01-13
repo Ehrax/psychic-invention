@@ -3,9 +3,7 @@ package de.in.uulm.map.quartett.mainmenu;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.widget.TextView;
 
-import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.orm.dsl.NotNull;
 
 import de.in.uulm.map.quartett.gamesettings.GameSettingsActivity;
@@ -32,11 +30,11 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
         mView = mainMenuView;
         mBackend = backend;
         this.ctx = ctx;
-        start(arcProgressWin, arcProgressAchiev, arcProgressHands, textViewsHandsWon, textViewGamesLost, textViewsHandsWon, textViewHandsLost);
+        start();
     }
 
     @Override
-    public void start(ArcProgress arcProgressWin, ArcProgress arcProgressAchiev, ArcProgress arcProgressHands, TextView textViewsHandsWon, TextView textViewGamesLost, TextView viewsHandsWon, TextView textViewHandsLost) {
+    public void start() {
 
     }
 
