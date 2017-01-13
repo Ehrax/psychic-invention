@@ -3,6 +3,7 @@ package de.in.uulm.map.quartett.gallery;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RippleDrawable;
 import android.net.Uri;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -155,6 +156,10 @@ public class CardFragment extends Fragment {
                         }
                     }
                 });
+
+
+
+
             }
 
             //finally adding the table row holding the attribute to the table
