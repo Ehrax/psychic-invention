@@ -1,6 +1,6 @@
 package de.in.uulm.map.quartett.gameend;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -26,14 +26,14 @@ public class GameEndActivity extends DrawerActivity implements GameEndContract.B
 
         GameEndFragment gameEndFragment;
 
-        Fragment fragment = getFragmentManager().
+        Fragment fragment = getSupportFragmentManager().
                 findFragmentById(R.id.contentFrame);
 
         if (fragment instanceof GameEndFragment) {
             gameEndFragment = (GameEndFragment) fragment;
         } else {
             gameEndFragment = new GameEndFragment();
-            ActivityUtils.addFragmentToActivity(getFragmentManager(),
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     gameEndFragment, R.id.contentFrame);
         }
 
