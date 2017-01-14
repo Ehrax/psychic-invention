@@ -37,6 +37,7 @@ public class CardFragment extends Fragment {
 
     private Drawable[] mCardImages;
     private List<AttributeValue> mAttributeValues = new ArrayList<>();
+    private GalleryContract.Presenter mPresenter;
     private String mCardTitle;
 
     public static CardFragment newInstance() {
@@ -186,6 +187,16 @@ public class CardFragment extends Fragment {
     public void setCardTitle(String cardTitle) {
 
         this.mCardTitle = cardTitle;
+    }
+
+    /**
+     * Use this method to the cards presenter
+     *
+     * @param mPresenter
+     */
+    public void setPresenter(GalleryContract.Presenter mPresenter) {
+
+        this.mPresenter = mPresenter;
     }
 
     /**
