@@ -18,16 +18,29 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <!-- game settings -->
+    <string name="game_end_win">You Win</string>
+    <string name="game_end_lose">You Lose</string>
+    <string name="game_end_draw">Draw</string>
+    <string name="game_end_restart">Restart</string>
+    <string name="game_end_settings">Change Settings</string>
+    <string name="game_end_menu">Main Menu</string>
+
     <!--game settings text-->
     <string name="game_settings_mode">Mode</string>
+    <string name="game_settings_level">Level</string>
     <string name="game_settings_mode_normal">Normal</string>
-    <string name="game_settings_mode_points">Points</string>
-    <string name="game_settings_mode_time">Time</string>
-    <string name="game_settings_mode_rounds">Rounds</string>
+    <string name="game_settings_mode_points">Point</string>
+    <string name="game_settings_mode_time">Minute</string>
+    <string name="game_settings_mode_rounds">Round</string>
     <string name="game_settings_mode_insane">Insane</string>
     <string name="game_settings_name">Name</string>
     <string name="game_settings_btn_ok">Start Game</string>
-  
+    <string name="game_settings_level_easy">Easy</string>
+    <string name="game_settings_level_normal">Normal</string>
+    <string name="game_settings_level_hard">Hard</string>
+    <string name="game_settings_name_hint">Name</string>
+
     <!--gallery-->
     <string name="no_title">No Title</string>
 
