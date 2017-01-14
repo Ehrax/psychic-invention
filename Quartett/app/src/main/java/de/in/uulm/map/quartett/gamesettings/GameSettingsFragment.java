@@ -185,12 +185,12 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
 
     /**
      * Getter for the currently selected time.
-     * @return selected time in minutes
+     * @return selected time in milliseconds
      */
     @Override
-    public int getTime() {
+    public long getTime() {
 
-        return mTimePicker.getValue();
+        return mTimePicker.getValue()*60*1000;
     }
 
     /**

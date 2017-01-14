@@ -1,5 +1,6 @@
 package de.in.uulm.map.quartett.game;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 
 import de.in.uulm.map.quartett.data.Attribute;
@@ -38,8 +39,11 @@ public interface GameContract {
 
     }
 
-    interface BackEnd{
+    interface BackEnd {
+
         void switchToView(GameContract.View view);
+
+        void startActivity(Intent intent);
     }
 
 }

@@ -1,11 +1,15 @@
 package de.in.uulm.map.quartett.game;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.gallery.GalleryContract;
+import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 
 /**
@@ -29,8 +33,10 @@ public class GameActivity extends DrawerActivity implements GameContract
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     gameFragment, R.id.contentFrame);
         }
+        mPresenter = new GamePresenter(gameFragment,getIntent().getExtras(),
+                this, this);
+        mPresenter.setIsStartingNewGame(!(getIntent().getExtras()==null));
 
-        mPresenter = new GamePresenter(gameFragment, this, this);
         gameFragment.setPresenter(mPresenter);
     }
 
@@ -41,7 +47,7 @@ public class GameActivity extends DrawerActivity implements GameContract
                 .isCancelled()) {
             GameFragment.mCardLoader.cancel(true);
         }
-        if(mPresenter.mAI != null && !mPresenter.mAI.isCancelled()){
+        if (mPresenter.mAI != null && !mPresenter.mAI.isCancelled()) {
             mPresenter.mAI.cancel(true);
         }
         super.onBackPressed();
@@ -55,5 +61,11 @@ public class GameActivity extends DrawerActivity implements GameContract
         view.setPresenter(mPresenter);
     }
 
+    @Override
+    public void startActivity(Intent intent) {
 
+        ActivityOptionsCompat options = ActivityOptionsCompat
+                .makeSceneTransitionAnimation(this);
+        super.startActivity(intent,options.toBundle());
+    }
 }

@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Button;
 
+import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.game.GameActivity;
+
 /**
  * Created by Jona on 08.01.2017.
  */
@@ -25,6 +28,12 @@ public class GameSettingsPresenter implements GameSettingsContract.Presenter {
      * Context needed for intent construction.
      */
     Context mContext;
+
+    public static final String NAME = "gs-name";
+    public static final String POINTS = "gs-points";
+    public static final String TIME = "gs-time";
+    public static final String ROUNDS = "gs-rounds";
+    public static final String MODE = "gs-mode";
 
     /**
      * Simple constructor to initialize members.
@@ -68,12 +77,12 @@ public class GameSettingsPresenter implements GameSettingsContract.Presenter {
     @Override
     public void onOkPressed() {
 
-        Intent intent = new Intent(mContext, GameSettingsActivity.class);
-        intent.putExtra("gs-name", mView.getName());
-        intent.putExtra("gs-points", mView.getPoints());
-        intent.putExtra("gs-time", mView.getTime());
-        intent.putExtra("gs-rounds", mView.getRounds());
-        intent.putExtra("gs-mode", mView.getMode());
+        Intent intent = new Intent(mContext, GameActivity.class);
+        intent.putExtra(NAME, mView.getName());
+        intent.putExtra(POINTS, mView.getPoints());
+        intent.putExtra(TIME, mView.getTime());
+        intent.putExtra(ROUNDS, mView.getRounds());
+        intent.putExtra(MODE, mView.getMode());
 
         mBackend.nextActivity(intent);
     }

@@ -3,6 +3,7 @@ package de.in.uulm.map.quartett.gamesettings;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
@@ -48,6 +49,8 @@ public class GameSettingsActivity extends DrawerActivity implements GameSettings
     @Override
     public void nextActivity(Intent intent) {
 
-        startActivity(intent);
+        ActivityOptionsCompat options = ActivityOptionsCompat
+                .makeSceneTransitionAnimation(this);
+        startActivity(intent,options.toBundle());
     }
 }

@@ -25,7 +25,7 @@ public interface GameSettingsContract {
 
         int getPoints();
 
-        int getTime();
+        long getTime();
 
         int getRounds();
 

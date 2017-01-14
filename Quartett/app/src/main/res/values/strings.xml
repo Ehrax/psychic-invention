@@ -7,7 +7,7 @@
     <string name="new_online_game">Multiplayer</string>
     <string name="achievements">Achievements</string>
     <string name="setting">Settings</string>
-
+    <string name="continue_game">Spiel fortsetzen</string>
     <!--drawer navigation links -->
     <string name="main_menu">Main Menu</string>
     <string name="gallery">Gallery</string>
@@ -26,4 +26,22 @@
     <string name="ai_turn">Dein Gegner ist am Zug</string>
     <!--snack bar text-->
     <string name="not_your_turn">Du bist nicht am Zug!</string>
+
+    <!-- game settings -->
+    <string name="game_end_win">You Win</string>
+    <string name="game_end_lose">You Lose</string>
+    <string name="game_end_draw">Draw</string>
+    <string name="game_end_restart">Restart</string>
+    <string name="game_end_settings">Change Settings</string>
+    <string name="game_end_menu">Main Menu</string>
+
+    <!--game settings text-->
+    <string name="game_settings_mode">Mode</string>
+    <string name="game_settings_mode_normal">Normal</string>
+    <string name="game_settings_mode_points">Points</string>
+    <string name="game_settings_mode_time">Time</string>
+    <string name="game_settings_mode_rounds">Rounds</string>
+    <string name="game_settings_mode_insane">Insane</string>
+    <string name="game_settings_name">Name</string>
+    <string name="game_settings_btn_ok">Start Game</string>
 </resources>

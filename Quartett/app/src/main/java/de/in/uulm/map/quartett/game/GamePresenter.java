@@ -1,10 +1,12 @@
 package de.in.uulm.map.quartett.game;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -18,6 +20,11 @@ import de.in.uulm.map.quartett.data.GameCard;
 import de.in.uulm.map.quartett.data.Highscore;
 import de.in.uulm.map.quartett.data.LocalGameState;
 import de.in.uulm.map.quartett.gallery.CardFragment;
+import de.in.uulm.map.quartett.gameend.GameEndActivity;
+import de.in.uulm.map.quartett.gameend.GameEndPresenter;
+import de.in.uulm.map.quartett.gameend.GameEndState;
+import de.in.uulm.map.quartett.gamesettings.GameMode;
+import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
 import de.in.uulm.map.quartett.util.AssetUtils;
 
 import java.io.FileNotFoundException;
@@ -43,6 +50,9 @@ public class GamePresenter implements GameContract.Presenter {
     deck and their points
      */
     private LocalGameState mCurrentGameState;
+
+    private boolean mIsStartingNewGame;
+    private Bundle mGameSettings;
     /*
     interface to the activity to replace fragments
      */
@@ -61,12 +71,16 @@ public class GamePresenter implements GameContract.Presenter {
     private float mUserCompareValue;
     private float mAICompareValue;
 
-    public GamePresenter(@NonNull GameContract.View gameView, Context ctx,
+    private AsyncDeckRearranger mDeckRearranger;
+
+    public GamePresenter(@NonNull GameContract.View gameView, Bundle
+            gameSettings, Context ctx,
                          GameContract.BackEnd viewSwitcher) {
 
         mView = gameView;
         mCtx = ctx;
         mBackEnd = viewSwitcher;
+        mGameSettings = gameSettings;
     }
 
     /**
@@ -90,39 +104,61 @@ public class GamePresenter implements GameContract.Presenter {
     }
 
     /**
-     * Loading the game state if there is one. Otherwise create a new one.
+     * Loading the game state if there is one. Otherwise create a new one. If
+     * starting a new game and there is a local game state delete it and create
+     * a new one.
      */
     @Override
     public void start() {
 
         try {
-            LocalGameState localGameState = LocalGameState.findById
-                    (LocalGameState.class, 1);
-            if (localGameState != null) {
-                mCurrentGameState = localGameState;
-            } else {
-                //TODO: get current deck from shared preferences or intent
-                List<Card>[] userAndAiDeck = shuffleDeck(1);
-                mCurrentGameState = new LocalGameState(0, 0, 10, Highscore.HighScoreType
-                        .ROUND);
-                mCurrentGameState.save();
-                mCountDownLatchDeckLoader = new CountDownLatch(1);
-                //loading the decks async into db
-                new AsyncDeckLoader().execute(userAndAiDeck);
-                try {
-                    //wait until the first card of the user is loaded to
-                    // continue showing the first card.
-                    mCountDownLatchDeckLoader.await();
-                } catch (InterruptedException e) {
-                    //TODO:handle exception
+            List<LocalGameState> localGameState = LocalGameState.listAll
+                    (LocalGameState.class);
+            if (!localGameState.isEmpty()) {
+                if (!mIsStartingNewGame) {
+                    mCurrentGameState = localGameState.get(0);
+                } else {
+                    localGameState.get(0).delete();
+                    createNewGame();
                 }
-
+            } else {
+                createNewGame();
             }
+            mIsStartingNewGame = false;
         } catch (SQLiteException e) {
             e.printStackTrace();
-
         }
 
+    }
+
+    private void createNewGame() {
+        //TODO: get current deck from shared preferences or intent
+
+        mCurrentGameState = new LocalGameState(mGameSettings.getLong
+                (GameSettingsPresenter.TIME), mGameSettings.getInt
+                (GameSettingsPresenter.POINTS), mGameSettings.getInt
+                (GameSettingsPresenter.ROUNDS), (GameMode) mGameSettings
+                .getSerializable(GameSettingsPresenter.MODE), mGameSettings.getString
+                (GameSettingsPresenter.NAME));
+        mCurrentGameState.save();
+        GameCard.deleteAll(GameCard.class);
+        List<Card>[] userAndAiDeck = shuffleDeck(1);
+        mCountDownLatchDeckLoader = new CountDownLatch(1);
+        //loading the decks async into db
+        new AsyncDeckLoader().execute(userAndAiDeck);
+        try {
+            //wait until the first card of the user is loaded to
+            // continue showing the first card.
+            mCountDownLatchDeckLoader.await();
+        } catch (InterruptedException e) {
+            //TODO:handle exception
+        }
+
+    }
+
+    public void setIsStartingNewGame(boolean mIsStartingNewGame) {
+
+        this.mIsStartingNewGame = mIsStartingNewGame;
     }
 
     /**
@@ -223,13 +259,14 @@ public class GamePresenter implements GameContract.Presenter {
         mUserCompareValue = setCompareAttributeValue(true, chosenAttr);
         mAICompareValue = setCompareAttributeValue(false, chosenAttr);
         //rearranging both decks
-        new AsyncDeckRearranger().execute(winner);
+        mDeckRearranger = new AsyncDeckRearranger();
+        mDeckRearranger.execute(winner);
         //tell compareFragment who won and which attribute was compared to
         // display things correct.
         compareFragment.setRoundWinner(winner);
         compareFragment.setAttribute(chosenAttr);
 
-        if (mCurrentGameState.mGameMode == Highscore.HighScoreType.ROUND) {
+        if (mCurrentGameState.mGameMode == GameMode.ROUNDS) {
             mCurrentGameState.mCurrentRound++;
         }
         mCurrentGameState.save();
@@ -237,15 +274,54 @@ public class GamePresenter implements GameContract.Presenter {
 
     }
 
+    private void clearGameState() {
+
+        mDeckRearranger.cancel(true);
+        mCurrentGameState.delete();
+        GameCard.deleteAll(GameCard.class);
+    }
+
     /**
      * This method is called when the user clicks on the compare fragment. This
-     * method performs a Fragment Transaction.
+     * method performs a Fragment Transaction or calls a new Activity if the
+     * game is finished.
      */
     @Override
     public void onClickCompare(RoundWinner winner) {
 
-        GameFragment gameFragment = GameFragment.newInstance();
-        mBackEnd.switchToView(gameFragment);
+        Intent intent = new Intent(mCtx, GameEndActivity.class);
+        boolean isFinish = false;
+        if (mCurrentGameState.mGameMode == GameMode.POINTS) {
+            if (mCurrentGameState.mAIPoints == mCurrentGameState.mMaxPoints ||
+                    mCurrentGameState.mUserPoints == mCurrentGameState.mMaxPoints) {
+
+                intent.putExtra(GameEndPresenter.WINNER, winner == RoundWinner
+                        .USER ? GameEndState.WIN : GameEndState.LOSE);
+                intent.putExtra(GameEndPresenter.SUB, " ");
+                clearGameState();
+                mBackEnd.startActivity(intent);
+                isFinish = true;
+
+            }
+        } else if (mCurrentGameState.mGameMode == GameMode.ROUNDS) {
+            if (mCurrentGameState.mCurrentRound == mCurrentGameState.mMaxRounds) {
+                intent.putExtra(GameEndPresenter.WINNER, mCurrentGameState
+                        .mAIPoints > mCurrentGameState.mUserPoints ? GameEndState
+                        .LOSE : GameEndState.WIN);
+                intent.putExtra(GameEndPresenter.SUB, " ");
+                clearGameState();
+                mBackEnd.startActivity(intent);
+                isFinish = true;
+            }
+        } else if (mCurrentGameState.mGameMode == GameMode.TIME) {
+
+        } else if (mCurrentGameState.mGameMode == GameMode.INSANE) {
+
+        }
+        if (!isFinish) {
+            GameFragment gameFragment = GameFragment.newInstance();
+            mBackEnd.switchToView(gameFragment);
+        }
     }
 
     /**
@@ -464,8 +540,8 @@ public class GamePresenter implements GameContract.Presenter {
 
     /**
      * Loading the Users and AIs Decks into DB. This is a fucking long task
-     * because we have to save them redundant because sugar orm can´t handle
-     * neither list nor arrays.
+     * because we have to save them redundant because sugar orm can handle
+     * neither lists nor arrays.
      */
     private class AsyncDeckLoader extends AsyncTask<List<Card>, Void, Void> {
 
@@ -526,11 +602,19 @@ public class GamePresenter implements GameContract.Presenter {
          */
         private void rearrangeWinnerOrDrawDeck(List<GameCard> winnerDeck) {
 
-            winnerDeck.get(0).mPositionInDeck = winnerDeck.size();
-            winnerDeck.get(0).save();
-            for (GameCard gameCard : winnerDeck) {
-                gameCard.mPositionInDeck--;
-                gameCard.save();
+            if (!isCancelled()) {
+                winnerDeck.get(0).mPositionInDeck = winnerDeck.size();
+                if (!isCancelled()) {
+                    winnerDeck.get(0).save();
+                    for (GameCard gameCard : winnerDeck) {
+                        if (isCancelled()) {
+                            break;
+                        }
+                        gameCard.mPositionInDeck--;
+                        gameCard.save();
+
+                    }
+                }
             }
         }
 
@@ -542,9 +626,14 @@ public class GamePresenter implements GameContract.Presenter {
          */
         private void rearrangeLoserDeck(List<GameCard> loserDeck) {
 
-            for (GameCard gameCard : loserDeck) {
-                gameCard.mPositionInDeck--;
-                gameCard.save();
+            if (!isCancelled()) {
+                for (GameCard gameCard : loserDeck) {
+                    if (isCancelled()) {
+                        break;
+                    }
+                    gameCard.mPositionInDeck--;
+                    gameCard.save();
+                }
             }
         }
 
@@ -555,14 +644,16 @@ public class GamePresenter implements GameContract.Presenter {
          */
         private void changeLostCardOwner(RoundWinner winner) {
 
-            GameCard lostCard = winner == RoundWinner.USER ? mCurrentGameState
-                    .getAIDeck().get(0) : mCurrentGameState.getUserDeck().get(0);
-            lostCard.mOwner = winner == RoundWinner.USER ? "user" : "ai";
-            lostCard.mPositionInDeck = winner == RoundWinner
-                    .USER ? mCurrentGameState.getUserDeck().size() : mCurrentGameState
-                    .getAIDeck().size();
+            if (!isCancelled()) {
+                GameCard lostCard = winner == RoundWinner.USER ? mCurrentGameState
+                        .getAIDeck().get(0) : mCurrentGameState.getUserDeck().get(0);
+                lostCard.mOwner = winner == RoundWinner.USER ? "user" : "ai";
+                lostCard.mPositionInDeck = winner == RoundWinner
+                        .USER ? mCurrentGameState.getUserDeck().size() : mCurrentGameState
+                        .getAIDeck().size();
 
-            lostCard.save();
+                lostCard.save();
+            }
         }
     }
 }

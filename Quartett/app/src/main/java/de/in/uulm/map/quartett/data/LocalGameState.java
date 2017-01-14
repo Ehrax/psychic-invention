@@ -2,6 +2,8 @@ package de.in.uulm.map.quartett.data;
 
 import com.orm.SugarRecord;
 
+import de.in.uulm.map.quartett.gamesettings.GameMode;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 
 public class LocalGameState extends SugarRecord {
 
+    public String mUserName;
     public int mUserPoints;
     public int mAIPoints;
     public int mCurrentRound;
@@ -21,7 +24,7 @@ public class LocalGameState extends SugarRecord {
     public int mMaxPoints;
     public int mMaxRounds;
     public boolean mIsUsersTurn;
-    public Highscore.HighScoreType mGameMode;
+    public GameMode mGameMode;
 
     public LocalGameState() {
 
@@ -38,23 +41,25 @@ public class LocalGameState extends SugarRecord {
      * @param maxRounds    the rounds to play until the player with most points
      *                     wins. Set to 0 if game mode != rounds
      * @param gameMode     the game mode
+     * @param userName     the name of the current user
      */
     public LocalGameState(long timeInMillis, int maxPoints, int
-            maxRounds, Highscore.HighScoreType gameMode) {
+            maxRounds, GameMode gameMode, String userName) {
 
         mGameMode = gameMode;
-        if (gameMode == Highscore.HighScoreType.TIME) {
+        if (gameMode == GameMode.TIME) {
             mGameTimeInMillis = timeInMillis;
             mCurrentTimeInMillis = 0;
-        } else if (gameMode == Highscore.HighScoreType.POINT) {
+        } else if (gameMode == GameMode.POINTS) {
             mMaxPoints = maxPoints;
-        } else if (gameMode == Highscore.HighScoreType.ROUND) {
+        } else if (gameMode == GameMode.ROUNDS) {
             mMaxRounds = maxRounds;
             mCurrentRound = 0;
         }
         mUserPoints = 0;
         mAIPoints = 0;
-        mIsUsersTurn=true;
+        mIsUsersTurn = true;
+        mUserName=userName;
     }
 
     /**

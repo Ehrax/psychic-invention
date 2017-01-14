@@ -1,6 +1,7 @@
 package de.in.uulm.map.quartett;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -29,7 +30,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity);
-
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         //Setting the toolbar (we can use the same toolbar for all activities)
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

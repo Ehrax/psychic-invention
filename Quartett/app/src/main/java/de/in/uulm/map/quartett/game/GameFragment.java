@@ -106,7 +106,6 @@ public class GameFragment extends Fragment implements GameContract.View {
     @Override
     public void onPause() {
 
-        mPresenter.saveGameState();
         super.onPause();
     }
 

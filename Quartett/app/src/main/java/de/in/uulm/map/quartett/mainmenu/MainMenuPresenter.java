@@ -24,8 +24,6 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
     @NotNull
     private final MainMenuContract.Backend mBackend;
 
-    @NotNull
-    private final Context ctx;
 
     public MainMenuPresenter(@NonNull MainMenuContract.View mainMenuView,
                              MainMenuContract.Backend backend,
@@ -34,7 +32,6 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
         mView = mainMenuView;
         this.mCtx = ctx;
         mBackend = backend;
-        this.ctx = ctx;
         start();
     }
 
@@ -48,12 +45,16 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
      */
     @Override
     public void startNewLocalGame() {
-        //TODO: start local game activity
-        Intent intent = new Intent(mCtx, GameActivity.class);
-        mCtx.startActivity(intent);
-
-        Intent intent = new Intent(ctx, GameSettingsActivity.class);
+        Intent intent = new Intent(mCtx, GameSettingsActivity.class);
         mBackend.startActivity(intent);
+    }
+
+    /**
+     * Continues the local game by calling the game activity
+     */
+    @Override
+    public void continueLocalGame() {
+        mBackend.startActivity(new Intent(mCtx,GameActivity.class));
     }
 
     /**
