@@ -3,6 +3,8 @@ package de.in.uulm.map.quartett.stats.ranking;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,9 +41,22 @@ public class RankingFragment extends Fragment implements StatsContract.RankingVi
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_stats_ranking, container, false);
+        View v = inflater.inflate(R.layout.fragment_stats_ranking,
+                container, false);
+
+        mPresenter.start();
+
+        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id
+                .stats_ranking_recycler_view);
+
+        RankingContractsAdapter adapter = new RankingContractsAdapter
+                (mPresenter, getActivity());
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return v;
     }

@@ -49,6 +49,11 @@ public class StatsPresenter implements StatsContract.StatsPresenter {
     public static final String TOTAL_GAMES = "total_games";
     public static final String TOTAL_HANDS = "total_hands";
 
+    /**
+     * basic constructor
+     * @param view StatsContract.StatsView
+     * @param ctx contexts of stats view
+     */
     public StatsPresenter(StatsContract.StatsView view, Context ctx) {
 
         this.mView = view;
@@ -56,7 +61,7 @@ public class StatsPresenter implements StatsContract.StatsPresenter {
     }
 
     /**
-     * this method is loading data from the database to later on set the
+     * this method is loading data from the database to later on, set the
      * StatsFragment View to the specific statistics
      */
     @Override

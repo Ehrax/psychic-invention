@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Achievement;
+import de.in.uulm.map.quartett.data.Highscore;
 import de.in.uulm.map.quartett.data.Statistic;
 import de.in.uulm.map.quartett.stats.achievements.AchievementsFragment;
 import de.in.uulm.map.quartett.stats.achievements.AchievementsPresenter;
@@ -49,11 +50,6 @@ public class TabFactoryFragment extends Fragment {
 
         super.onActivityCreated(savedInstanceState);
 
-
-        /**
-         * adding some won and lost stats
-         */
-//
 //        Statistic won = new Statistic();
 //        won.mTitle = StatsPresenter.GAME_WON;
 //        won.mValue = 40;
@@ -93,6 +89,25 @@ public class TabFactoryFragment extends Fragment {
 //        secondAchiev.mTargetValue = 10;
 //        secondAchiev.mValue = 5;
 //        secondAchiev.save();
+//
+//        Highscore score = new Highscore();
+//        score.mName = "Alex";
+//        score.mValue = 100;
+//        score.save();
+//        Highscore score2 = new Highscore();
+//        score2.mName = "Roman";
+//        score2.mValue = 500;
+//        score2.save();
+//
+//        Highscore score3 = new Highscore();
+//        score3.mName = "Alex";
+//        score3.mValue = 50;
+//        score3.save();
+//
+//        Highscore score4 = new Highscore();
+//        score4.mName = "Alex";
+//        score4.mValue = 800;
+//        score4.save();
 
         // creating StatsFragment and his presenter
         StatsFragment statsFragment = StatsFragment.newInstance();
@@ -109,7 +124,8 @@ public class TabFactoryFragment extends Fragment {
 
         // creating RankingFragment and his presenter
         RankingFragment rankingFragment = RankingFragment.newInstance();
-        RankingPresenter rankingPresenter = new RankingPresenter();
+        RankingPresenter rankingPresenter = new RankingPresenter
+                (rankingFragment, getActivity());
         rankingFragment.setPresenter(rankingPresenter);
 
         // adding mFragments to array list which will be passed to the adapter
@@ -132,7 +148,8 @@ public class TabFactoryFragment extends Fragment {
          */
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            public void onPageScrolled(int position, float positionOffset,
+                                       int positionOffsetPixels) {
 
             }
 
