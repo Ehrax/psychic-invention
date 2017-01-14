@@ -12,7 +12,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -91,7 +90,7 @@ public class CardFragment extends Fragment {
             TableRow tableRow = new TableRow(getContext());
             tableRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup
                     .LayoutParams.MATCH_PARENT, 0, 1));
-            tableRow.setBackgroundResource(R.drawable.ic_table_border);
+            tableRow.setBackgroundResource(R.drawable.table_border);
 
             /*row background color appears as bottom border because the
              TextViews has darker background color and they are matching
