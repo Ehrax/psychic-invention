@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -76,8 +77,7 @@ public class CardFragment extends Fragment {
         TextView titleTextView = (TextView) view.findViewById(R.id
                 .txt_card_title);
         TableLayout tableLayoutAttributes = (TableLayout) view.findViewById
-                (R.id
-                        .table_layout_card_attr);
+                (R.id.table_layout_card_attr);
 
         //setting the title of the card
         titleTextView.setText(mCardTitle);
@@ -91,11 +91,13 @@ public class CardFragment extends Fragment {
             TableRow tableRow = new TableRow(getContext());
             tableRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup
                     .LayoutParams.MATCH_PARENT, 0, 1));
+            tableRow.setBackgroundResource(R.drawable.ic_table_border);
+
             /*row background color appears as bottom border because the
              TextViews has darker background color and they are matching
              the tableRow except the tableRows padding.*/
-            tableRow.setBackgroundColor(getResources().getColor(R
-                    .color.colorTableDivider));
+            //tableRow.setBackgroundColor(getResources().getColor(R
+            //       .color.colorTableDivider));
             /*setting bottom padding to one except for the last attribute to
              define a bottom border*/
             if (i < mAttributeValues.size() - 1) {
@@ -103,6 +105,14 @@ public class CardFragment extends Fragment {
             }
 
             tableRow.setGravity(Gravity.CENTER_VERTICAL);
+
+            ImageView winIndicator = new ImageView(getContext(),
+                    null, 0, R.style.ImageViewCardWinIndicator);
+            winIndicator.setImageResource(R.drawable.ic_card_win_indicator);
+            tableRow.addView(winIndicator);
+            if(!currentAttrValue.mAttribute.mLargerWins) {
+                winIndicator.setRotation(180);
+            }
 
             /*Instantiating the TextViews with the correct style and adding
              them to the table row*/
@@ -112,9 +122,9 @@ public class CardFragment extends Fragment {
             textViewAttrTitle.setText(currentAttrValue.mAttribute.mName);
             tableRow.addView(textViewAttrTitle);
 
+
             TextView textViewAttrValue = new TextView(tableRow.getContext(),
-                    null, 0, R
-                    .style.TextViewCardAttributesValue);
+                    null, 0, R.style.TextViewCardAttributesValue);
             textViewAttrValue.setText(currentAttrValue.mValue + " " +
                     "" + currentAttrValue.mAttribute.mUnit);
             tableRow.addView(textViewAttrValue);
