@@ -71,6 +71,8 @@ public class BetterArcProgress extends View {
     private static final String INSTANCE_ARC_ANGLE = "arc_angle";
     private static final String INSTANCE_SUFFIX = "suffix";
 
+    public String mCircleText;
+
     public BetterArcProgress(Context context) {
 
         this(context, null);
@@ -330,7 +332,13 @@ public class BetterArcProgress extends View {
                     paint);
         }
 
-        String text = String.valueOf(getProgress());
+        String text;
+        if (mCircleText != null) {
+            text = mCircleText;
+        } else {
+            text = String.valueOf(getProgress());
+        }
+
         if (!TextUtils.isEmpty(text)) {
             textPaint.setColor(textColor);
             textPaint.setTextSize(textSize);

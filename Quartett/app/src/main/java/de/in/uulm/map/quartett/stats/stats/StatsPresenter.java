@@ -34,9 +34,10 @@ public class StatsPresenter implements StatsContract.StatsPresenter {
     private List<Statistic> mGamesLost;
     private List<Statistic> mHandsWon;
     private List<Statistic> mHandsLost;
+    private List<Statistic> mHandsTotal;
     private List<Statistic> mGamesTotal;
-    private List<Achievement> doneAchievements;
-    private List<Achievement> undoneAchievements;
+    private List<Achievement> mDoneAchievements;
+    private List<Achievement> mTotalAchievements;
 
     /**
      * use this static variables to access the correct mTitles in the Database
@@ -46,6 +47,7 @@ public class StatsPresenter implements StatsContract.StatsPresenter {
     public static final String HAND_WON = "hand_won";
     public static final String HAND_LOST = "hand_lost";
     public static final String TOTAL_GAMES = "total_games";
+    public static final String TOTAL_HANDS = "total_hands";
 
     public StatsPresenter(StatsContract.StatsView view, Context ctx) {
 
@@ -67,12 +69,12 @@ public class StatsPresenter implements StatsContract.StatsPresenter {
         mGamesTotal = Statistic.findWithQuery(Statistic.class, query, TOTAL_GAMES);
         mHandsWon = Statistic.findWithQuery(Statistic.class, query, HAND_WON);
         mHandsLost = Statistic.findWithQuery(Statistic.class, query, HAND_LOST);
+        mHandsTotal = Statistic.findWithQuery(Statistic.class, query, TOTAL_HANDS);
 
-        doneAchievements = Achievement.findWithQuery(Achievement.class,
+        mDoneAchievements = Achievement.findWithQuery(Achievement.class,
                 "SELECT * FROM Achievement WHERE m_Value==m_Target_Value");
 
-        undoneAchievements = Achievement.findWithQuery(Achievement.class,
-                "SELECT * FROM Achievement WHERE m_Value!=m_Target_Value");
+        mTotalAchievements = Achievement.listAll(Achievement.class);
     }
 
     /**
@@ -89,14 +91,14 @@ public class StatsPresenter implements StatsContract.StatsPresenter {
             arcProgress.setProgress(0);
         } else {
             Statistic gamesWon = mGamesWon.get(0);
-            Statistic gamesTotal = mGamesLost.get(0);
+            Statistic gamesTotal = mGamesTotal.get(0);
 
-            int win = (int) gamesWon.mValue;
-            int total = (int) gamesTotal.mValue;
+            float win = gamesWon.mValue;
+            float total = gamesTotal.mValue;
 
-            int winPercentage = win / total * 100;
+            float winPercentage = (win / total * 100);
 
-            arcProgress.setProgress(winPercentage);
+            arcProgress.setProgress((int) winPercentage);
         }
     }
 
@@ -110,15 +112,15 @@ public class StatsPresenter implements StatsContract.StatsPresenter {
     @Override
     public void setArcProgressAchiev(BetterArcProgress arcProgress) {
 
-        if (doneAchievements.size() == 0) {
+        if (mDoneAchievements.size() == 0) {
             arcProgress.setProgress(0);
 
         } else {
-            int doneAchiev = doneAchievements.size();
-            int undoneAchiev = undoneAchievements.size();
+            float doneAchiev = mDoneAchievements.size();
+            float totalAchiev = mTotalAchievements.size();
 
             // TODO
-            float achievPercentage = undoneAchiev / doneAchiev;
+            float achievPercentage = doneAchiev / totalAchiev * 100;
 
             arcProgress.setProgress((int) achievPercentage);
         }
@@ -134,24 +136,34 @@ public class StatsPresenter implements StatsContract.StatsPresenter {
     @Override
     public void setArcProgressHands(BetterArcProgress arcProgress) {
 
-        if (mHandsWon.size() == 0 || mHandsLost.size() == 0) {
+        if (mHandsWon.size() == 0) {
             arcProgress.setProgress(0);
             arcProgress.setSuffixText(" ");
         } else {
+            Statistic handsLost;
+            float lost;
+            float killDeathRatio ;
+
             Statistic handsWon = mHandsWon.get(0);
-            Statistic handsLost = mHandsLost.get(0);
+            Statistic handsTotal = mHandsTotal.get(0);
 
-            int win = (int) handsWon.mValue;
-            int lost = (int) handsLost.mValue;
+            float win = handsWon.mValue;
+            float total = handsTotal.mValue;
 
-            float killDeathRatio = win/lost;
+            if (mHandsLost.size() != 0) {
+                handsLost  = mHandsLost.get(0);
+                lost = handsLost.mValue;
+                killDeathRatio = (win / lost);
+            } else {
+                killDeathRatio = win;
+            }
 
-
-            // TODO
             String rest = String.format(java.util.Locale.US, "%.1f",
-                    killDeathRatio % 1);
+                    killDeathRatio % 1).substring(1);
 
-            arcProgress.setProgress((int) killDeathRatio);
+            arcProgress.mCircleText = String.valueOf((int) killDeathRatio);
+            arcProgress.setProgress((int) win);
+            arcProgress.setMax((int) total);
             arcProgress.setSuffixText(String.valueOf(rest));
         }
     }
