@@ -6,6 +6,7 @@ import android.content.Intent;
 import de.in.uulm.map.quartett.data.LocalGameState;
 import de.in.uulm.map.quartett.game.GameActivity;
 import de.in.uulm.map.quartett.gamesettings.GameSettingsActivity;
+import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
 import de.in.uulm.map.quartett.mainmenu.MainMenuActivity;
 
 /**
@@ -22,6 +23,8 @@ public class GameEndPresenter implements GameEndContract.Presenter {
 
     private Context mContext;
 
+    private LocalGameState mLastGameState;
+
     public static final String WINNER = "game-status";
     public static final String SUB = "game-sub-status";
 
@@ -36,12 +39,13 @@ public class GameEndPresenter implements GameEndContract.Presenter {
     GameEndPresenter(GameEndContract.View view,
                      GameEndContract.Backend backend,
                      Intent callingIntent,
-                     Context context) {
+                     Context context,LocalGameState lastGameState) {
 
         mView = view;
         mCallingIntent = callingIntent;
         mBackend = backend;
         mContext = context;
+        mLastGameState=lastGameState;
     }
 
     /**
@@ -77,12 +81,19 @@ public class GameEndPresenter implements GameEndContract.Presenter {
     @Override
     public void onRestartClicked() {
 
-        LocalGameState.deleteAll(LocalGameState.class);
         Intent intent = new Intent(mContext, GameActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        intent.putExtra(GameSettingsPresenter.NAME, mLastGameState.mUserName);
+        intent.putExtra(GameSettingsPresenter.MODE, mLastGameState.mGameMode);
+        intent.putExtra(GameSettingsPresenter.ROUNDS, mLastGameState.mMaxRounds);
+        intent.putExtra(GameSettingsPresenter.TIME, mLastGameState
+                .mGameTimeInMillis);
+        intent.putExtra(GameSettingsPresenter.POINTS, mLastGameState.mMaxPoints);
+
+        LocalGameState.deleteAll(LocalGameState.class);
         mBackend.startActivity(intent);
 
-        // TODO: add game loading activity
     }
 
     /**
@@ -98,7 +109,6 @@ public class GameEndPresenter implements GameEndContract.Presenter {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         mBackend.startActivity(intent);
 
-        // TODO: add settings activity
     }
 
     /**

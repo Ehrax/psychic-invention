@@ -126,4 +126,9 @@ public class GameCompareFragment extends Fragment implements GameContract.View {
         mPresenter.saveGameState();
         super.onPause();
     }
+
+    @Override
+    public void updateGameTime(long timeInMillis) {
+
+    }
 }

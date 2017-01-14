@@ -33,10 +33,12 @@ public interface GameContract {
 
         void startAI();
 
+        void setView(View view);
+
     }
 
     interface View extends BaseView<Presenter> {
-
+        void updateGameTime(long timeInMillis);
     }
 
     interface BackEnd {

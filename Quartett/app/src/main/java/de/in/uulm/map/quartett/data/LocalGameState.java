@@ -19,7 +19,7 @@ public class LocalGameState extends SugarRecord {
     public int mUserPoints;
     public int mAIPoints;
     public int mCurrentRound;
-    public int mCurrentTimeInMillis;
+    public long mCurrentTimeInMillis;
     public long mGameTimeInMillis;
     public int mMaxPoints;
     public int mMaxRounds;

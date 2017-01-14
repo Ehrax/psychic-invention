@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -17,7 +18,6 @@ import de.in.uulm.map.quartett.data.AttributeValue;
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.data.GameCard;
-import de.in.uulm.map.quartett.data.Highscore;
 import de.in.uulm.map.quartett.data.LocalGameState;
 import de.in.uulm.map.quartett.gallery.CardFragment;
 import de.in.uulm.map.quartett.gameend.GameEndActivity;
@@ -43,15 +43,21 @@ import java.util.concurrent.CountDownLatch;
 public class GamePresenter implements GameContract.Presenter {
 
     @NonNull
-    private final GameContract.View mView;
+    private GameContract.View mView;
     private final Context mCtx;
     /*
     holding all information about the current game state like ais and user
     deck and their points
      */
     private LocalGameState mCurrentGameState;
-
+    /*
+    If the user wants to start a new game (true) or continue the existing one
+     */
     private boolean mIsStartingNewGame;
+    /*
+    This bundle is given by the GameSettingsActivity and is only needed once
+    to set the mCurrentGameState
+     */
     private Bundle mGameSettings;
     /*
     interface to the activity to replace fragments
@@ -63,15 +69,23 @@ public class GamePresenter implements GameContract.Presenter {
     AsyncDeckLoader loaded at least the first card.
      */
     private CountDownLatch mCountDownLatchDeckLoader;
-
+    /*
+    The "AI" AsyncTask
+     */
     AI mAI = new AI();
-
+    /*
+    The users and ais image of the currently compared cards. And Values of
+    the compared attributes. This is saved for the compare view so we can
+    rearrange the decks in the background.
+     */
     private Drawable mUserCompareImage;
     private Drawable mAICompareImage;
     private float mUserCompareValue;
     private float mAICompareValue;
 
     private AsyncDeckRearranger mDeckRearranger;
+
+    public static GameTimer GameTimer;
 
     public GamePresenter(@NonNull GameContract.View gameView, Bundle
             gameSettings, Context ctx,
@@ -81,6 +95,12 @@ public class GamePresenter implements GameContract.Presenter {
         mCtx = ctx;
         mBackEnd = viewSwitcher;
         mGameSettings = gameSettings;
+    }
+
+    @Override
+    public void setView(GameContract.View view) {
+
+        mView = view;
     }
 
     /**
@@ -117,6 +137,12 @@ public class GamePresenter implements GameContract.Presenter {
             if (!localGameState.isEmpty()) {
                 if (!mIsStartingNewGame) {
                     mCurrentGameState = localGameState.get(0);
+                    if (mCurrentGameState.mGameMode == GameMode.TIME) {
+                        GameTimer = new GameTimer(mCurrentGameState
+                                .mGameTimeInMillis - mCurrentGameState
+                                .mCurrentTimeInMillis, 1000);
+                        GameTimer.start();
+                    }
                 } else {
                     localGameState.get(0).delete();
                     createNewGame();
@@ -131,6 +157,12 @@ public class GamePresenter implements GameContract.Presenter {
 
     }
 
+    /**
+     * Use this method to set a new GameState. This method starts an AsyncTask
+     * to load the users and ais deck and create the GameCard objects for it.
+     * This method may cause an interrupted exception which is currently not
+     * handled xD
+     */
     private void createNewGame() {
         //TODO: get current deck from shared preferences or intent
 
@@ -154,8 +186,22 @@ public class GamePresenter implements GameContract.Presenter {
             //TODO:handle exception
         }
 
+        if (GameTimer != null) {
+            GameTimer.cancel();
+        }
+        if (mCurrentGameState.mGameMode == GameMode.TIME) {
+            GameTimer = new GameTimer(mCurrentGameState.mGameTimeInMillis, 1000);
+            GameTimer.start();
+        }
+
     }
 
+    /**
+     * This method is called from the GameActivity.
+     *
+     * @param mIsStartingNewGame Set to true if the user wants to start a new
+     *                           game. False if he wants to continue.
+     */
     public void setIsStartingNewGame(boolean mIsStartingNewGame) {
 
         this.mIsStartingNewGame = mIsStartingNewGame;
@@ -274,12 +320,6 @@ public class GamePresenter implements GameContract.Presenter {
 
     }
 
-    private void clearGameState() {
-
-        mDeckRearranger.cancel(true);
-        mCurrentGameState.delete();
-        GameCard.deleteAll(GameCard.class);
-    }
 
     /**
      * This method is called when the user clicks on the compare fragment. This
@@ -298,7 +338,7 @@ public class GamePresenter implements GameContract.Presenter {
                 intent.putExtra(GameEndPresenter.WINNER, winner == RoundWinner
                         .USER ? GameEndState.WIN : GameEndState.LOSE);
                 intent.putExtra(GameEndPresenter.SUB, " ");
-                clearGameState();
+                mDeckRearranger.cancel(true);
                 mBackEnd.startActivity(intent);
                 isFinish = true;
 
@@ -307,14 +347,14 @@ public class GamePresenter implements GameContract.Presenter {
             if (mCurrentGameState.mCurrentRound == mCurrentGameState.mMaxRounds) {
                 intent.putExtra(GameEndPresenter.WINNER, mCurrentGameState
                         .mAIPoints > mCurrentGameState.mUserPoints ? GameEndState
-                        .LOSE : GameEndState.WIN);
+                        .LOSE : mCurrentGameState
+                        .mUserPoints > mCurrentGameState.mAIPoints ? GameEndState
+                        .WIN : GameEndState.DRAW);
                 intent.putExtra(GameEndPresenter.SUB, " ");
-                clearGameState();
+                mDeckRearranger.cancel(true);
                 mBackEnd.startActivity(intent);
                 isFinish = true;
             }
-        } else if (mCurrentGameState.mGameMode == GameMode.TIME) {
-
         } else if (mCurrentGameState.mGameMode == GameMode.INSANE) {
 
         }
@@ -538,6 +578,40 @@ public class GamePresenter implements GameContract.Presenter {
         }
     }
 
+    public class GameTimer extends CountDownTimer {
+
+        public GameTimer(long millisInFuture, long countDownInterval) {
+
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+            mCurrentGameState.mCurrentTimeInMillis = mCurrentGameState
+                    .mGameTimeInMillis - millisUntilFinished;
+            mView.updateGameTime(mCurrentGameState
+                    .mGameTimeInMillis - mCurrentGameState
+                    .mCurrentTimeInMillis);
+        }
+
+        @Override
+        public void onFinish() {
+
+            Intent intent = new Intent(mCtx, GameEndActivity.class);
+            intent.putExtra(GameEndPresenter.WINNER, mCurrentGameState
+                    .mAIPoints > mCurrentGameState.mUserPoints ? GameEndState
+                    .LOSE : mCurrentGameState
+                    .mUserPoints > mCurrentGameState.mAIPoints ? GameEndState
+                    .WIN : GameEndState.DRAW);
+            intent.putExtra(GameEndPresenter.SUB, " ");
+            if (mDeckRearranger != null && !mDeckRearranger.isCancelled()) {
+                mDeckRearranger.cancel(true);
+            }
+            mBackEnd.startActivity(intent);
+        }
+    }
+
     /**
      * Loading the Users and AIs Decks into DB. This is a fucking long task
      * because we have to save them redundant because sugar orm can handle
@@ -567,6 +641,9 @@ public class GamePresenter implements GameContract.Presenter {
 
     }
 
+    /**
+     * This class is used to rearrange the users and ais deck after each round.
+     */
     private class AsyncDeckRearranger extends AsyncTask<RoundWinner, Void, Void> {
 
         @Override

@@ -9,6 +9,7 @@ import android.util.Log;
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.gallery.GalleryContract;
+import de.in.uulm.map.quartett.gamesettings.GameMode;
 import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 
@@ -33,9 +34,9 @@ public class GameActivity extends DrawerActivity implements GameContract
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     gameFragment, R.id.contentFrame);
         }
-        mPresenter = new GamePresenter(gameFragment,getIntent().getExtras(),
+        mPresenter = new GamePresenter(gameFragment, getIntent().getExtras(),
                 this, this);
-        mPresenter.setIsStartingNewGame(!(getIntent().getExtras()==null));
+        mPresenter.setIsStartingNewGame(!(getIntent().getExtras() == null));
 
         gameFragment.setPresenter(mPresenter);
     }
@@ -50,6 +51,12 @@ public class GameActivity extends DrawerActivity implements GameContract
         if (mPresenter.mAI != null && !mPresenter.mAI.isCancelled()) {
             mPresenter.mAI.cancel(true);
         }
+        if (mPresenter.getCurrentGameState().mGameMode == GameMode.TIME) {
+            mPresenter.GameTimer.cancel();
+        }
+        if (mPresenter.getCurrentGameState() != null) {
+            mPresenter.getCurrentGameState().save();
+        }
         super.onBackPressed();
     }
 
@@ -59,6 +66,7 @@ public class GameActivity extends DrawerActivity implements GameContract
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                 (Fragment) view, R.id.contentFrame);
         view.setPresenter(mPresenter);
+        mPresenter.setView(view);
     }
 
     @Override
@@ -66,6 +74,6 @@ public class GameActivity extends DrawerActivity implements GameContract
 
         ActivityOptionsCompat options = ActivityOptionsCompat
                 .makeSceneTransitionAnimation(this);
-        super.startActivity(intent,options.toBundle());
+        super.startActivity(intent, options.toBundle());
     }
 }

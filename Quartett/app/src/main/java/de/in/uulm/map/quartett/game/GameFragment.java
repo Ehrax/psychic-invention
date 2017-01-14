@@ -16,11 +16,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.gallery.CardFragment;
+import de.in.uulm.map.quartett.gamesettings.GameMode;
+import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
+
+import java.util.Locale;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -35,6 +40,8 @@ public class GameFragment extends Fragment implements GameContract.View {
     Used to load the card fragment async
      */
     public static AsyncCardLoader mCardLoader;
+
+    private TextView mTxtLimit;
 
     public static GameFragment newInstance() {
 
@@ -62,9 +69,20 @@ public class GameFragment extends Fragment implements GameContract.View {
         mCardLoader = new AsyncCardLoader();
         mCardLoader.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        TextView txtViewTurn = (TextView) view.findViewById(R.id.txt_turn);
-        txtViewTurn.setText(mPresenter.getCurrentGameState().mIsUsersTurn ? R
-                .string.your_turn : R.string.ai_turn);
+        ImageView imgViewTurn = (ImageView) view.findViewById(R.id.img_turn);
+        imgViewTurn.setImageDrawable(mPresenter.getCurrentGameState()
+                .mIsUsersTurn ? getActivity().getDrawable(R.drawable.ic_user):
+                    getActivity().getDrawable(R.drawable.ic_ai));
+
+        mTxtLimit = (TextView) view.findViewById(R.id
+                .txt_in_game_limit);
+        mTxtLimit.setText(mPresenter.getCurrentGameState().mGameMode ==
+                GameMode.ROUNDS?mPresenter.getCurrentGameState()
+                .mCurrentRound+"/"+mPresenter.getCurrentGameState()
+                .mMaxRounds:mPresenter.getCurrentGameState().mGameMode ==
+                GameMode.POINTS?"Point limit: "+mPresenter
+                .getCurrentGameState().mMaxPoints:getFormattedTime(mPresenter
+                .getCurrentGameState().mCurrentTimeInMillis));
 
         TextView txtViewPoints = (TextView) view.findViewById(R.id
                 .txt_in_game_points);
@@ -79,6 +97,19 @@ public class GameFragment extends Fragment implements GameContract.View {
 
 
         return view;
+    }
+
+    @Override
+    public void updateGameTime(long timeInMillis) {
+        mTxtLimit.setText(getFormattedTime(timeInMillis));
+    }
+
+    private String getFormattedTime(long timeInMillis){
+        long m,s;
+        s = (timeInMillis/1000)%60;
+        m = (timeInMillis/(1000*60))%60;
+
+        return String.format(Locale.GERMAN,"%2d:%02d",m,s);
     }
 
     @Override

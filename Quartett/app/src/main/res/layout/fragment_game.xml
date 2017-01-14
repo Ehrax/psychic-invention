@@ -12,11 +12,13 @@
             android:orientation="horizontal"
             android:background="@color/colorPrimaryDark">
 
-        <TextView
-                android:id="@+id/txt_turn"
-                style="@style/TextViewInGameHeader"
-                android:layout_weight="0.6"
-                />
+        <ImageView
+                android:id="@+id/img_turn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_user"
+                android:paddingStart="5dp"/>
+
         <ProgressBar
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -25,13 +27,25 @@
                 android:id="@+id/progress_bar_ki_turn"
                 android:paddingTop="15dp"
                 android:paddingBottom="10dp"
-                android:layout_weight="0.1"/>
-
+                android:layout_weight="0.1" />
+        <TextView
+                style="@style/TextViewInGameHeader"
+                android:id="@+id/txt_in_game_limit"
+                android:textAlignment="center"
+               />
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_user"/>
         <TextView
                 android:id="@+id/txt_in_game_points"
                 style="@style/TextViewInGameHeaderPoints"
-                android:layout_weight="0.3"
-                 />
+                android:layout_weight="0.3" />
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_ai"/>
 
     </LinearLayout>
 

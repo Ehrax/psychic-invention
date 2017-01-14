@@ -120,7 +120,7 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
         mPointsPicker.setMaxValue(100);
         mPointsPicker.setValue(20);
 
-        mTimePicker.setMinValue(5);
+        mTimePicker.setMinValue(1);
         mTimePicker.setMaxValue(60);
         mTimePicker.setValue(10);
 
@@ -200,7 +200,7 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
     @Override
     public int getRounds() {
 
-        return mPointsPicker.getValue();
+        return mRoundPicker.getValue();
     }
 
     /**
