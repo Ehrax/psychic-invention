@@ -1,5 +1,6 @@
 package de.in.uulm.map.quartett.gallery;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import de.in.uulm.map.quartett.data.Deck;
@@ -16,11 +17,11 @@ public interface GalleryContract {
 
     interface Presenter extends BasePresenter {
 
-        Fragment createCardFragment(long deckID,int position);
+        Fragment createCardFragment(long deckID, int position);
 
         List<Deck> populateDeckList();
 
-        void showDeckDetail(long deckID);
+        void onDeckClicked(long deckID);
 
         List<Fragment> createDummyList(long deckID);
 
@@ -28,6 +29,13 @@ public interface GalleryContract {
 
     interface View extends BaseView<Presenter> {
 
+    }
+
+    interface Backend {
+
+        void startActivity(Intent intent);
+
+        Intent getIntent();
     }
 
 }
