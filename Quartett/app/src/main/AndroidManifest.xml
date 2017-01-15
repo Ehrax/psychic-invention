@@ -31,7 +31,8 @@
         </activity>
 
 
-        <activity android:name=".gamesettings.GameSettingsActivity">
+        <activity android:name=".gamesettings.GameSettingsActivity"
+                android:noHistory="true">
       
         </activity>
 
@@ -39,7 +40,16 @@
 
         </activity>
 
+
         <activity android:name=".stats.StatsActivity">
+      </activity>
+
+        <activity android:name=".game.GameActivity" android:noHistory="true">
+
+        </activity>
+        <activity android:name=".gameend.GameEndActivity"
+                android:noHistory="true">
+
 
         </activity>
     </application>

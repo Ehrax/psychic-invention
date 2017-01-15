@@ -7,6 +7,10 @@ import android.widget.TextView;
 
 import com.github.lzyzsd.circleprogress.ArcProgress;
 
+import de.in.uulm.map.quartett.gallery.GalleryActivity;
+import de.in.uulm.map.quartett.gallery.GalleryMode;
+
+
 /**
  * Created by Jona on 08.01.2017.
  */
@@ -28,6 +32,12 @@ public class GameSettingsPresenter implements GameSettingsContract.Presenter {
      * Context needed for intent construction.
      */
     Context mContext;
+
+    public static final String NAME = "gs-name";
+    public static final String LIMIT = "gs-limit";
+    public static final String MODE = "gs-mode";
+    public static final String DECK = "gs-deck";
+    public static final String LEVEL = "gs-level";
 
     /**
      * Simple constructor to initialize members.
@@ -71,13 +81,13 @@ public class GameSettingsPresenter implements GameSettingsContract.Presenter {
     @Override
     public void onOkPressed() {
 
-        Intent intent = new Intent(mContext, GameSettingsActivity.class);
-        intent.putExtra("gs-name", mView.getName());
-        intent.putExtra("gs-points", mView.getPoints());
-        intent.putExtra("gs-time", mView.getTime());
-        intent.putExtra("gs-rounds", mView.getRounds());
-        intent.putExtra("gs-mode", mView.getMode());
-
+        Intent intent = new Intent(mContext, GalleryActivity.class);
+        intent.putExtra(NAME, mView.getName());
+        intent.putExtra(LIMIT, mView.getLimit());
+        intent.putExtra(MODE, mView.getMode());
+        intent.putExtra(LEVEL,mView.getLevel());
+        intent.putExtra("mode", GalleryMode.CHOOSE);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         mBackend.nextActivity(intent);
     }
 }

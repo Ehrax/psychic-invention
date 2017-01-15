@@ -32,13 +32,11 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
 
     private EditText mEditTextName;
 
-    private RadioGroup mRadioGroup;
+    private RadioGroup mRadioGroupMode;
 
-    private NumberPicker mPointsPicker;
+    private RadioGroup mRadioGroupLevel;
 
-    private NumberPicker mTimePicker;
-
-    private NumberPicker mRoundPicker;
+    private NumberPicker mLimitPicker;
 
     /**
      * This function will be called by the Android Framework when the View of
@@ -62,13 +60,11 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
 
         mEditTextName = (EditText) v.findViewById(R.id.edit_text_name);
 
-        mRadioGroup = (RadioGroup) v.findViewById(R.id.rg_game_mode);
+        mRadioGroupMode = (RadioGroup) v.findViewById(R.id.rg_game_mode);
 
-        mPointsPicker = (NumberPicker) v.findViewById(R.id.points_mode_picker);
+        mRadioGroupLevel = (RadioGroup) v.findViewById(R.id.rg_game_level);
 
-        mTimePicker = (NumberPicker) v.findViewById(R.id.time_mode_picker);
-
-        mRoundPicker = (NumberPicker) v.findViewById(R.id.round_mode_picker);
+        mLimitPicker = (NumberPicker) v.findViewById(R.id.limit_picker);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,38 +112,10 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
             }
         });
 
-        mPointsPicker.setMinValue(10);
-        mPointsPicker.setMaxValue(100);
-        mPointsPicker.setValue(20);
+        mLimitPicker.setMinValue(5);
+        mLimitPicker.setMaxValue(100);
+        mLimitPicker.setValue(10);
 
-        mTimePicker.setMinValue(5);
-        mTimePicker.setMaxValue(60);
-        mTimePicker.setValue(10);
-
-        mTimePicker.setFormatter(new NumberPicker.Formatter() {
-            @Override
-            public String format(int i) {
-
-                return i + " min";
-            }
-        });
-
-        mRoundPicker.setMinValue(2);
-        mRoundPicker.setMaxValue(100);
-        mRoundPicker.setValue(10);
-
-        mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-
-                mPointsPicker.setVisibility(
-                        i == R.id.rb_mode_points ? View.VISIBLE : View.GONE);
-                mTimePicker.setVisibility(
-                        i == R.id.rb_mode_time ? View.VISIBLE : View.GONE);
-                mRoundPicker.setVisibility(
-                        i == R.id.rb_mode_rounds ? View.VISIBLE : View.GONE);
-            }
-        });
 
         return v;
     }
@@ -155,7 +123,7 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
     /**
      * This function is used to connect the View with the Presenter element.
      *
-     * @param presenter the presetner this Fragment should talk to
+     * @param presenter the presenter this Fragment should talk to
      */
     @Override
     public void setPresenter(@NotNull GameSettingsContract.Presenter presenter) {
@@ -165,6 +133,7 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
 
     /**
      * Getter for the currently entered name.
+     *
      * @return the player name
      */
     @Override
@@ -173,44 +142,27 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
         return mEditTextName.getText().toString();
     }
 
-    /**
-     * Getter for the currently selected points.
-     * @return selected points
-     */
     @Override
-    public int getPoints() {
+    public long getLimit() {
 
-        return mPointsPicker.getValue();
-    }
+        switch (mRadioGroupMode.getCheckedRadioButtonId()) {
+            case R.id.rb_mode_time:
+                return mLimitPicker.getValue() * 60 * 1000;
+            default:
+                return mLimitPicker.getValue();
+        }
 
-    /**
-     * Getter for the currently selected time.
-     * @return selected time in minutes
-     */
-    @Override
-    public int getTime() {
-
-        return mTimePicker.getValue();
-    }
-
-    /**
-     * Getter for the currently selected rounds.
-     * @return selected round
-     */
-    @Override
-    public int getRounds() {
-
-        return mPointsPicker.getValue();
     }
 
     /**
      * Getter for the currently selected mode.
+     *
      * @return selected mode
      */
     @Override
     public GameMode getMode() {
 
-        switch (mRadioGroup.getCheckedRadioButtonId()) {
+        switch (mRadioGroupMode.getCheckedRadioButtonId()) {
             case R.id.rb_mode_insane:
                 return GameMode.INSANE;
             case R.id.rb_mode_time:
@@ -219,6 +171,24 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
                 return GameMode.ROUNDS;
             default:
                 return GameMode.POINTS;
+        }
+    }
+
+    /**
+     * Getter for the currently selected level.
+     *
+     * @return difficulty level
+     */
+    @Override
+    public GameLevel getLevel() {
+
+        switch (mRadioGroupLevel.getCheckedRadioButtonId()) {
+            case R.id.rb_level_normal:
+                return GameLevel.NORMAL;
+            case R.id.rb_level_hard:
+                return GameLevel.HARD;
+            default:
+                return GameLevel.EASY;
         }
     }
 }

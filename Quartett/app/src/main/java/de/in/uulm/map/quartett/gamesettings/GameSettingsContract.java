@@ -23,13 +23,11 @@ public interface GameSettingsContract {
 
         String getName();
 
-        int getPoints();
-
-        int getTime();
-
-        int getRounds();
+        long getLimit();
 
         GameMode getMode();
+
+        GameLevel getLevel();
     }
 
     interface Backend {

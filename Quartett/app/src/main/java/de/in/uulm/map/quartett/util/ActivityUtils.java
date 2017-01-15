@@ -15,13 +15,18 @@
  */
 package de.in.uulm.map.quartett.util;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewPager;
+import android.transition.TransitionInflater;
 
 
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.game.GameCompareFragment;
+import de.in.uulm.map.quartett.game.GameFragment;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -36,7 +41,8 @@ public class ActivityUtils {
      */
     public static void addFragmentToActivity(@NonNull FragmentManager
                                                      fragmentManager,
-                                             @NonNull Fragment fragment, int frameId) {
+                                             @NonNull Fragment fragment, int
+                                                     frameId) {
 
         checkNotNull(fragmentManager);
         checkNotNull(fragment);
@@ -47,14 +53,19 @@ public class ActivityUtils {
         if (checkFragment == null) {
             transaction.add(frameId, fragment);
         } else {
-            transaction.setCustomAnimations(R.anim.fragment_slide_left_enter,
-                    R.anim.fragment_slide_left_exit, R.anim
-                            .fragment_slide_right_enter, R.anim
-                            .fragment_slide_right_exit);
+            if (!(fragment instanceof GameCompareFragment) && !(fragment
+                    instanceof GameFragment)) {
+
+                transaction.setCustomAnimations(R.anim.fragment_slide_left_enter,
+                        R.anim.fragment_slide_left_exit, R.anim
+                                .fragment_slide_right_enter, R.anim
+                                .fragment_slide_right_exit);
+                transaction.addToBackStack(null);
+            }
             transaction.replace(frameId, fragment);
-            transaction.addToBackStack(null);
+
         }
         transaction.commit();
-    }
 
+    }
 }

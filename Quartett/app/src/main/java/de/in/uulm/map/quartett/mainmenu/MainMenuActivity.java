@@ -3,12 +3,7 @@ package de.in.uulm.map.quartett.mainmenu;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
 
 import de.in.uulm.map.quartett.DrawerActivity;
@@ -17,6 +12,7 @@ import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.data.Deck;
 
 import de.in.uulm.map.quartett.data.Highscore;
+
 import de.in.uulm.map.quartett.factory.EntityImportTask;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 
@@ -70,7 +66,8 @@ public class MainMenuActivity extends DrawerActivity implements MainMenuContract
      */
     @Override
     public void startActivity(Intent intent) {
-
-        super.startActivity(intent);
+        ActivityOptionsCompat options = ActivityOptionsCompat
+                .makeSceneTransitionAnimation(this);
+        super.startActivity(intent,options.toBundle());
     }
 }
