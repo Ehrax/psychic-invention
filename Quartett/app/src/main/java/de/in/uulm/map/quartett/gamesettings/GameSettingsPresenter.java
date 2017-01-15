@@ -4,8 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Button;
 
+<<<<<<< HEAD
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.game.GameActivity;
+=======
+import de.in.uulm.map.quartett.gallery.GalleryActivity;
+import de.in.uulm.map.quartett.gallery.GalleryMode;
+>>>>>>> develop
 
 /**
  * Created by Jona on 08.01.2017.
@@ -77,12 +82,21 @@ public class GameSettingsPresenter implements GameSettingsContract.Presenter {
     @Override
     public void onOkPressed() {
 
+<<<<<<< HEAD
         Intent intent = new Intent(mContext, GameActivity.class);
         intent.putExtra(NAME, mView.getName());
         intent.putExtra(POINTS, mView.getPoints());
         intent.putExtra(TIME, mView.getTime());
         intent.putExtra(ROUNDS, mView.getRounds());
         intent.putExtra(MODE, mView.getMode());
+=======
+        Intent intent = new Intent(mContext, GalleryActivity.class);
+        intent.putExtra("gs-name", mView.getName());
+        intent.putExtra("gs-mode", mView.getMode());
+        intent.putExtra("gs-limit", mView.getLimit());
+        intent.putExtra("gs-level", mView.getLevel());
+        intent.putExtra("mode", GalleryMode.CHOOSE);
+>>>>>>> develop
 
         mBackend.nextActivity(intent);
     }

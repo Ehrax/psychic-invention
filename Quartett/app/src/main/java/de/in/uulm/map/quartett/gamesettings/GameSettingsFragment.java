@@ -32,13 +32,11 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
 
     private EditText mEditTextName;
 
-    private RadioGroup mRadioGroup;
+    private RadioGroup mRadioGroupMode;
 
-    private NumberPicker mPointsPicker;
+    private RadioGroup mRadioGroupLevel;
 
-    private NumberPicker mTimePicker;
-
-    private NumberPicker mRoundPicker;
+    private NumberPicker mLimitPicker;
 
     /**
      * This function will be called by the Android Framework when the View of
@@ -62,13 +60,11 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
 
         mEditTextName = (EditText) v.findViewById(R.id.edit_text_name);
 
-        mRadioGroup = (RadioGroup) v.findViewById(R.id.rg_game_mode);
+        mRadioGroupMode = (RadioGroup) v.findViewById(R.id.rg_game_mode);
 
-        mPointsPicker = (NumberPicker) v.findViewById(R.id.points_mode_picker);
+        mRadioGroupLevel = (RadioGroup) v.findViewById(R.id.rg_game_level);
 
-        mTimePicker = (NumberPicker) v.findViewById(R.id.time_mode_picker);
-
-        mRoundPicker = (NumberPicker) v.findViewById(R.id.round_mode_picker);
+        mLimitPicker = (NumberPicker) v.findViewById(R.id.limit_picker);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +112,7 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
             }
         });
 
+<<<<<<< HEAD
         mPointsPicker.setMinValue(10);
         mPointsPicker.setMaxValue(100);
         mPointsPicker.setValue(20);
@@ -148,6 +145,11 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
                         i == R.id.rb_mode_rounds ? View.VISIBLE : View.GONE);
             }
         });
+=======
+        mLimitPicker.setMinValue(5);
+        mLimitPicker.setMaxValue(100);
+        mLimitPicker.setValue(10);
+>>>>>>> develop
 
         return v;
     }
@@ -155,7 +157,7 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
     /**
      * This function is used to connect the View with the Presenter element.
      *
-     * @param presenter the presetner this Fragment should talk to
+     * @param presenter the presenter this Fragment should talk to
      */
     @Override
     public void setPresenter(@NotNull GameSettingsContract.Presenter presenter) {
@@ -174,6 +176,7 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
     }
 
     /**
+<<<<<<< HEAD
      * Getter for the currently selected points.
      * @return selected points
      */
@@ -201,6 +204,15 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
     public int getRounds() {
 
         return mRoundPicker.getValue();
+=======
+     * Getter for the currently selected limit.
+     * @return selected limit
+     */
+    @Override
+    public int getLimit() {
+
+        return mLimitPicker.getValue();
+>>>>>>> develop
     }
 
     /**
@@ -210,7 +222,7 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
     @Override
     public GameMode getMode() {
 
-        switch (mRadioGroup.getCheckedRadioButtonId()) {
+        switch (mRadioGroupMode.getCheckedRadioButtonId()) {
             case R.id.rb_mode_insane:
                 return GameMode.INSANE;
             case R.id.rb_mode_time:
@@ -220,5 +232,22 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
             default:
                 return GameMode.POINTS;
         }
+    }
+
+    /**
+     * Getter for the currently selected level.
+     * @return difficulty level
+     */
+    @Override
+    public GameLevel getLevel() {
+
+       switch (mRadioGroupLevel.getCheckedRadioButtonId()) {
+           case R.id.rb_level_normal:
+               return GameLevel.NORMAL;
+           case R.id.rb_level_hard:
+               return GameLevel.HARD;
+           default:
+               return GameLevel.EASY;
+       }
     }
 }

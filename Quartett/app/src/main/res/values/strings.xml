@@ -37,13 +37,25 @@
 
     <!--game settings text-->
     <string name="game_settings_mode">Mode</string>
+    <string name="game_settings_level">Level</string>
     <string name="game_settings_mode_normal">Normal</string>
-    <string name="game_settings_mode_points">Points</string>
-    <string name="game_settings_mode_time">Time</string>
-    <string name="game_settings_mode_rounds">Rounds</string>
+    <string name="game_settings_mode_points">Point</string>
+    <string name="game_settings_mode_time">Minute</string>
+    <string name="game_settings_mode_rounds">Round</string>
     <string name="game_settings_mode_insane">Insane</string>
     <string name="game_settings_name">Name</string>
     <string name="game_settings_btn_ok">Start Game</string>
+<<<<<<< HEAD
+=======
+    <string name="game_settings_level_easy">Easy</string>
+    <string name="game_settings_level_normal">Normal</string>
+    <string name="game_settings_level_hard">Hard</string>
+    <string name="game_settings_name_hint">Name</string>
+
+    <!--gallery-->
+    <string name="no_title">No Title</string>
+    <string name="image_description_title">Beschreibung</string>
+>>>>>>> develop
 
     <!-- game end -->
     <string name="user_no_cards">Du hast alle Karten verloren!</string>

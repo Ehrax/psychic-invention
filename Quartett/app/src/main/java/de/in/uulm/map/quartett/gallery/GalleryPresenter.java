@@ -1,14 +1,14 @@
 package de.in.uulm.map.quartett.gallery;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
-import de.in.uulm.map.quartett.data.Attribute;
 import de.in.uulm.map.quartett.data.Card;
+import de.in.uulm.map.quartett.data.CardImage;
 import de.in.uulm.map.quartett.data.Deck;
-import de.in.uulm.map.quartett.data.Image;
+import de.in.uulm.map.quartett.mainmenu.MainMenuActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,16 +22,29 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     @NonNull
     private final GalleryContract.View mView;
     private final Context mCtx;
+    private final GalleryContract.Backend mBackend;
 
     private GalleryContract.BackEnd mBackEnd;
 
+
     public GalleryPresenter(@NonNull GalleryContract.View galleryView,
+<<<<<<< HEAD
                             Context ctx, GalleryContract.BackEnd
                                     viewSwitcher) {
 
         mView = galleryView;
         this.mCtx = ctx;
         mBackEnd = viewSwitcher;
+=======
+                            Context ctx,
+                            GalleryActivity.ViewSwitcher viewSwitcher,
+                            GalleryContract.Backend backend) {
+
+        mView = galleryView;
+        mCtx = ctx;
+        mViewSwitcher = viewSwitcher;
+        mBackend = backend;
+>>>>>>> develop
     }
 
     @Override
@@ -59,6 +72,19 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     }
 
     /**
+     * This method is called when a long click on a CardImage has been detected.
+     *
+     * @param image the CardImage on which has been long clicked
+     */
+    @Override
+    public void onImageLongClicked(Image image) {
+
+        if(mView instanceof GalleryContract.SubView) {
+            ((GalleryContract.SubView) mView).showImageDescription(image);
+        }
+    }
+
+    /**
      * create a card fragment from a card in a given deck on a given position
      *
      * @param deckID   the deckId you want the card from
@@ -73,9 +99,8 @@ public class GalleryPresenter implements GalleryContract.Presenter {
         Card card = cards.get(position);
 
         CardFragment currentCard = CardFragment.newInstance();
-        currentCard.setCardImageUris(card.getCardImages(), mCtx);
-        currentCard.setCardTitle(card.mTitle);
-        currentCard.setCardAttributeValues(card.getAttributeValues());
+        currentCard.setPresenter(this);
+        currentCard.setCard(card);
 
         return currentCard;
     }
@@ -99,15 +124,37 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     }
 
     /**
-     * Use this method to switch to the deck detail fragment.
+     * Use this method to switch to the deck detail fragment or to pass the deck
+     * to further activities.
      *
      * @param deckID the ID of the deck you want to show in detail.
      */
     @Override
+<<<<<<< HEAD
     public void showDeckDetail(long deckID) {
 
         DeckFragment deckFragment = DeckFragment.newInstance();
         deckFragment.setCurrentDeckID(deckID);
         mBackEnd.switchToView(deckFragment);
+=======
+    public void onDeckClicked(long deckID) {
+
+        Intent callingIntent = mBackend.getIntent();
+        GalleryMode mode =
+                (GalleryMode) callingIntent.getSerializableExtra("mode");
+
+        if (mode == null || mode == GalleryMode.VIEW) {
+            DeckFragment deckFragment = DeckFragment.newInstance();
+            deckFragment.setCurrentDeckID(deckID);
+            mViewSwitcher.switchToView(deckFragment);
+        } else {
+            Intent intent = new Intent(mCtx, MainMenuActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtras(mBackend.getIntent());
+            intent.putExtra("gs-deck", deckID);
+            intent.removeExtra("mode");
+            mBackend.startActivity(intent);
+        }
+>>>>>>> develop
     }
 }

@@ -81,7 +81,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
      * Called every time the RecyclerView is displayed. Loading the decks image
      * into the ImageView and the title into the TextView. This method adds an
      * onClickListener to the ImageView which calls the showDeckDetailView
-     * method from the GalleryItemListener which calls the showDeckDetail method
+     * method from the GalleryItemListener which calls the onDeckClicked method
      * from the GalleryPresenter.
      *
      * @param viewHolder the ViewHolder which holds the ImageView and the

@@ -26,8 +26,13 @@ import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.AttributeValue;
+import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.CardImage;
+<<<<<<< HEAD
 import de.in.uulm.map.quartett.game.GameContract;
+=======
+import de.in.uulm.map.quartett.data.Image;
+>>>>>>> develop
 import de.in.uulm.map.quartett.util.AssetUtils;
 import de.in.uulm.map.quartett.views.viewpagerindicator.CirclePageIndicator;
 
@@ -43,10 +48,15 @@ import java.util.List;
 
 public class CardFragment extends Fragment {
 
+<<<<<<< HEAD
     private Drawable[] mCardImages;
     private List<AttributeValue> mAttributeValues = new ArrayList<>();
     private String mCardTitle;
     private GameContract.Presenter mGamePresenter;
+=======
+    private GalleryContract.Presenter mPresenter;
+    private Card mCard;
+>>>>>>> develop
 
     public static CardFragment newInstance() {
 
@@ -80,15 +90,18 @@ public class CardFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_card, container, false);
 
+        final List<CardImage> cardImages = mCard.getCardImages();
+
         //initializing the viewpager for multiple image support
-        ViewPager viewPagerImages = (ViewPager) view.findViewById(R.id
-                .view_pager_img_card);
-        ImagePagerAdapter imgPagerAdapter = new ImagePagerAdapter(getContext
-                (), mCardImages);
+        ViewPager viewPagerImages =
+                (ViewPager) view.findViewById(R.id.view_pager_img_card);
+
+        ImagePagerAdapter imgPagerAdapter =
+                new ImagePagerAdapter(getContext(), cardImages);
         viewPagerImages.setAdapter(imgPagerAdapter);
         /*Setting the circles indicating how many images the card has only if
          it has more than one image.*/
-        if (mCardImages.length > 1) {
+        if (cardImages.size() > 1) {
             CirclePageIndicator indicator = (CirclePageIndicator) view
                     .findViewById(R.id.page_indicator_card);
             indicator.setViewPager(viewPagerImages);
@@ -98,33 +111,57 @@ public class CardFragment extends Fragment {
                 .txt_card_title);
         TableLayout tableLayoutAttributes = (TableLayout) view.findViewById
                 (R.id.table_layout_card_attr);
+<<<<<<< HEAD
         tableLayoutAttributes.setWeightSum(mAttributeValues.size());
+=======
+        titleTextView.setText(mCard.mTitle);
+>>>>>>> develop
 
-        //setting the title of the card
-        titleTextView.setText(mCardTitle);
+        List<AttributeValue> attrValues = mCard.getAttributeValues();
 
         //building the attribute layout
+<<<<<<< HEAD
         for (int i = 0; i < mAttributeValues.size(); i++) {
             final AttributeValue currentAttrValue = mAttributeValues.get(i);
+=======
+        for (int i = 0; i < attrValues.size(); i++) {
+            AttributeValue currentAttrValue = attrValues.get(i);
+>>>>>>> develop
 
             /*this table row holds the attribute title as well as the
              attribute value*/
             final TableRow tableRow = new TableRow(getContext());
             tableRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup
                     .LayoutParams.MATCH_PARENT, 0, 1));
+            tableRow.setBackgroundResource(R.drawable.table_border);
+
             /*row background color appears as bottom border because the
              TextViews has darker background color and they are matching
+<<<<<<< HEAD
              the tableRow, except the tableRows padding which we use as
              "border".*/
             tableRow.setBackgroundColor(getResources().getColor(R
                     .color.colorTableDivider));
+=======
+             the tableRow except the tableRows padding.*/
+            //tableRow.setBackgroundColor(getResources().getColor(R
+            //       .color.colorTableDivider));
+>>>>>>> develop
             /*setting bottom padding to one except for the last attribute to
              define a bottom border*/
-            if (i < mAttributeValues.size() - 1) {
+            if (i < attrValues.size() - 1) {
                 tableRow.setPaddingRelative(0, 0, 0, 1);
             }
 
             tableRow.setGravity(Gravity.CENTER_VERTICAL);
+
+            ImageView winIndicator = new ImageView(getContext(),
+                    null, 0, R.style.ImageViewCardWinIndicator);
+            winIndicator.setImageResource(R.drawable.ic_card_win_indicator);
+            tableRow.addView(winIndicator);
+            if (!currentAttrValue.mAttribute.mLargerWins) {
+                winIndicator.setRotation(180);
+            }
 
             /*Instantiating the TextViews with the correct style and adding
              them to the table row*/
@@ -133,6 +170,7 @@ public class CardFragment extends Fragment {
                     null, 0, R.style.TextViewCardAttributesTitle);
             textViewAttrTitle.setText(currentAttrValue.mAttribute.mName);
             tableRow.addView(textViewAttrTitle);
+
 
             TextView textViewAttrValue = new TextView(tableRow.getContext(),
                     null, 0, R.style.TextViewCardAttributesValue);
@@ -170,56 +208,19 @@ public class CardFragment extends Fragment {
     }
 
     /**
-     * Use this method to set the cards images. This method opens input streams
-     * to get drawables from the given uris.
-     *
-     * @param images List of CardImages
-     * @param ctx    the context, this is necessary because at the time we
-     *               usually call this method there is no activity and therefore
-     *               no context available from within this fragment
+     * Use this method to set the cards presenter.
      */
-    public void setCardImageUris(List<CardImage> images, Context ctx) {
+    public void setPresenter(GalleryContract.Presenter presenter) {
 
-        mCardImages = new Drawable[images.size()];
-        int i = 0;
-        for (CardImage img : images) {
-            if (img.mImage.mUri.contains("android_asset")) {
-                mCardImages[i] = AssetUtils.getDrawableFromAssetUri
-                        (ctx, Uri.parse(img.mImage.mUri));
-            } else {
-                try {
-                    InputStream inputStream = getActivity()
-                            .getContentResolver().openInputStream((Uri.parse(img
-                                    .mImage.mUri)));
-                    mCardImages[i] = Drawable.createFromStream(inputStream, img
-                            .mImage.mUri);
-                } catch (FileNotFoundException e) {
-                    mCardImages[i] = getResources().getDrawable(R.drawable
-                            .ic_cards_playing);
-                }
-            }
-
-        }
+        mPresenter = presenter;
     }
 
     /**
-     * Use this method to set the cards AttributeValues
-     *
-     * @param values List of AttributeValues
+     * Use this method to set the card model.
      */
-    public void setCardAttributeValues(List<AttributeValue> values) {
+    public void setCard(Card card) {
 
-        mAttributeValues = values;
-    }
-
-    /**
-     * Use this method to set the cards title
-     *
-     * @param cardTitle String representing the cards title
-     */
-    public void setCardTitle(String cardTitle) {
-
-        this.mCardTitle = cardTitle;
+        mCard = card;
     }
 
     /**
@@ -227,7 +228,7 @@ public class CardFragment extends Fragment {
      */
     private class ImagePagerAdapter extends PagerAdapter {
 
-        private Drawable[] mImages;
+        private List<CardImage> mImages;
         private Context mContext;
 
         /**
@@ -236,7 +237,7 @@ public class CardFragment extends Fragment {
          * @param ctx    context where the viewpager runs in
          * @param images array of drawables representing the images of the card
          */
-        public ImagePagerAdapter(Context ctx, Drawable[] images) {
+        public ImagePagerAdapter(Context ctx, List<CardImage> images) {
 
             mContext = ctx;
             mImages = images;
@@ -251,7 +252,7 @@ public class CardFragment extends Fragment {
         @Override
         public int getCount() {
 
-            return mImages.length;
+            return mImages.size();
         }
 
         /**
@@ -264,11 +265,37 @@ public class CardFragment extends Fragment {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
 
-            mContext = CardFragment.this.getContext();
+            final Image img = mImages.get(position).mImage;
+            Drawable drawable = null;
+
+            if (img.mUri.contains("android_asset")) {
+                drawable = AssetUtils.getDrawableFromAssetUri(
+                        mContext, Uri.parse(img.mUri));
+            } else {
+                try {
+                    InputStream inputStream = getActivity()
+                            .getContentResolver()
+                            .openInputStream((Uri.parse(img.mUri)));
+                    drawable = Drawable.createFromStream(inputStream, img.mUri);
+                } catch (FileNotFoundException e) {
+                    drawable = getResources().getDrawable(
+                            R.drawable.ic_cards_playing, null);
+                }
+            }
+
             ImageView imgView = new ImageView(mContext);
             imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imgView.setImageDrawable(mImages[position]);
+            imgView.setImageDrawable(drawable);
             ((ViewPager) container).addView(imgView, 0);
+
+            imgView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+
+                    mPresenter.onImageLongClicked(img);
+                    return false;
+                }
+            });
 
             return imgView;
         }
@@ -279,5 +306,4 @@ public class CardFragment extends Fragment {
             ((ViewPager) container).removeView((ImageView) object);
         }
     }
-
 }
