@@ -71,17 +71,17 @@ public class GameFragment extends Fragment implements GameContract.View {
 
         ImageView imgViewTurn = (ImageView) view.findViewById(R.id.img_turn);
         imgViewTurn.setImageDrawable(mPresenter.getCurrentGameState()
-                .mIsUsersTurn ? getActivity().getDrawable(R.drawable.ic_user):
-                    getActivity().getDrawable(R.drawable.ic_ai));
+                .mIsUsersTurn ? getActivity().getDrawable(R.drawable.ic_user) :
+                getActivity().getDrawable(R.drawable.ic_ai));
 
         mTxtLimit = (TextView) view.findViewById(R.id
                 .txt_in_game_limit);
         mTxtLimit.setText(mPresenter.getCurrentGameState().mGameMode ==
-                GameMode.ROUNDS?mPresenter.getCurrentGameState()
-                .mCurrentRound+"/"+mPresenter.getCurrentGameState()
-                .mMaxRounds:mPresenter.getCurrentGameState().mGameMode ==
-                GameMode.POINTS?"Point limit: "+mPresenter
-                .getCurrentGameState().mMaxPoints:getFormattedTime(mPresenter
+                GameMode.ROUNDS ? mPresenter.getCurrentGameState()
+                .mCurrentRound + "/" + mPresenter.getCurrentGameState()
+                .mMaxRounds : mPresenter.getCurrentGameState().mGameMode ==
+                GameMode.POINTS ? "Point limit: " + mPresenter
+                .getCurrentGameState().mMaxPoints : getFormattedTime(mPresenter
                 .getCurrentGameState().mCurrentTimeInMillis));
 
         TextView txtViewPoints = (TextView) view.findViewById(R.id
@@ -101,15 +101,17 @@ public class GameFragment extends Fragment implements GameContract.View {
 
     @Override
     public void updateGameTime(long timeInMillis) {
+
         mTxtLimit.setText(getFormattedTime(timeInMillis));
     }
 
-    private String getFormattedTime(long timeInMillis){
-        long m,s;
-        s = (timeInMillis/1000)%60;
-        m = (timeInMillis/(1000*60))%60;
+    private String getFormattedTime(long timeInMillis) {
 
-        return String.format(Locale.GERMAN,"%2d:%02d",m,s);
+        long m, s;
+        s = (timeInMillis / 1000) % 60;
+        m = (timeInMillis / (1000 * 60)) % 60;
+
+        return String.format(Locale.GERMAN, "%2d:%02d", m, s);
     }
 
     @Override
@@ -124,13 +126,18 @@ public class GameFragment extends Fragment implements GameContract.View {
     }
 
 
-
     @Override
     public void onResume() {
 
         super.onResume();
         if (mPresenter.getCurrentGameState() == null) {
             mPresenter.start();
+        }
+        if (mPresenter.getCurrentGameState().mGameMode == GameMode.TIME) {
+            if (GamePresenter.GameTimer != null) {
+                GamePresenter.GameTimer.cancel();
+            }
+            mPresenter.restartGameTimer();
         }
     }
 

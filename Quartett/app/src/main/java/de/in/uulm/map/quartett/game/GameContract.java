@@ -35,9 +35,12 @@ public interface GameContract {
 
         void setView(View view);
 
+        void restartGameTimer();
+
     }
 
     interface View extends BaseView<Presenter> {
+
         void updateGameTime(long timeInMillis);
     }
 
@@ -45,7 +48,7 @@ public interface GameContract {
 
         void switchToView(GameContract.View view);
 
-        void startActivity(Intent intent);
+        void startActivity(Intent intent, RoundWinner lastRoundWinner);
     }
 
 }

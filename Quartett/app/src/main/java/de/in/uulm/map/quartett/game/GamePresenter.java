@@ -85,6 +85,9 @@ public class GamePresenter implements GameContract.Presenter {
 
     private AsyncDeckRearranger mDeckRearranger;
 
+    private boolean mHasUserCards;
+    private boolean mHasAICards;
+
     public static GameTimer GameTimer;
 
     public GamePresenter(@NonNull GameContract.View gameView, Bundle
@@ -95,12 +98,23 @@ public class GamePresenter implements GameContract.Presenter {
         mCtx = ctx;
         mBackEnd = viewSwitcher;
         mGameSettings = gameSettings;
+        mHasAICards =true;
+        mHasUserCards =true;
+
     }
 
     @Override
     public void setView(GameContract.View view) {
 
         mView = view;
+    }
+
+    @Override
+    public void restartGameTimer() {
+        GameTimer = new GameTimer(mCurrentGameState
+                .mGameTimeInMillis-mCurrentGameState.mCurrentTimeInMillis,1000);
+        GameTimer.start();
+
     }
 
     /**
@@ -175,6 +189,7 @@ public class GamePresenter implements GameContract.Presenter {
         mCurrentGameState.save();
         GameCard.deleteAll(GameCard.class);
         List<Card>[] userAndAiDeck = shuffleDeck(1);
+
         mCountDownLatchDeckLoader = new CountDownLatch(1);
         //loading the decks async into db
         new AsyncDeckLoader().execute(userAndAiDeck);
@@ -233,6 +248,7 @@ public class GamePresenter implements GameContract.Presenter {
 
         if (mCurrentGameState != null) {
             mCurrentGameState.save();
+
         }
     }
 
@@ -304,9 +320,22 @@ public class GamePresenter implements GameContract.Presenter {
         mAICompareImage = setCompareImage(false);
         mUserCompareValue = setCompareAttributeValue(true, chosenAttr);
         mAICompareValue = setCompareAttributeValue(false, chosenAttr);
-        //rearranging both decks
-        mDeckRearranger = new AsyncDeckRearranger();
-        mDeckRearranger.execute(winner);
+        Log.d("USERDECKSIZE: ",mCurrentGameState.getUserDeck().size()+"");
+        Log.d("AIDECKSIZE: ",mCurrentGameState.getAIDeck().size()+"");
+        if(!(mCurrentGameState.getUserDeck().size()<=1 && winner==RoundWinner
+                .AI) && !(mCurrentGameState.getAIDeck().size()<=1 &&
+                winner==RoundWinner.USER)){
+            //rearranging both decks
+            mDeckRearranger = new AsyncDeckRearranger();
+            mDeckRearranger.execute(winner);
+        }else{
+            if(winner == RoundWinner.USER){
+                mHasAICards =false;
+            }else{
+                mHasUserCards =false;
+            }
+        }
+
         //tell compareFragment who won and which attribute was compared to
         // display things correct.
         compareFragment.setRoundWinner(winner);
@@ -331,6 +360,19 @@ public class GamePresenter implements GameContract.Presenter {
 
         Intent intent = new Intent(mCtx, GameEndActivity.class);
         boolean isFinish = false;
+        if(!mHasAICards){
+            intent.putExtra(GameEndPresenter.WINNER,GameEndState.WIN);
+            intent.putExtra(GameEndPresenter.SUB,mCtx.getString(R.string
+                    .ai_no_cards));
+            mBackEnd.startActivity(intent,winner);
+            isFinish=true;
+        }else if(!mHasUserCards){
+            intent.putExtra(GameEndPresenter.WINNER,GameEndState.LOSE);
+            intent.putExtra(GameEndPresenter.SUB,mCtx.getString(R.string
+                    .user_no_cards));
+            mBackEnd.startActivity(intent,winner);
+            isFinish=true;
+        }
         if (mCurrentGameState.mGameMode == GameMode.POINTS) {
             if (mCurrentGameState.mAIPoints == mCurrentGameState.mMaxPoints ||
                     mCurrentGameState.mUserPoints == mCurrentGameState.mMaxPoints) {
@@ -339,7 +381,7 @@ public class GamePresenter implements GameContract.Presenter {
                         .USER ? GameEndState.WIN : GameEndState.LOSE);
                 intent.putExtra(GameEndPresenter.SUB, " ");
                 mDeckRearranger.cancel(true);
-                mBackEnd.startActivity(intent);
+                mBackEnd.startActivity(intent,winner);
                 isFinish = true;
 
             }
@@ -352,7 +394,7 @@ public class GamePresenter implements GameContract.Presenter {
                         .WIN : GameEndState.DRAW);
                 intent.putExtra(GameEndPresenter.SUB, " ");
                 mDeckRearranger.cancel(true);
-                mBackEnd.startActivity(intent);
+                mBackEnd.startActivity(intent,winner);
                 isFinish = true;
             }
         } else if (mCurrentGameState.mGameMode == GameMode.INSANE) {
@@ -608,7 +650,7 @@ public class GamePresenter implements GameContract.Presenter {
             if (mDeckRearranger != null && !mDeckRearranger.isCancelled()) {
                 mDeckRearranger.cancel(true);
             }
-            mBackEnd.startActivity(intent);
+            mBackEnd.startActivity(intent,null);
         }
     }
 

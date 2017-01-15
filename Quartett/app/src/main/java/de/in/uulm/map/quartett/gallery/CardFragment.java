@@ -97,8 +97,8 @@ public class CardFragment extends Fragment {
         TextView titleTextView = (TextView) view.findViewById(R.id
                 .txt_card_title);
         TableLayout tableLayoutAttributes = (TableLayout) view.findViewById
-                (R.id
-                        .table_layout_card_attr);
+                (R.id.table_layout_card_attr);
+        tableLayoutAttributes.setWeightSum(mAttributeValues.size());
 
         //setting the title of the card
         titleTextView.setText(mCardTitle);

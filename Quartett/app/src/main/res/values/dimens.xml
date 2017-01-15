@@ -15,4 +15,6 @@
     <dimen name="card_border_width">15dp</dimen>
     <!--The width of the win and lose frame (green and red border)-->
     <dimen name="win_lose_border_width">2dp</dimen>
+    <!-- margin between game end btns-->
+    <dimen name="game_end_btn_margin">4dp</dimen>
 </resources>

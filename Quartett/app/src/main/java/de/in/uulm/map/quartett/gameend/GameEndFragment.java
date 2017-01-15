@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.orm.dsl.NotNull;
@@ -27,11 +28,11 @@ public class GameEndFragment extends Fragment implements GameEndContract.View {
 
     private TextView mSubStatusText;
 
-    private Button mRestartButton;
+    private ImageButton mRestartButton;
 
-    private Button mChangeButton;
+    private ImageButton mChangeButton;
 
-    private Button mMainMenuButton;
+    private ImageButton mMainMenuButton;
 
     /**
      * This will be called by the android API. It is used to create the View of
@@ -53,11 +54,11 @@ public class GameEndFragment extends Fragment implements GameEndContract.View {
 
         mSubStatusText = (TextView) v.findViewById(R.id.end_status_sub_text);
 
-        mRestartButton = (Button) v.findViewById(R.id.btn_restart);
+        mRestartButton = (ImageButton) v.findViewById(R.id.btn_restart);
 
-        mChangeButton = (Button) v.findViewById(R.id.btn_restart_settings);
+        mChangeButton = (ImageButton) v.findViewById(R.id.btn_restart_settings);
 
-        mMainMenuButton = (Button) v.findViewById(R.id.btn_main_menu);
+        mMainMenuButton = (ImageButton) v.findViewById(R.id.btn_main_menu);
 
         mRestartButton.setOnClickListener(new View.OnClickListener() {
             @Override

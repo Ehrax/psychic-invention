@@ -44,4 +44,8 @@
     <string name="game_settings_mode_insane">Insane</string>
     <string name="game_settings_name">Name</string>
     <string name="game_settings_btn_ok">Start Game</string>
+
+    <!-- game end -->
+    <string name="user_no_cards">Du hast alle Karten verloren!</string>
+    <string name="ai_no_cards">Dein Gegner hat alle Karten verloren!</string>
 </resources>

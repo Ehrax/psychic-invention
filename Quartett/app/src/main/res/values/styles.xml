@@ -77,8 +77,8 @@
     </style>
     <style name="TextViewInGameHeaderPoints"
             parent="@style/TextViewInGameHeader">
-        <item name="android:textAlignment">viewEnd</item>
-        <item name="android:layout_weight">0.4</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_width">wrap_content</item>
     </style>
 
     <!-- action bar -->
@@ -94,12 +94,12 @@
     <!-- game end -->
     <style name="GameEndStatusText"
             parent="android:Widget.Material.TextView">
-        <item name="android:textSize">90dp</item>
+        <item name="android:textSize">70dp</item>
         <item name="android:textAlignment">center</item>
     </style>
     <style name="GameEndStatusSubText"
             parent="android:Widget.Material.TextView">
-        <item name="android:textSize">50dp</item>
+        <item name="android:textSize">25dp</item>
         <item name="android:textAlignment">center</item>
     </style>
 
