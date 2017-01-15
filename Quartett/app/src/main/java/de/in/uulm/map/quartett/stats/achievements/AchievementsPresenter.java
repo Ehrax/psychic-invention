@@ -67,6 +67,7 @@ public class AchievementsPresenter implements StatsContract.AchievementsPresente
      */
     @Override
     public void setAchievementTitle(TextView textView) {
+
         String title;
         if (mDoneAchievements.size() == 0) {
             title = 0 + "/" + mAchievements.size() + " unlocked";
@@ -84,15 +85,17 @@ public class AchievementsPresenter implements StatsContract.AchievementsPresente
      */
     @Override
     public void setAchievementProgress(ProgressBar progress) {
+
         float percentage;
 
         if (mAchievements.isEmpty() || mDoneAchievements.isEmpty()) {
             percentage = 0;
         } else {
-            percentage = mDoneAchievements.size() / mAchievements.size() * 100;
+            percentage = (float) mDoneAchievements.size() / (float)
+                    mAchievements.size() * 100;
         }
 
-        progress.setMax(mAchievements.size());
+        progress.setMax(100);
         progress.setProgress((int) percentage);
     }
 

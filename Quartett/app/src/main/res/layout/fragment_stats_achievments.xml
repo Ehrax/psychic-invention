@@ -5,14 +5,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-            android:id="@+id/stats_achievement_recycler_view"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            tools:listitem="@layout/achievement_row">
-
-    </android.support.v7.widget.RecyclerView>
-
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -36,5 +28,13 @@
                 android:layout_weight="1" />
 
     </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/stats_achievement_recycler_view"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            tools:listitem="@layout/achievement_row">
+
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>
