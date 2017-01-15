@@ -18,11 +18,13 @@ import de.in.uulm.map.quartett.data.AttributeValue;
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.data.GameCard;
+import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.data.LocalGameState;
 import de.in.uulm.map.quartett.gallery.CardFragment;
 import de.in.uulm.map.quartett.gameend.GameEndActivity;
 import de.in.uulm.map.quartett.gameend.GameEndPresenter;
 import de.in.uulm.map.quartett.gameend.GameEndState;
+import de.in.uulm.map.quartett.gamesettings.GameLevel;
 import de.in.uulm.map.quartett.gamesettings.GameMode;
 import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
 import de.in.uulm.map.quartett.util.AssetUtils;
@@ -84,10 +86,14 @@ public class GamePresenter implements GameContract.Presenter {
     private float mAICompareValue;
 
     private AsyncDeckRearranger mDeckRearranger;
-
+    /*
+    Indicating if one player is loosing his last card
+     */
     private boolean mHasUserCards;
     private boolean mHasAICards;
-
+    /*
+    Timer for the Time mode
+     */
     public static GameTimer GameTimer;
 
     public GamePresenter(@NonNull GameContract.View gameView, Bundle
@@ -98,8 +104,8 @@ public class GamePresenter implements GameContract.Presenter {
         mCtx = ctx;
         mBackEnd = viewSwitcher;
         mGameSettings = gameSettings;
-        mHasAICards =true;
-        mHasUserCards =true;
+        mHasAICards = true;
+        mHasUserCards = true;
 
     }
 
@@ -111,9 +117,23 @@ public class GamePresenter implements GameContract.Presenter {
 
     @Override
     public void restartGameTimer() {
+
         GameTimer = new GameTimer(mCurrentGameState
-                .mGameTimeInMillis-mCurrentGameState.mCurrentTimeInMillis,1000);
+                .mLimit - mCurrentGameState.mCurrentTimeInMillis, 1000);
         GameTimer.start();
+
+    }
+
+    /**
+     * This method is called when a long click on a CardImage has been
+     * detected.
+     *
+     * @param image the CardImage on which has been long clicked
+     */
+    @Override
+    public void onImageLongClicked(Image image) {
+
+        mView.showImageDescription(image);
 
     }
 
@@ -127,12 +147,7 @@ public class GamePresenter implements GameContract.Presenter {
     public CardFragment getCurrentCardFragment() {
 
         CardFragment currentCard = CardFragment.newInstance();
-        currentCard.setCardImageUris(mCurrentGameState.getUserDeck().get(0).mCard
-                .getCardImages(), mCtx);
-        currentCard.setCardTitle(mCurrentGameState.getUserDeck().get(0)
-                .mCard.mTitle);
-        currentCard.setCardAttributeValues(mCurrentGameState.getUserDeck()
-                .get(0).mCard.getAttributeValues());
+        currentCard.setCard(mCurrentGameState.getUserDeck().get(0).mCard);
         currentCard.setGamePresenter(this);
         return currentCard;
     }
@@ -153,7 +168,7 @@ public class GamePresenter implements GameContract.Presenter {
                     mCurrentGameState = localGameState.get(0);
                     if (mCurrentGameState.mGameMode == GameMode.TIME) {
                         GameTimer = new GameTimer(mCurrentGameState
-                                .mGameTimeInMillis - mCurrentGameState
+                                .mLimit - mCurrentGameState
                                 .mCurrentTimeInMillis, 1000);
                         GameTimer.start();
                     }
@@ -178,17 +193,16 @@ public class GamePresenter implements GameContract.Presenter {
      * handled xD
      */
     private void createNewGame() {
-        //TODO: get current deck from shared preferences or intent
 
         mCurrentGameState = new LocalGameState(mGameSettings.getLong
-                (GameSettingsPresenter.TIME), mGameSettings.getInt
-                (GameSettingsPresenter.POINTS), mGameSettings.getInt
-                (GameSettingsPresenter.ROUNDS), (GameMode) mGameSettings
-                .getSerializable(GameSettingsPresenter.MODE), mGameSettings.getString
-                (GameSettingsPresenter.NAME));
+                (GameSettingsPresenter.LIMIT), (GameMode) mGameSettings
+                .getSerializable(GameSettingsPresenter.MODE),
+                (GameLevel) mGameSettings.getSerializable(GameSettingsPresenter.LEVEL),
+                mGameSettings.getLong(GameSettingsPresenter.DECK),
+                mGameSettings.getString(GameSettingsPresenter.NAME));
         mCurrentGameState.save();
         GameCard.deleteAll(GameCard.class);
-        List<Card>[] userAndAiDeck = shuffleDeck(1);
+        List<Card>[] userAndAiDeck = shuffleDeck(mCurrentGameState.mDeckID);
 
         mCountDownLatchDeckLoader = new CountDownLatch(1);
         //loading the decks async into db
@@ -205,7 +219,7 @@ public class GamePresenter implements GameContract.Presenter {
             GameTimer.cancel();
         }
         if (mCurrentGameState.mGameMode == GameMode.TIME) {
-            GameTimer = new GameTimer(mCurrentGameState.mGameTimeInMillis, 1000);
+            GameTimer = new GameTimer(mCurrentGameState.mLimit, 1000);
             GameTimer.start();
         }
 
@@ -253,6 +267,95 @@ public class GamePresenter implements GameContract.Presenter {
     }
 
     /**
+     * This method checks who won the current round. This method increments the
+     * winners points.
+     *
+     * @param userAttributeValue the value of the users card
+     * @param aiAttributeValue   the value of the ais card
+     * @param chosenAttr         the compared attribute
+     * @return the winner of the round
+     */
+    private RoundWinner checkWinner(float userAttributeValue, float
+            aiAttributeValue, Attribute chosenAttr) {
+
+        RoundWinner winner;
+        if (mCurrentGameState.mGameMode != GameMode.INSANE) {
+            if (chosenAttr.mLargerWins) {
+                winner = checkWinnerLargerWins(userAttributeValue,
+                        aiAttributeValue);
+            } else {
+                winner = checkWinnerLowerWins(userAttributeValue,
+                        aiAttributeValue);
+            }
+        } else {
+            if (chosenAttr.mLargerWins) {
+                winner = checkWinnerLowerWins(userAttributeValue,
+                        aiAttributeValue);
+            } else {
+                winner = checkWinnerLargerWins(userAttributeValue,
+                        aiAttributeValue);
+            }
+        }
+        return winner;
+    }
+
+    /**
+     * This method is called by checkWinner. This method is used to check who
+     * won a round if the lower attribute wins.
+     *
+     * @param userAttributeValue the value of the users card attribute
+     * @param aiAttributeValue   the value of the ais card attribute
+     * @return the winner of the round
+     */
+    private RoundWinner checkWinnerLowerWins(float userAttributeValue, float
+            aiAttributeValue) {
+
+        RoundWinner winner;
+        if (userAttributeValue > aiAttributeValue) {
+            mCurrentGameState.mAIPoints++;
+            winner = RoundWinner.AI;
+            mCurrentGameState.mIsUsersTurn = false;
+        } else if (aiAttributeValue > userAttributeValue) {
+            mCurrentGameState.mUserPoints++;
+            winner = RoundWinner.USER;
+            mCurrentGameState.mIsUsersTurn = true;
+        } else {
+            winner = RoundWinner.DRAW;
+            mCurrentGameState.mIsUsersTurn = !mCurrentGameState.mIsUsersTurn;
+
+        }
+        return winner;
+    }
+
+    /**
+     * This method is called by checkWinner. This method is used to check who
+     * won a round if the larger attribute wins.
+     *
+     * @param userAttributeValue the value of the users card attribute
+     * @param aiAttributeValue   the value of the ais card attribute
+     * @return the winner of the round
+     */
+    private RoundWinner checkWinnerLargerWins(float userAttributeValue, float
+            aiAttributeValue) {
+
+        RoundWinner winner;
+        if (userAttributeValue > aiAttributeValue) {
+            mCurrentGameState.mUserPoints++;
+            winner = RoundWinner.USER;
+            mCurrentGameState.mIsUsersTurn = true;
+        } else if (aiAttributeValue > userAttributeValue) {
+            mCurrentGameState.mAIPoints++;
+            winner = RoundWinner.AI;
+            mCurrentGameState.mIsUsersTurn = false;
+        } else {
+            winner = RoundWinner.DRAW;
+            mCurrentGameState.mIsUsersTurn = !mCurrentGameState.mIsUsersTurn;
+
+        }
+        return winner;
+    }
+
+    /**
      * This method is called from the CardFragment class when the user chooses
      * an attribute by clicking on it or from the AI task. It chooses the
      * clicked Attribute to be the one compared with the opponents one. It
@@ -267,6 +370,7 @@ public class GamePresenter implements GameContract.Presenter {
     public void chooseAttribute(Attribute chosenAttr) {
 
         GameCompareFragment compareFragment = GameCompareFragment.newInstance();
+
         //getting the users and ais value for the compared attribute
         float userAttributeValue = 0, aiAttributeValue = 0;
         RoundWinner winner;
@@ -284,55 +388,31 @@ public class GamePresenter implements GameContract.Presenter {
                 aiAttributeValue = attributeValue.mValue;
             }
         }
-        //check who won this round
-        if (chosenAttr.mLargerWins) {
-            if (userAttributeValue > aiAttributeValue) {
-                mCurrentGameState.mUserPoints++;
-                winner = RoundWinner.USER;
-                mCurrentGameState.mIsUsersTurn = true;
-            } else if (aiAttributeValue > userAttributeValue) {
-                mCurrentGameState.mAIPoints++;
-                winner = RoundWinner.AI;
-                mCurrentGameState.mIsUsersTurn = false;
-            } else {
-                winner = RoundWinner.DRAW;
-                mCurrentGameState.mIsUsersTurn = !mCurrentGameState.mIsUsersTurn;
-
-            }
-        } else {
-            if (userAttributeValue > aiAttributeValue) {
-                mCurrentGameState.mAIPoints++;
-                winner = RoundWinner.AI;
-                mCurrentGameState.mIsUsersTurn = false;
-            } else if (aiAttributeValue > userAttributeValue) {
-                mCurrentGameState.mUserPoints++;
-                winner = RoundWinner.USER;
-                mCurrentGameState.mIsUsersTurn = true;
-            } else {
-                winner = RoundWinner.DRAW;
-                mCurrentGameState.mIsUsersTurn = !mCurrentGameState.mIsUsersTurn;
-
-            }
-        }
-        //there are a lot of better ways to do this but i needed the change some
+        //check who wins
+        winner = checkWinner(userAttributeValue, aiAttributeValue, chosenAttr);
+        //saving the images of the current card for the compare fragment view
+        //there are a lot of better ways to do this but i needed to change some
         // things and this was the way with the least coding effort ;)
         mUserCompareImage = setCompareImage(true);
         mAICompareImage = setCompareImage(false);
         mUserCompareValue = setCompareAttributeValue(true, chosenAttr);
         mAICompareValue = setCompareAttributeValue(false, chosenAttr);
-        Log.d("USERDECKSIZE: ",mCurrentGameState.getUserDeck().size()+"");
-        Log.d("AIDECKSIZE: ",mCurrentGameState.getAIDeck().size()+"");
-        if(!(mCurrentGameState.getUserDeck().size()<=1 && winner==RoundWinner
-                .AI) && !(mCurrentGameState.getAIDeck().size()<=1 &&
-                winner==RoundWinner.USER)){
-            //rearranging both decks
+
+        //check if one player lost his last card
+        if (!(mCurrentGameState.getUserDeck().size() <= 1 && winner == RoundWinner
+                .AI) && !(mCurrentGameState.getAIDeck().size() <= 1 &&
+                winner == RoundWinner.USER)) {
+            //no one lost his last card so rearrange both decks
             mDeckRearranger = new AsyncDeckRearranger();
             mDeckRearranger.execute(winner);
-        }else{
-            if(winner == RoundWinner.USER){
-                mHasAICards =false;
-            }else{
-                mHasUserCards =false;
+        } else {
+            //one player lost his last card
+            if (winner == RoundWinner.USER) {
+                //ai lost its last card
+                mHasAICards = false;
+            } else {
+                //user lost his last card
+                mHasUserCards = false;
             }
         }
 
@@ -341,7 +421,8 @@ public class GamePresenter implements GameContract.Presenter {
         compareFragment.setRoundWinner(winner);
         compareFragment.setAttribute(chosenAttr);
 
-        if (mCurrentGameState.mGameMode == GameMode.ROUNDS) {
+        if (mCurrentGameState.mGameMode == GameMode.ROUNDS ||
+                mCurrentGameState.mGameMode == GameMode.INSANE) {
             mCurrentGameState.mCurrentRound++;
         }
         mCurrentGameState.save();
@@ -360,33 +441,36 @@ public class GamePresenter implements GameContract.Presenter {
 
         Intent intent = new Intent(mCtx, GameEndActivity.class);
         boolean isFinish = false;
-        if(!mHasAICards){
-            intent.putExtra(GameEndPresenter.WINNER,GameEndState.WIN);
-            intent.putExtra(GameEndPresenter.SUB,mCtx.getString(R.string
+        //first of all check if one of the players has no cards anymore
+        if (!mHasAICards) {
+            intent.putExtra(GameEndPresenter.WINNER, GameEndState.WIN);
+            intent.putExtra(GameEndPresenter.SUB, mCtx.getString(R.string
                     .ai_no_cards));
-            mBackEnd.startActivity(intent,winner);
-            isFinish=true;
-        }else if(!mHasUserCards){
-            intent.putExtra(GameEndPresenter.WINNER,GameEndState.LOSE);
-            intent.putExtra(GameEndPresenter.SUB,mCtx.getString(R.string
+            mBackEnd.startActivity(intent, winner);
+            isFinish = true;
+        } else if (!mHasUserCards) {
+            intent.putExtra(GameEndPresenter.WINNER, GameEndState.LOSE);
+            intent.putExtra(GameEndPresenter.SUB, mCtx.getString(R.string
                     .user_no_cards));
-            mBackEnd.startActivity(intent,winner);
-            isFinish=true;
+            mBackEnd.startActivity(intent, winner);
+            isFinish = true;
         }
+        //both players have cards so check if the limit is reached
         if (mCurrentGameState.mGameMode == GameMode.POINTS) {
-            if (mCurrentGameState.mAIPoints == mCurrentGameState.mMaxPoints ||
-                    mCurrentGameState.mUserPoints == mCurrentGameState.mMaxPoints) {
+            if (mCurrentGameState.mAIPoints == mCurrentGameState.mLimit ||
+                    mCurrentGameState.mUserPoints == mCurrentGameState.mLimit) {
 
                 intent.putExtra(GameEndPresenter.WINNER, winner == RoundWinner
                         .USER ? GameEndState.WIN : GameEndState.LOSE);
                 intent.putExtra(GameEndPresenter.SUB, " ");
                 mDeckRearranger.cancel(true);
-                mBackEnd.startActivity(intent,winner);
+                mBackEnd.startActivity(intent, winner);
                 isFinish = true;
 
             }
-        } else if (mCurrentGameState.mGameMode == GameMode.ROUNDS) {
-            if (mCurrentGameState.mCurrentRound == mCurrentGameState.mMaxRounds) {
+        } else if (mCurrentGameState.mGameMode == GameMode.ROUNDS ||
+                mCurrentGameState.mGameMode == GameMode.INSANE) {
+            if (mCurrentGameState.mCurrentRound == mCurrentGameState.mLimit) {
                 intent.putExtra(GameEndPresenter.WINNER, mCurrentGameState
                         .mAIPoints > mCurrentGameState.mUserPoints ? GameEndState
                         .LOSE : mCurrentGameState
@@ -394,12 +478,11 @@ public class GamePresenter implements GameContract.Presenter {
                         .WIN : GameEndState.DRAW);
                 intent.putExtra(GameEndPresenter.SUB, " ");
                 mDeckRearranger.cancel(true);
-                mBackEnd.startActivity(intent,winner);
+                mBackEnd.startActivity(intent, winner);
                 isFinish = true;
             }
-        } else if (mCurrentGameState.mGameMode == GameMode.INSANE) {
-
         }
+        //if the game limit is not reached switch to game fragment
         if (!isFinish) {
             GameFragment gameFragment = GameFragment.newInstance();
             mBackEnd.switchToView(gameFragment);
@@ -540,15 +623,18 @@ public class GamePresenter implements GameContract.Presenter {
          */
         @Override
         protected Attribute doInBackground(Void... params) {
-            //TODO: get the current deck from intent or preferences
-            Deck currentDeck = Deck.findById(Deck.class, 1);
+
+            //Initialize deck and current card
+            Deck currentDeck = Deck.findById(Deck.class, mCurrentGameState.mDeckID);
             List<Card> currentDeckCards = currentDeck.getCards();
             List<List<Float>> attributeLists = new ArrayList<>();
             GameCard currentCard = mCurrentGameState.getAIDeck().get(0);
-
+            //Create one Float list for each attribute
             for (Attribute attr : currentDeck.getAttributes()) {
                 attributeLists.add(new ArrayList<Float>());
             }
+            //for every card in the deck get the values of all attributes and
+            // add them to a list (one list for each attribute)
             for (Card currentDeckCard : currentDeckCards) {
                 int i = 0;
                 for (AttributeValue attributeValue : currentDeckCard.getAttributeValues()) {
@@ -556,15 +642,19 @@ public class GamePresenter implements GameContract.Presenter {
                     i++;
                 }
             }
+            //sort the attribute lists depending if larger or lower wins
             int i = 0;
             for (Attribute attr : currentDeck.getAttributes()) {
                 Collections.sort(attributeLists.get(i));
-                if (!attr.mLargerWins) {
+                if ((!attr.mLargerWins && mCurrentGameState.mGameMode !=
+                        GameMode.INSANE) || (attr.mLargerWins &&
+                        mCurrentGameState.mGameMode == GameMode.INSANE)) {
                     Collections.reverse(attributeLists.get(i));
                 }
                 i++;
             }
-            Log.d("AttributeLists: ", attributeLists.toString());
+            //make a list with the positions of the first appearance from the
+            // own values. On entry per attribute.
             List<Integer> ownAttributePositions = new ArrayList<>();
             i = 0;
             for (AttributeValue attributeValue : currentCard.mCard.getAttributeValues()) {
@@ -572,9 +662,13 @@ public class GamePresenter implements GameContract.Presenter {
                         (attributeValue.mValue));
                 i++;
             }
-            Log.d("PositionList: ", ownAttributePositions.toString());
-            int[] attributeCandidates = new int[2];
-            for (int j = 0; j < 2; j++) {
+            //chose the attributes with the best position to be the
+            // candidates to choose ( 2 for hard mode, 3 for medium, 4 for easy)
+            int candidateNumber = mCurrentGameState.mGameLevel == GameLevel
+                    .EASY ? 4 : mCurrentGameState.mGameLevel == GameLevel
+                    .NORMAL ? 3 : 2;
+            int[] attributeCandidates = new int[candidateNumber];
+            for (int j = 0; j < candidateNumber; j++) {
                 i = 0;
                 attributeCandidates[j] = 0;
                 for (Integer ownAttributePosition : ownAttributePositions) {
@@ -587,19 +681,22 @@ public class GamePresenter implements GameContract.Presenter {
                 ownAttributePositions.remove(attributeCandidates[0]);
                 ownAttributePositions.add(attributeCandidates[0], 0);
             }
-            if (isCancelled()) {
-                return null;
-            }
-            Log.d("AttributeCandidatePos: ", attributeCandidates
-                    .toString());
+
+            //emulate thinking^^
             Random random = new Random();
             try {
-                Thread.sleep(1000);
+                Thread.sleep(1500);
             } catch (InterruptedException e) {
 
             }
+            //check if user canceled game before choosing an attribute
+            if (isCancelled()) {
+                return null;
+            }
+            //randomly choose one of the candidate attributes
             return currentCard.mCard.getAttributeValues().get
-                    (attributeCandidates[random.nextInt(2)]).mAttribute;
+                    (attributeCandidates[random.nextInt(candidateNumber
+                    )]).mAttribute;
 
         }
 
@@ -620,6 +717,9 @@ public class GamePresenter implements GameContract.Presenter {
         }
     }
 
+    /**
+     * Timer for the Time GameMode
+     */
     public class GameTimer extends CountDownTimer {
 
         public GameTimer(long millisInFuture, long countDownInterval) {
@@ -631,9 +731,9 @@ public class GamePresenter implements GameContract.Presenter {
         public void onTick(long millisUntilFinished) {
 
             mCurrentGameState.mCurrentTimeInMillis = mCurrentGameState
-                    .mGameTimeInMillis - millisUntilFinished;
+                    .mLimit - millisUntilFinished;
             mView.updateGameTime(mCurrentGameState
-                    .mGameTimeInMillis - mCurrentGameState
+                    .mLimit - mCurrentGameState
                     .mCurrentTimeInMillis);
         }
 
@@ -650,7 +750,7 @@ public class GamePresenter implements GameContract.Presenter {
             if (mDeckRearranger != null && !mDeckRearranger.isCancelled()) {
                 mDeckRearranger.cancel(true);
             }
-            mBackEnd.startActivity(intent,null);
+            mBackEnd.startActivity(intent, null);
         }
     }
 
@@ -696,15 +796,9 @@ public class GamePresenter implements GameContract.Presenter {
             if (params[0] == RoundWinner.USER) {
                 rearrangeWinnerOrDrawDeck(mCurrentGameState.getUserDeck());
                 rearrangeLoserDeck(mCurrentGameState.getAIDeck());
-
-                Log.d("DECKS: ", mCurrentGameState.getAIDeck().toString());
-                Log.d("DECKS: ", mCurrentGameState.getUserDeck().toString());
             } else if (params[0] == RoundWinner.AI) {
                 rearrangeWinnerOrDrawDeck(mCurrentGameState.getAIDeck());
                 rearrangeLoserDeck(mCurrentGameState.getUserDeck());
-
-                Log.d("DECKS: ", mCurrentGameState.getAIDeck().toString());
-                Log.d("DECKS: ", mCurrentGameState.getUserDeck().toString());
             } else {
                 rearrangeWinnerOrDrawDeck(mCurrentGameState.getAIDeck());
                 rearrangeWinnerOrDrawDeck(mCurrentGameState.getUserDeck());

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Attribute;
 import de.in.uulm.map.quartett.data.AttributeValue;
+import de.in.uulm.map.quartett.data.Image;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -129,6 +130,11 @@ public class GameCompareFragment extends Fragment implements GameContract.View {
 
     @Override
     public void updateGameTime(long timeInMillis) {
+
+    }
+
+    @Override
+    public void showImageDescription(Image image) {
 
     }
 }

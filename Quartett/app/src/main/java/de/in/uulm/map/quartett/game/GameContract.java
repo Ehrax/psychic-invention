@@ -3,7 +3,9 @@ package de.in.uulm.map.quartett.game;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 
+
 import de.in.uulm.map.quartett.data.Attribute;
+import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.data.LocalGameState;
 import de.in.uulm.map.quartett.gallery.CardFragment;
 import de.in.uulm.map.quartett.util.BasePresenter;
@@ -37,11 +39,14 @@ public interface GameContract {
 
         void restartGameTimer();
 
+        void onImageLongClicked(Image image);
+
     }
 
     interface View extends BaseView<Presenter> {
 
         void updateGameTime(long timeInMillis);
+        void showImageDescription(Image image);
     }
 
     interface BackEnd {

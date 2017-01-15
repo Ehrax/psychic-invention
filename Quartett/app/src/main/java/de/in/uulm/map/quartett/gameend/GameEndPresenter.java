@@ -86,10 +86,8 @@ public class GameEndPresenter implements GameEndContract.Presenter {
 
         intent.putExtra(GameSettingsPresenter.NAME, mLastGameState.mUserName);
         intent.putExtra(GameSettingsPresenter.MODE, mLastGameState.mGameMode);
-        intent.putExtra(GameSettingsPresenter.ROUNDS, mLastGameState.mMaxRounds);
-        intent.putExtra(GameSettingsPresenter.TIME, mLastGameState
-                .mGameTimeInMillis);
-        intent.putExtra(GameSettingsPresenter.POINTS, mLastGameState.mMaxPoints);
+        intent.putExtra(GameSettingsPresenter.LIMIT,mLastGameState.mLimit);
+        intent.putExtra(GameSettingsPresenter.DECK,mLastGameState.mDeckID);
 
         LocalGameState.deleteAll(LocalGameState.class);
         mBackend.startActivity(intent);

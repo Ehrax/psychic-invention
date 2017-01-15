@@ -34,23 +34,20 @@ public interface GalleryContract {
 
     }
 
-<<<<<<< HEAD
-    interface BackEnd {
-
-        void switchToView(GalleryContract.View view);
-=======
-
     interface Backend {
 
         void startActivity(Intent intent);
 
         Intent getIntent();
 
+        void switchToView(GalleryContract.View view);
+    }
+
     interface SubView extends View {
 
         void showImageDescription(Image image);
 
->>>>>>> develop
+
     }
 
 }

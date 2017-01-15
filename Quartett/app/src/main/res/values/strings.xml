@@ -18,8 +18,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <!--gallery-->
-    <string name="no_title">No Title</string>
 
     <!--In game-->
     <string name="your_turn">Du bist am Zug</string>
@@ -45,8 +43,7 @@
     <string name="game_settings_mode_insane">Insane</string>
     <string name="game_settings_name">Name</string>
     <string name="game_settings_btn_ok">Start Game</string>
-<<<<<<< HEAD
-=======
+
     <string name="game_settings_level_easy">Easy</string>
     <string name="game_settings_level_normal">Normal</string>
     <string name="game_settings_level_hard">Hard</string>
@@ -55,7 +52,7 @@
     <!--gallery-->
     <string name="no_title">No Title</string>
     <string name="image_description_title">Beschreibung</string>
->>>>>>> develop
+
 
     <!-- game end -->
     <string name="user_no_cards">Du hast alle Karten verloren!</string>

@@ -1,5 +1,6 @@
 package de.in.uulm.map.quartett.game;
 
+import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.gallery.CardFragment;
 import de.in.uulm.map.quartett.gamesettings.GameMode;
 import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
@@ -54,6 +56,23 @@ public class GameFragment extends Fragment implements GameContract.View {
         mPresenter = checkNotNull(presenter);
     }
 
+    /**
+     * This method should be used to create a Dialog that shows the description
+     * of an Image from a Card.
+     *
+     * @param image the CardImage to take the description from
+     */
+    @Override
+    public void showImageDescription(Image image) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.image_description_title);
+        builder.setMessage(image.mDescription);
+        builder.setPositiveButton("OK", null);
+
+        builder.show();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -77,12 +96,12 @@ public class GameFragment extends Fragment implements GameContract.View {
         mTxtLimit = (TextView) view.findViewById(R.id
                 .txt_in_game_limit);
         mTxtLimit.setText(mPresenter.getCurrentGameState().mGameMode ==
-                GameMode.ROUNDS ? mPresenter.getCurrentGameState()
+                GameMode.TIME ? getFormattedTime(mPresenter
+                .getCurrentGameState().mCurrentTimeInMillis) : mPresenter.getCurrentGameState()
+                .mGameMode == GameMode.POINTS ? "Point limit: " + mPresenter
+                .getCurrentGameState().mLimit : mPresenter.getCurrentGameState()
                 .mCurrentRound + "/" + mPresenter.getCurrentGameState()
-                .mMaxRounds : mPresenter.getCurrentGameState().mGameMode ==
-                GameMode.POINTS ? "Point limit: " + mPresenter
-                .getCurrentGameState().mMaxPoints : getFormattedTime(mPresenter
-                .getCurrentGameState().mCurrentTimeInMillis));
+                .mLimit);
 
         TextView txtViewPoints = (TextView) view.findViewById(R.id
                 .txt_in_game_points);

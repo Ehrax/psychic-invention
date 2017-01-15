@@ -1,11 +1,8 @@
 package de.in.uulm.map.quartett.gallery;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.RippleDrawable;
 import android.net.Uri;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -14,11 +11,8 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -28,11 +22,11 @@ import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.AttributeValue;
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.CardImage;
-<<<<<<< HEAD
+
 import de.in.uulm.map.quartett.game.GameContract;
-=======
+
 import de.in.uulm.map.quartett.data.Image;
->>>>>>> develop
+
 import de.in.uulm.map.quartett.util.AssetUtils;
 import de.in.uulm.map.quartett.views.viewpagerindicator.CirclePageIndicator;
 
@@ -48,15 +42,12 @@ import java.util.List;
 
 public class CardFragment extends Fragment {
 
-<<<<<<< HEAD
-    private Drawable[] mCardImages;
     private List<AttributeValue> mAttributeValues = new ArrayList<>();
-    private String mCardTitle;
     private GameContract.Presenter mGamePresenter;
-=======
+
     private GalleryContract.Presenter mPresenter;
     private Card mCard;
->>>>>>> develop
+
 
     public static CardFragment newInstance() {
 
@@ -111,22 +102,18 @@ public class CardFragment extends Fragment {
                 .txt_card_title);
         TableLayout tableLayoutAttributes = (TableLayout) view.findViewById
                 (R.id.table_layout_card_attr);
-<<<<<<< HEAD
+
         tableLayoutAttributes.setWeightSum(mAttributeValues.size());
-=======
+
         titleTextView.setText(mCard.mTitle);
->>>>>>> develop
+
 
         List<AttributeValue> attrValues = mCard.getAttributeValues();
 
         //building the attribute layout
-<<<<<<< HEAD
-        for (int i = 0; i < mAttributeValues.size(); i++) {
-            final AttributeValue currentAttrValue = mAttributeValues.get(i);
-=======
+
         for (int i = 0; i < attrValues.size(); i++) {
-            AttributeValue currentAttrValue = attrValues.get(i);
->>>>>>> develop
+            final AttributeValue currentAttrValue = attrValues.get(i);
 
             /*this table row holds the attribute title as well as the
              attribute value*/
@@ -135,21 +122,9 @@ public class CardFragment extends Fragment {
                     .LayoutParams.MATCH_PARENT, 0, 1));
             tableRow.setBackgroundResource(R.drawable.table_border);
 
-            /*row background color appears as bottom border because the
-             TextViews has darker background color and they are matching
-<<<<<<< HEAD
-             the tableRow, except the tableRows padding which we use as
-             "border".*/
-            tableRow.setBackgroundColor(getResources().getColor(R
-                    .color.colorTableDivider));
-=======
-             the tableRow except the tableRows padding.*/
-            //tableRow.setBackgroundColor(getResources().getColor(R
-            //       .color.colorTableDivider));
->>>>>>> develop
             /*setting bottom padding to one except for the last attribute to
              define a bottom border*/
-            if (i < attrValues.size() - 1) {
+            if (i < attrValues.size() - 2) {
                 tableRow.setPaddingRelative(0, 0, 0, 1);
             }
 
@@ -185,18 +160,16 @@ public class CardFragment extends Fragment {
                 tableRow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(mGamePresenter.getCurrentGameState().mIsUsersTurn) {
+
+                        if (mGamePresenter.getCurrentGameState().mIsUsersTurn) {
                             mGamePresenter.chooseAttribute(currentAttrValue.mAttribute);
-                        }else{
-                            Snackbar.make(finalView,R.string.not_your_turn,
+                        } else {
+                            Snackbar.make(finalView, R.string.not_your_turn,
                                     Snackbar
                                             .LENGTH_SHORT).show();
                         }
                     }
                 });
-
-
-
 
             }
 
@@ -291,8 +264,11 @@ public class CardFragment extends Fragment {
             imgView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-
-                    mPresenter.onImageLongClicked(img);
+                    if(mPresenter != null) {
+                        mPresenter.onImageLongClicked(img);
+                    }else{
+                        mGamePresenter.onImageLongClicked(img);
+                    }
                     return false;
                 }
             });

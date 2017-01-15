@@ -112,44 +112,10 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
             }
         });
 
-<<<<<<< HEAD
-        mPointsPicker.setMinValue(10);
-        mPointsPicker.setMaxValue(100);
-        mPointsPicker.setValue(20);
-
-        mTimePicker.setMinValue(1);
-        mTimePicker.setMaxValue(60);
-        mTimePicker.setValue(10);
-
-        mTimePicker.setFormatter(new NumberPicker.Formatter() {
-            @Override
-            public String format(int i) {
-
-                return i + " min";
-            }
-        });
-
-        mRoundPicker.setMinValue(2);
-        mRoundPicker.setMaxValue(100);
-        mRoundPicker.setValue(10);
-
-        mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-
-                mPointsPicker.setVisibility(
-                        i == R.id.rb_mode_points ? View.VISIBLE : View.GONE);
-                mTimePicker.setVisibility(
-                        i == R.id.rb_mode_time ? View.VISIBLE : View.GONE);
-                mRoundPicker.setVisibility(
-                        i == R.id.rb_mode_rounds ? View.VISIBLE : View.GONE);
-            }
-        });
-=======
         mLimitPicker.setMinValue(5);
         mLimitPicker.setMaxValue(100);
         mLimitPicker.setValue(10);
->>>>>>> develop
+
 
         return v;
     }
@@ -167,6 +133,7 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
 
     /**
      * Getter for the currently entered name.
+     *
      * @return the player name
      */
     @Override
@@ -175,48 +142,21 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
         return mEditTextName.getText().toString();
     }
 
-    /**
-<<<<<<< HEAD
-     * Getter for the currently selected points.
-     * @return selected points
-     */
     @Override
-    public int getPoints() {
+    public long getLimit() {
 
-        return mPointsPicker.getValue();
-    }
+        switch (mRadioGroupMode.getCheckedRadioButtonId()) {
+            case R.id.rb_mode_time:
+                return mLimitPicker.getValue() * 60 * 1000;
+            default:
+                return mLimitPicker.getValue();
+        }
 
-    /**
-     * Getter for the currently selected time.
-     * @return selected time in milliseconds
-     */
-    @Override
-    public long getTime() {
-
-        return mTimePicker.getValue()*60*1000;
-    }
-
-    /**
-     * Getter for the currently selected rounds.
-     * @return selected round
-     */
-    @Override
-    public int getRounds() {
-
-        return mRoundPicker.getValue();
-=======
-     * Getter for the currently selected limit.
-     * @return selected limit
-     */
-    @Override
-    public int getLimit() {
-
-        return mLimitPicker.getValue();
->>>>>>> develop
     }
 
     /**
      * Getter for the currently selected mode.
+     *
      * @return selected mode
      */
     @Override
@@ -236,18 +176,19 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
 
     /**
      * Getter for the currently selected level.
+     *
      * @return difficulty level
      */
     @Override
     public GameLevel getLevel() {
 
-       switch (mRadioGroupLevel.getCheckedRadioButtonId()) {
-           case R.id.rb_level_normal:
-               return GameLevel.NORMAL;
-           case R.id.rb_level_hard:
-               return GameLevel.HARD;
-           default:
-               return GameLevel.EASY;
-       }
+        switch (mRadioGroupLevel.getCheckedRadioButtonId()) {
+            case R.id.rb_level_normal:
+                return GameLevel.NORMAL;
+            case R.id.rb_level_hard:
+                return GameLevel.HARD;
+            default:
+                return GameLevel.EASY;
+        }
     }
 }

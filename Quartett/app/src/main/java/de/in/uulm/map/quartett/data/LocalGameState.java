@@ -2,6 +2,7 @@ package de.in.uulm.map.quartett.data;
 
 import com.orm.SugarRecord;
 
+import de.in.uulm.map.quartett.gamesettings.GameLevel;
 import de.in.uulm.map.quartett.gamesettings.GameMode;
 
 import java.util.Collections;
@@ -16,15 +17,15 @@ import java.util.List;
 public class LocalGameState extends SugarRecord {
 
     public String mUserName;
+    public long mDeckID;
     public int mUserPoints;
     public int mAIPoints;
-    public int mCurrentRound;
+    public long mCurrentRound;
     public long mCurrentTimeInMillis;
-    public long mGameTimeInMillis;
-    public int mMaxPoints;
-    public int mMaxRounds;
+    public long mLimit;
     public boolean mIsUsersTurn;
     public GameMode mGameMode;
+    public GameLevel mGameLevel;
 
     public LocalGameState() {
 
@@ -34,32 +35,26 @@ public class LocalGameState extends SugarRecord {
      * Simple constructor setting the gameMode and respectively the maxTime,
      * maxRounds or maxPoints.
      *
-     * @param timeInMillis the game time in milliseconds or 0 if gameMode !=
-     *                     HighscoreType.Time
-     * @param maxPoints    the points the players have to reach to win the game
-     *                     in point mode. Set it to 0 if game mode != point
-     * @param maxRounds    the rounds to play until the player with most points
-     *                     wins. Set to 0 if game mode != rounds
-     * @param gameMode     the game mode
-     * @param userName     the name of the current user
+     * @param gameLimit the maxRounds,maxPoints or time limit in milliseconds
+     *                  depending on the mode you want to play
+     * @param gameMode  the game mode
+     * @param userName  the name of the current user
      */
-    public LocalGameState(long timeInMillis, int maxPoints, int
-            maxRounds, GameMode gameMode, String userName) {
+    public LocalGameState(long gameLimit, GameMode gameMode,GameLevel level,
+                          long deckID,
+                          String
+                          userName) {
 
         mGameMode = gameMode;
-        if (gameMode == GameMode.TIME) {
-            mGameTimeInMillis = timeInMillis;
-            mCurrentTimeInMillis = 0;
-        } else if (gameMode == GameMode.POINTS) {
-            mMaxPoints = maxPoints;
-        } else if (gameMode == GameMode.ROUNDS) {
-            mMaxRounds = maxRounds;
-            mCurrentRound = 0;
-        }
+        mLimit = gameLimit;
+        mCurrentRound = 0;
+        mCurrentTimeInMillis = 0;
         mUserPoints = 0;
         mAIPoints = 0;
         mIsUsersTurn = true;
-        mUserName=userName;
+        mDeckID=deckID;
+        mUserName = userName;
+        mGameLevel=level;
     }
 
     /**

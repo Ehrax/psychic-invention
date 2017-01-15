@@ -23,15 +23,7 @@ public interface GameSettingsContract {
 
         String getName();
 
-<<<<<<< HEAD
-        int getPoints();
-
-        long getTime();
-
-        int getRounds();
-=======
-        int getLimit();
->>>>>>> develop
+        long getLimit();
 
         GameMode getMode();
 

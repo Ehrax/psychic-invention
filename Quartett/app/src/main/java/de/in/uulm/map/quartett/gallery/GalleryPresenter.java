@@ -8,6 +8,10 @@ import android.support.v4.app.Fragment;
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.CardImage;
 import de.in.uulm.map.quartett.data.Deck;
+import de.in.uulm.map.quartett.data.Image;
+import de.in.uulm.map.quartett.game.GameActivity;
+import de.in.uulm.map.quartett.gameend.GameEndPresenter;
+import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
 import de.in.uulm.map.quartett.mainmenu.MainMenuActivity;
 
 import java.util.ArrayList;
@@ -24,27 +28,15 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     private final Context mCtx;
     private final GalleryContract.Backend mBackend;
 
-    private GalleryContract.BackEnd mBackEnd;
-
 
     public GalleryPresenter(@NonNull GalleryContract.View galleryView,
-<<<<<<< HEAD
-                            Context ctx, GalleryContract.BackEnd
+                            Context ctx, GalleryContract.Backend
                                     viewSwitcher) {
 
         mView = galleryView;
         this.mCtx = ctx;
-        mBackEnd = viewSwitcher;
-=======
-                            Context ctx,
-                            GalleryActivity.ViewSwitcher viewSwitcher,
-                            GalleryContract.Backend backend) {
+        mBackend = viewSwitcher;
 
-        mView = galleryView;
-        mCtx = ctx;
-        mViewSwitcher = viewSwitcher;
-        mBackend = backend;
->>>>>>> develop
     }
 
     @Override
@@ -72,14 +64,15 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     }
 
     /**
-     * This method is called when a long click on a CardImage has been detected.
+     * This method is called when a long click on a CardImage has been
+     * detected.
      *
      * @param image the CardImage on which has been long clicked
      */
     @Override
     public void onImageLongClicked(Image image) {
 
-        if(mView instanceof GalleryContract.SubView) {
+        if (mView instanceof GalleryContract.SubView) {
             ((GalleryContract.SubView) mView).showImageDescription(image);
         }
     }
@@ -130,13 +123,7 @@ public class GalleryPresenter implements GalleryContract.Presenter {
      * @param deckID the ID of the deck you want to show in detail.
      */
     @Override
-<<<<<<< HEAD
-    public void showDeckDetail(long deckID) {
 
-        DeckFragment deckFragment = DeckFragment.newInstance();
-        deckFragment.setCurrentDeckID(deckID);
-        mBackEnd.switchToView(deckFragment);
-=======
     public void onDeckClicked(long deckID) {
 
         Intent callingIntent = mBackend.getIntent();
@@ -146,15 +133,15 @@ public class GalleryPresenter implements GalleryContract.Presenter {
         if (mode == null || mode == GalleryMode.VIEW) {
             DeckFragment deckFragment = DeckFragment.newInstance();
             deckFragment.setCurrentDeckID(deckID);
-            mViewSwitcher.switchToView(deckFragment);
+            mBackend.switchToView(deckFragment);
         } else {
-            Intent intent = new Intent(mCtx, MainMenuActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Intent intent = new Intent(mCtx, GameActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             intent.putExtras(mBackend.getIntent());
-            intent.putExtra("gs-deck", deckID);
+            intent.putExtra(GameSettingsPresenter.DECK, deckID);
             intent.removeExtra("mode");
             mBackend.startActivity(intent);
         }
->>>>>>> develop
+
     }
 }
