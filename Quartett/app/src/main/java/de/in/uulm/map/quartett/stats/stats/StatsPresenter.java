@@ -180,7 +180,7 @@ public class StatsPresenter implements StatsContract.StatsPresenter {
     @Override
     public void setTextGamesWon(TextView textView) {
 
-        if (mHandsWon.size() == 0) {
+        if (mGamesWon.size() == 0) {
             textView.setText("0");
         } else {
             Statistic gamesWon = mGamesWon.get(0);
