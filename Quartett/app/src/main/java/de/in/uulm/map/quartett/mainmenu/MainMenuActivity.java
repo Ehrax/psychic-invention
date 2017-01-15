@@ -13,10 +13,13 @@ import android.util.Log;
 
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.data.Deck;
 
 import de.in.uulm.map.quartett.factory.EntityImportTask;
 import de.in.uulm.map.quartett.util.ActivityUtils;
+
+import java.util.Random;
 
 
 public class MainMenuActivity extends DrawerActivity implements MainMenuContract.Backend {
@@ -54,6 +57,13 @@ public class MainMenuActivity extends DrawerActivity implements MainMenuContract
                 // in this callback all decks are loaded, i promise :P
             }
         }).execute();
+
+        Random rand = new Random();
+        for(int i = 0;i<18;i++) {
+            Achievement achieve = new Achievement("Test"+i, rand.nextInt(30),
+                    30);
+            achieve.save();
+        }
 
 
 
