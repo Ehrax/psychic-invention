@@ -1,7 +1,9 @@
 package de.in.uulm.map.quartett.gallery;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.text.method.BaseKeyListener;
 
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
@@ -11,7 +13,7 @@ import de.in.uulm.map.quartett.util.ActivityUtils;
  * Created by maxka on 25.12.2016.
  */
 
-public class GalleryActivity extends DrawerActivity {
+public class GalleryActivity extends DrawerActivity implements GalleryContract.Backend{
 
     private GalleryPresenter mGalleryPresenter;
     /**
@@ -25,7 +27,7 @@ public class GalleryActivity extends DrawerActivity {
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     (Fragment) view, R.id.contentFrame);
             mGalleryPresenter = new GalleryPresenter(view,
-                    getApplicationContext(), this);
+                    getApplicationContext(), this, GalleryActivity.this);
             view.setPresenter(mGalleryPresenter);
         }
     };
@@ -44,7 +46,8 @@ public class GalleryActivity extends DrawerActivity {
                     galleryFragment, R.id.contentFrame);
         }
 
-        mGalleryPresenter = new GalleryPresenter(galleryFragment, this, mViewSwitcher);
+        mGalleryPresenter = new GalleryPresenter(galleryFragment, this,
+                mViewSwitcher, this);
         galleryFragment.setPresenter(mGalleryPresenter);
     }
 
