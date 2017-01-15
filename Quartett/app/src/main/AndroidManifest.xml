@@ -39,11 +39,17 @@
         <activity android:name=".gallery.GalleryActivity">
 
         </activity>
+
+
+        <activity android:name=".stats.StatsActivity">
+      </activity>
+
         <activity android:name=".game.GameActivity" android:noHistory="true">
 
         </activity>
         <activity android:name=".gameend.GameEndActivity"
                 android:noHistory="true">
+
 
         </activity>
     </application>

@@ -9,7 +9,6 @@ import de.in.uulm.map.quartett.game.GameActivity;
 import com.orm.dsl.NotNull;
 
 import de.in.uulm.map.quartett.gamesettings.GameSettingsActivity;
-import de.in.uulm.map.quartett.data.Deck;
 
 /**
  * Created by alex on 12/17/16.

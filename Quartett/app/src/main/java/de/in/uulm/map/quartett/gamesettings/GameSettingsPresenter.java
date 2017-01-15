@@ -3,6 +3,9 @@ package de.in.uulm.map.quartett.gamesettings;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Button;
+import android.widget.TextView;
+
+import com.github.lzyzsd.circleprogress.ArcProgress;
 
 import de.in.uulm.map.quartett.gallery.GalleryActivity;
 import de.in.uulm.map.quartett.gallery.GalleryMode;

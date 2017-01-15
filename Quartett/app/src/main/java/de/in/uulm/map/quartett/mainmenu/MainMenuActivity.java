@@ -8,11 +8,15 @@ import android.util.Log;
 
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.data.Deck;
 
+import de.in.uulm.map.quartett.data.Highscore;
 
 import de.in.uulm.map.quartett.factory.EntityImportTask;
 import de.in.uulm.map.quartett.util.ActivityUtils;
+
+import java.util.Random;
 
 
 public class MainMenuActivity extends DrawerActivity implements MainMenuContract.Backend {
@@ -45,14 +49,12 @@ public class MainMenuActivity extends DrawerActivity implements MainMenuContract
         new EntityImportTask(this, new EntityImportTask.Callback() {
             @Override
             public void onImportFinished() {
-                Log.d("ALLDECKS",Deck.findAll(Deck.class).toString());
+
+                Log.d("ALLDECKS", Deck.findAll(Deck.class).toString());
                 // do stuff with the decks and cards here ...
                 // in this callback all decks are loaded, i promise :P
             }
         }).execute();
-
-
-
 
     }
 

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import de.in.uulm.map.quartett.gallery.GalleryActivity;
 import de.in.uulm.map.quartett.mainmenu.MainMenuActivity;
+import de.in.uulm.map.quartett.stats.StatsActivity;
 
 /**
  * Base class for all activities with navigation drawer. Just extend this Class
@@ -115,6 +116,13 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             case R.id.nav_settings:
                 break;
             case R.id.nav_statistic:
+                if (!this.getClass().getSimpleName().equals("StatsActivity")) {
+                    Intent intent = new Intent(this, StatsActivity.class);
+                    ActivityOptionsCompat options = ActivityOptionsCompat
+                            .makeSceneTransitionAnimation(this);
+
+                    startActivity(intent, options.toBundle());
+                }
                 break;
             default:
                 break;

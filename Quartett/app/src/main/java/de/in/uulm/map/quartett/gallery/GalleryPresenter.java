@@ -1,18 +1,26 @@
 package de.in.uulm.map.quartett.gallery;
 
 import android.content.Context;
+
 import android.content.Intent;
+
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.widget.TextView;
+
+import com.github.lzyzsd.circleprogress.ArcProgress;
 
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.CardImage;
 import de.in.uulm.map.quartett.data.Deck;
+
+
 import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.game.GameActivity;
 import de.in.uulm.map.quartett.gameend.GameEndPresenter;
 import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
 import de.in.uulm.map.quartett.mainmenu.MainMenuActivity;
+
 
 import java.util.ArrayList;
 import java.util.List;
