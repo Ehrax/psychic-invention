@@ -19,12 +19,13 @@ public class SettingsActivity extends DrawerActivity {
          */
         super.onCreate(savedInstanceState);
 
-        SettingsFragment settingsFragment = (SettingsFragment) getFragmentManager()
+        SettingsFragment settingsFragment = (SettingsFragment)
+                getSupportFragmentManager()
                 .findFragmentById(R.id.contentFrame);
 
         if (settingsFragment == null) {
             settingsFragment = SettingsFragment.newInstance();
-            ActivityUtils.addFragmentToActivity(getFragmentManager(),
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     settingsFragment, R.id.contentFrame);
         }
     }

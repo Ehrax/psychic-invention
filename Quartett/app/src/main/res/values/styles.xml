@@ -20,6 +20,8 @@
         <item name="android:windowSharedElementEnterTransition">
             @transition/change_image_transform</item>
 
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+
 
     </style>
     <!-- main menu -->

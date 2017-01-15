@@ -30,7 +30,7 @@
 
     </LinearLayout>
 
-    <View style="@style/Divider" />
+    <View style="@style/VerticalDivider" />
 
     <ListView
             android:id="@android:id/list"
