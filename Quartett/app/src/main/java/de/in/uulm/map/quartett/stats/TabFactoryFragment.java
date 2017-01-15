@@ -42,72 +42,10 @@ public class TabFactoryFragment extends Fragment {
         return new TabFactoryFragment();
     }
 
-    /**
-     * TODO comment here
-     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
-
-//        Statistic won = new Statistic();
-//        won.mTitle = StatsPresenter.GAME_WON;
-//        won.mValue = 40;
-//        won.save();
-//
-//        Statistic lost = new Statistic();
-//        lost.mTitle = StatsPresenter.GAME_LOST;
-//        lost.mValue = 32;
-//        lost.save();
-//
-//        Statistic handsWon = new Statistic();
-//        handsWon.mTitle = StatsPresenter.HAND_WON;
-//        handsWon.mValue = 80;
-//        handsWon.save();
-//
-//        Statistic handsLost = new Statistic();
-//        handsLost.mTitle = StatsPresenter.HAND_LOST;
-//        handsLost.mValue = 60;
-//        handsLost.save();
-//
-//        Statistic total = new Statistic();
-//        total.mTitle = StatsPresenter.TOTAL_GAMES;
-//        total.mValue = 72;
-//        total.save();
-//
-//        Statistic totalHands = new Statistic();
-//        totalHands.mTitle = StatsPresenter.TOTAL_HANDS;
-//        totalHands.mValue = 120;
-//        totalHands.save();
-//
-//        Achievement firstAchiev = new Achievement();
-//        firstAchiev.mTargetValue = 10;
-//        firstAchiev.mValue = 10;
-//        firstAchiev.save();
-//
-//        Achievement secondAchiev = new Achievement();
-//        secondAchiev.mTargetValue = 10;
-//        secondAchiev.mValue = 5;
-//        secondAchiev.save();
-//
-//        Highscore score = new Highscore();
-//        score.mName = "Alex";
-//        score.mValue = 100;
-//        score.save();
-//        Highscore score2 = new Highscore();
-//        score2.mName = "Roman";
-//        score2.mValue = 500;
-//        score2.save();
-//
-//        Highscore score3 = new Highscore();
-//        score3.mName = "Alex";
-//        score3.mValue = 50;
-//        score3.save();
-//
-//        Highscore score4 = new Highscore();
-//        score4.mName = "Alex";
-//        score4.mValue = 800;
-//        score4.save();
 
         // creating StatsFragment and his presenter
         StatsFragment statsFragment = StatsFragment.newInstance();

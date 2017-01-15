@@ -7,7 +7,6 @@
         android:gravity="center">
 
     <TextView
-            android:text="1."
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/stats_ranking_placing"
@@ -26,7 +25,6 @@
             android:layout_weight="5">
 
         <TextView
-                android:text="Paul Labersack"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/stats_ranking_name"
@@ -34,7 +32,6 @@
                 android:layout_weight="1"/>
 
         <TextView
-                android:text="20 000"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/stats_ranking_score"

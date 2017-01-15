@@ -34,7 +34,7 @@ public class StatsFragment extends Fragment implements StatsContract.StatsView {
     StatsContract.StatsPresenter mPresenter;
 
     /**
-     * TODO comment here
+     * Base constructor
      */
     public static StatsFragment newInstance() {
 

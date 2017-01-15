@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <com.github.lzyzsd.circleprogress.DonutProgress
+                android:id="@+id/achievement_row_circle"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                custom:donut_progress="30"
+                custom:donut_text_color="@color/colorButtonText"
+                custom:donut_unfinished_color="@color/colorTableDivider"
+                custom:donut_finished_color="@color/colorAccent" />
+
+        <View style="@style/HorizontalDivider"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"/>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <TextView
+                    android:text="Slipery Slope"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/achievement_row_title"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorButtonText"
+                    android:layout_marginBottom="5dp"/>
+
+            <TextView
+                    android:text="Crash into a wall while skidding in an oil puddle"
+                    android:layout_marginStart="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/achievement_row_description" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View style="@style/VerticalDivider"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"/>
+</LinearLayout>

@@ -1,8 +1,12 @@
 package de.in.uulm.map.quartett.stats;
 
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
+import com.github.lzyzsd.circleprogress.DonutProgress;
+
+import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.data.Highscore;
 import de.in.uulm.map.quartett.util.BasePresenter;
 import de.in.uulm.map.quartett.util.BaseView;
@@ -39,7 +43,20 @@ public interface StatsContract {
     }
 
 
-    interface AchievementsPresenter extends BasePresenter {}
+    interface AchievementsPresenter extends BasePresenter {
+
+        List<Achievement> getAchievements();
+
+        void setAchievementTitle(TextView textView);
+
+        void setAchievementProgress(ProgressBar progress);
+
+        void setAchievementDonut(DonutProgress donutProgress, Achievement achievement);
+
+        void setAchievementRowTitle(TextView textView, Achievement achievement);
+
+        void setAchievementRowDescription(TextView textView, Achievement achievement);
+    }
 
     interface AchievementsView extends BaseView<AchievementsPresenter> {
         void fragmentBecomeVisible();

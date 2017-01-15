@@ -124,7 +124,6 @@ public class StatsPresenter implements StatsContract.StatsPresenter {
             float doneAchiev = mDoneAchievements.size();
             float totalAchiev = mTotalAchievements.size();
 
-            // TODO
             float achievPercentage = doneAchiev / totalAchiev * 100;
 
             arcProgress.setProgress((int) achievPercentage);

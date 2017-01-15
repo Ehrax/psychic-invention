@@ -52,7 +52,7 @@ public class RankingFragment extends Fragment implements StatsContract.RankingVi
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id
                 .stats_ranking_recycler_view);
 
-        RankingContractsAdapter adapter = new RankingContractsAdapter
+        RankingAdapter adapter = new RankingAdapter
                 (mPresenter, getActivity());
 
         recyclerView.setAdapter(adapter);

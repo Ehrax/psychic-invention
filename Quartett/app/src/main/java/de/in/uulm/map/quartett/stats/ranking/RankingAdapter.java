@@ -17,8 +17,8 @@ import java.util.List;
  * Created by alexanderrasputin on 14.01.17.
  */
 
-public class RankingContractsAdapter extends RecyclerView
-        .Adapter<RankingContractsAdapter.ViewHolder> {
+public class RankingAdapter extends RecyclerView
+        .Adapter<RankingAdapter.ViewHolder> {
 
     /**
      * reference to Ranking Presenter
@@ -33,13 +33,13 @@ public class RankingContractsAdapter extends RecyclerView
     /**
      * stores the context for easy access
      */
-    Context mContext;
+    private Context mContext;
 
     /**
      * basic constructor
      */
-    public RankingContractsAdapter(StatsContract.RankingPresenter presenter
-            , Context mContext) {
+    public RankingAdapter(StatsContract.RankingPresenter presenter,
+                          Context mContext) {
 
         this.mPresenter = presenter;
         this.mContext = mContext;
@@ -51,8 +51,8 @@ public class RankingContractsAdapter extends RecyclerView
      * inflating a layout form XML and returning the holder
      */
     @Override
-    public RankingContractsAdapter.ViewHolder onCreateViewHolder
-    (ViewGroup parent, int viewType) {
+    public RankingAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                        int viewType) {
 
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);

@@ -54,7 +54,7 @@ public class RankingPresenter implements StatsContract.RankingPresenter {
         mScores = Highscore.listAll(Highscore.class);
 
         /**
-         * sorting highsocre
+         * sorting score
          */
         Collections.sort(mScores, new Comparator<Highscore>() {
             @Override
