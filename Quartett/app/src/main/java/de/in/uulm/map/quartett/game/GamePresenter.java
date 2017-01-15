@@ -773,6 +773,9 @@ public class GamePresenter implements GameContract.Presenter {
         }
     }
 
+    /**
+     * This task is used to update the stats after each round.
+     */
     private class AsyncStatUpdater extends AsyncTask<RoundWinner,Void,Void>{
 
         @Override

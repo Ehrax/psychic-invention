@@ -132,6 +132,9 @@ public class GameEndPresenter implements GameEndContract.Presenter {
         mBackend.startActivity(intent);
     }
 
+    /**
+     * This class updates the games won, games lost and total games stats.
+     */
     private class AsyncStatUpdater extends AsyncTask<Void, Void, Void> {
 
         @Override
