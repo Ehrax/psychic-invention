@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+            android:defaultValue="@string/default_user_name"
+            android:title="Username"
+            android:key="user_name"
+            android:summary="@string/default_user_name"/>
+    <ListPreference
+            android:defaultValue="round"
+            android:title="Default Game mode"
+            android:entries="@array/game_mode_entries"
+            android:entryValues="@array/game_mode_values"
+            android:key="game_mode"
+            android:summary="@string/round"/>
+    <SwitchPreference
+            android:defaultValue="true"
+            android:title="@string/sound"
+            android:key="sound" />
+    <SwitchPreference
+            android:defaultValue="true"
+            android:title="@string/vibration"
+            android:key="vibration" />
+
+</PreferenceScreen>

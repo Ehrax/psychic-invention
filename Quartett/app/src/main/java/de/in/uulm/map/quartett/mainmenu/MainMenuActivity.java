@@ -2,6 +2,7 @@ package de.in.uulm.map.quartett.mainmenu;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
@@ -45,6 +46,9 @@ public class MainMenuActivity extends DrawerActivity implements MainMenuContract
         mMainMenuPresenter =
                 new MainMenuPresenter(mainMenuFragment, this, this);
         mainMenuFragment.setPresenter(mMainMenuPresenter);
+
+        // loading default preference values
+        PreferenceManager.setDefaultValues(this, R.xml.preference, false);
 
         new EntityImportTask(this, new EntityImportTask.Callback() {
             @Override
