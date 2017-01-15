@@ -43,5 +43,6 @@
 
     <!--gallery-->
     <string name="no_title">No Title</string>
+    <string name="image_description_title">Beschreibung</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package de.in.uulm.map.quartett.gallery;
 
+import android.app.AlertDialog;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,8 @@ import com.bartoszlipinski.flippablestackview.FlippableStackView;
 import com.bartoszlipinski.flippablestackview.StackPageTransformer;
 
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.CardImage;
+import de.in.uulm.map.quartett.data.Image;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * deck in a animated stack view.
  */
 
-public class DeckFragment extends Fragment implements GalleryContract.View {
+public class DeckFragment extends Fragment implements GalleryContract.SubView {
 
     private GalleryContract.Presenter mPresenter;
     private long currentDeckID;
@@ -75,18 +78,32 @@ public class DeckFragment extends Fragment implements GalleryContract.View {
         deckInitializer = new AsyncDeckInitializer();
         deckInitializer.execute(currentDeckID);
 
-
         return view;
     }
 
+    /**
+     * This method should be used to create a Dialog that shows the description
+     * of an Image from a Card.
+     *
+     * @param image the CardImage to take the description from
+     */
+    @Override
+    public void showImageDescription(Image image) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.image_description_title);
+        builder.setMessage(image.mDescription);
+        builder.setPositiveButton("OK", null);
+
+        builder.show();
+    }
 
     /**
      * This AsyncTask is used to load the cards from the database and build a
      * fragment for each card. After the heavy lifting is done this class
      * initializes the FlippableStack and removes the progress bar.
      */
-    public class AsyncDeckInitializer extends AsyncTask<Long, Void,
-            Long> {
+    public class AsyncDeckInitializer extends AsyncTask<Long, Void, Long> {
 
         /**
          * Building a card fragment for each card in the given deck.
@@ -98,7 +115,7 @@ public class DeckFragment extends Fragment implements GalleryContract.View {
         @Override
         protected Long doInBackground(Long... params) {
 
-           mDeckCards=mPresenter.createDummyList(params[0]);
+            mDeckCards = mPresenter.createDummyList(params[0]);
             return isCancelled() ? null : params[0];
         }
 
