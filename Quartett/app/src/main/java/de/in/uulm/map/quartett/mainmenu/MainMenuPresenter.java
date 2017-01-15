@@ -3,6 +3,12 @@ package de.in.uulm.map.quartett.mainmenu;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
+
+import de.in.uulm.map.quartett.game.GameActivity;
+import com.orm.dsl.NotNull;
+
+import de.in.uulm.map.quartett.gamesettings.GameSettingsActivity;
 
 /**
  * Created by alex on 12/17/16.
@@ -12,13 +18,20 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
 
     @NonNull
     private final MainMenuContract.View mView;
-    private final Context ctx;
+    private final Context mCtx;
+
+    @NotNull
+    private final MainMenuContract.Backend mBackend;
+
 
     public MainMenuPresenter(@NonNull MainMenuContract.View mainMenuView,
+                             MainMenuContract.Backend backend,
                              Context ctx) {
 
         mView = mainMenuView;
-        this.ctx = ctx;
+        this.mCtx = ctx;
+        mBackend = backend;
+        start();
     }
 
     @Override
@@ -27,11 +40,20 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
     }
 
     /**
-     * Starts the local game activity
+     * Starts a new local game by calling the GameSettingsActivity.
      */
     @Override
     public void startNewLocalGame() {
-        //TODO: start local game activity
+        Intent intent = new Intent(mCtx, GameSettingsActivity.class);
+        mBackend.startActivity(intent);
+    }
+
+    /**
+     * Continues the local game by calling the game activity
+     */
+    @Override
+    public void continueLocalGame() {
+        mBackend.startActivity(new Intent(mCtx,GameActivity.class));
     }
 
     /**

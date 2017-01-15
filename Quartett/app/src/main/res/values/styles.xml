@@ -2,10 +2,17 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <!--enable activity transitions-->
+        <item name="android:windowContentTransitions">true</item>
+
+        <!--specify enter and exit transitions-->
+        <item name="android:windowEnterTransition">@transition/fade_delay_100</item>
+        <item name="android:windowExitTransition">@transition/slide</item>
+
 
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
@@ -13,26 +20,113 @@
         <item name="android:windowSharedElementEnterTransition">
             @transition/change_image_transform</item>
 
-    </style>
 
+    </style>
+    <!-- main menu -->
+
+    <!--style for the main menu buttons-->
     <style name="MainMenuButtonStyle" parent="android:Widget.Material.Button.Colored">
         <item name="android:textSize">18sp</item>
         <item name="android:backgroundTint">@color/colorButtonNormal</item>
         <item name="android:textColor">@color/colorButtonText</item>
     </style>
 
+    <!-- game settings -->
+    <style name="GameSettingsSectionFont"
+           parent="android:Widget.Material.TextView">
+        <item name="android:textSize">20sp</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+    <style name="GameSettingsOkButton"
+           parent="android:Widget.Material.Button.Colored">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/colorButtonText</item>
+    </style>
+
+    <!--This TextView style is used for the gallery to show a black
+    transparent TextView containing the DeckTitle over the Deck Image-->
+    <style name="ImageTitleTextView" parent="android:Widget.TextView">
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:background">@color/colorBlackTransparent</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:textColor">@color/colorGalleryTitle</item>
+    </style>
+
+    <!-- card attribute win indicator -->
+    <style name="ImageViewCardWinIndicator">
+        <item name="android:paddingLeft">3dp</item>
+        <item name="android:paddingRight">2dp</item>
+        <item name="android:background">@color/colorCardAttributesBackground</item>
+    </style>
+
+    <!--Style for the card attributes title-->
+    <style name="TextViewCardAttributesTitle" parent="android:Widget.TextView">
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingStart">5dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <!--style for the card attributes value-->
+    <style name="TextViewCardAttributesValue" parent="@style/TextViewCardAttributesTitle">
+        <item name="android:textAlignment">viewEnd</item>
+        <item name="android:gravity">end</item>
+        <item name="android:paddingEnd">10dp</item>
+    </style>
+
+    <!--In game header text view style for displaying opponents name and
+    current points
+     -->
+    <style name="TextViewInGameHeader" parent="android:Widget.TextView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_weight">0.6</item>
+    </style>
+    <style name="TextViewInGameHeaderPoints"
+            parent="@style/TextViewInGameHeader">
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <!-- action bar -->
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="Divider">
+
+    <!-- game end -->
+    <style name="GameEndStatusText"
+            parent="android:Widget.Material.TextView">
+        <item name="android:textSize">70dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+    <style name="GameEndStatusSubText"
+            parent="android:Widget.Material.TextView">
+        <item name="android:textSize">25dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+
+    <!-- divider style-->
+    <style name="VerticalDivider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+
+    <style name="HorizontalDivider">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:background">?android:attr/listDivider</item>
     </style>
 

@@ -15,11 +15,18 @@
  */
 package de.in.uulm.map.quartett.util;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewPager;
+import android.transition.TransitionInflater;
 
+
+import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.game.GameCompareFragment;
+import de.in.uulm.map.quartett.game.GameFragment;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -32,14 +39,33 @@ public class ActivityUtils {
      * The {@code fragment} is added to the container view with id {@code
      * frameId}. The operation is performed by the {@code fragmentManager}.
      */
-    public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
-                                             @NonNull Fragment fragment, int frameId) {
+    public static void addFragmentToActivity(@NonNull FragmentManager
+                                                     fragmentManager,
+                                             @NonNull Fragment fragment, int
+                                                     frameId) {
 
         checkNotNull(fragmentManager);
         checkNotNull(fragment);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(frameId, fragment);
-        transaction.commit();
-    }
+        //checking if we need to replace an existing fragment with animation
+        // or simply add a fragment to an empty container.
+        Fragment checkFragment = fragmentManager.findFragmentById(frameId);
+        if (checkFragment == null) {
+            transaction.add(frameId, fragment);
+        } else {
+            if (!(fragment instanceof GameCompareFragment) && !(fragment
+                    instanceof GameFragment)) {
 
+                transaction.setCustomAnimations(R.anim.fragment_slide_left_enter,
+                        R.anim.fragment_slide_left_exit, R.anim
+                                .fragment_slide_right_enter, R.anim
+                                .fragment_slide_right_exit);
+                transaction.addToBackStack(null);
+            }
+            transaction.replace(frameId, fragment);
+
+        }
+        transaction.commit();
+
+    }
 }

@@ -3,6 +3,23 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <!-- main menu button color-->
     <color name="colorButtonNormal">#028ac9</color>
+    <!--Text colors -->
     <color name="colorButtonText">#fff</color>
+    <color name="colorGalleryTitle">#fff</color>
+    <!--border color for the cards-->
+    <color name="colorCardBorder">#212121</color>
+    <!--background for the cards attributes -->
+    <color name="colorCardAttributesBackground">#616161</color>
+    <!--the divider color for the cards attributes-->
+    <color name="colorTableDivider">#BDBDBD</color>
+    <!-- transparent backgrounds for fancy textViews ;) -->
+    <color name="colorBlackTransparent">#CE000000</color>
+    <color name="colorCardTitle">#c0303030</color>
+    <!-- color for the win and lose borders at compare fragment-->
+    <color name="colorWinFrameBorder">#00ff00</color>
+    <color name="colorLoseFrameBorder">#ff0000</color>
+    <color name="colorDrawFrameBorder">#BDBDBD</color>
+
 </resources>

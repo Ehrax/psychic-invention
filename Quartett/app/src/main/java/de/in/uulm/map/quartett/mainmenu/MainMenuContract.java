@@ -1,5 +1,7 @@
 package de.in.uulm.map.quartett.mainmenu;
 
+import android.content.Intent;
+
 import de.in.uulm.map.quartett.util.BasePresenter;
 import de.in.uulm.map.quartett.util.BaseView;
 
@@ -13,6 +15,8 @@ public interface MainMenuContract {
 
         void startNewLocalGame();
 
+        void continueLocalGame();
+
         void startNewOnlineGame();
 
         void startAchievements();
@@ -22,5 +26,10 @@ public interface MainMenuContract {
 
     interface View extends BaseView<Presenter> {
 
+    }
+
+    interface Backend {
+
+        void startActivity(Intent intent);
     }
 }
