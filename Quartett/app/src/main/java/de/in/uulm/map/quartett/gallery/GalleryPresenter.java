@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 
 import de.in.uulm.map.quartett.data.Attribute;
 import de.in.uulm.map.quartett.data.Card;
+import de.in.uulm.map.quartett.data.CardImage;
 import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.data.Image;
 
@@ -25,11 +26,11 @@ public class GalleryPresenter implements GalleryContract.Presenter {
 
     private GalleryActivity.ViewSwitcher mViewSwitcher;
 
-    public GalleryPresenter(@NonNull GalleryContract.View galleryView,
+    public GalleryPresenter(@NonNull GalleryContract.View view,
                             Context ctx, GalleryActivity.ViewSwitcher
                                     viewSwitcher) {
 
-        mView = galleryView;
+        mView = view;
         this.mCtx = ctx;
         mViewSwitcher = viewSwitcher;
     }
@@ -59,6 +60,19 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     }
 
     /**
+     * This method is called when a long click on a CardImage has been detected.
+     *
+     * @param image the CardImage on which has been long clicked
+     */
+    @Override
+    public void onImageLongClicked(Image image) {
+
+        if(mView instanceof GalleryContract.SubView) {
+            ((GalleryContract.SubView) mView).showImageDescription(image);
+        }
+    }
+
+    /**
      * create a card fragment from a card in a given deck on a given position
      *
      * @param deckID   the deckId you want the card from
@@ -73,9 +87,8 @@ public class GalleryPresenter implements GalleryContract.Presenter {
         Card card = cards.get(position);
 
         CardFragment currentCard = CardFragment.newInstance();
-        currentCard.setCardImageUris(card.getCardImages(), mCtx);
-        currentCard.setCardTitle(card.mTitle);
-        currentCard.setCardAttributeValues(card.getAttributeValues());
+        currentCard.setPresenter(this);
+        currentCard.setCard(card);
 
         return currentCard;
     }
