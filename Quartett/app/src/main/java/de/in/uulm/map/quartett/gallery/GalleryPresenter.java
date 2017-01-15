@@ -62,13 +62,13 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     /**
      * This method is called when a long click on a CardImage has been detected.
      *
-     * @param cardImage the CardImage on which has been long clicked
+     * @param image the CardImage on which has been long clicked
      */
     @Override
-    public void onCardImageLongClicked(CardImage cardImage) {
+    public void onImageLongClicked(Image image) {
 
         if(mView instanceof GalleryContract.SubView) {
-            ((GalleryContract.SubView) mView).showCardImageDescription(cardImage);
+            ((GalleryContract.SubView) mView).showImageDescription(image);
         }
     }
 
@@ -88,9 +88,7 @@ public class GalleryPresenter implements GalleryContract.Presenter {
 
         CardFragment currentCard = CardFragment.newInstance();
         currentCard.setPresenter(this);
-        currentCard.setCardImageUris(card.getCardImages(), mCtx);
-        currentCard.setCardTitle(card.mTitle);
-        currentCard.setCardAttributeValues(card.getAttributeValues());
+        currentCard.setCard(card);
 
         return currentCard;
     }

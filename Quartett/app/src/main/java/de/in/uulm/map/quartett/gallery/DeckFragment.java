@@ -20,6 +20,7 @@ import com.bartoszlipinski.flippablestackview.StackPageTransformer;
 
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.CardImage;
+import de.in.uulm.map.quartett.data.Image;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,6 @@ public class DeckFragment extends Fragment implements GalleryContract.SubView {
         deckInitializer = new AsyncDeckInitializer();
         deckInitializer.execute(currentDeckID);
 
-
         return view;
     }
 
@@ -85,14 +85,15 @@ public class DeckFragment extends Fragment implements GalleryContract.SubView {
      * This method should be used to create a Dialog that shows the description
      * of an Image from a Card.
      *
-     * @param cardImage the CardImage to take the description from
+     * @param image the CardImage to take the description from
      */
     @Override
-    public void showCardImageDescription(CardImage cardImage) {
+    public void showImageDescription(Image image) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Description");
-        builder.setMessage(cardImage.mImage.mDescription);
+        builder.setTitle(R.string.image_description_title);
+        builder.setMessage(image.mDescription);
+        builder.setPositiveButton("OK", null);
 
         builder.show();
     }

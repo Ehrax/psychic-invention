@@ -195,7 +195,9 @@ public class EntityFactory {
         mCards.add(card);
 
         for (int i = 0; i < jsonImages.length(); i++) {
-            loadCardImage((JSONObject) jsonImages.get(i), card);
+            CardImage image = loadCardImage(
+                    (JSONObject) jsonImages.get(i), card);
+            image.mImage.mDescription = jsonCard.optString("description");
         }
 
         for (int i = 0; i < jsonAttributeValues.length(); i++) {

@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 
 import de.in.uulm.map.quartett.data.CardImage;
 import de.in.uulm.map.quartett.data.Deck;
+import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.util.BasePresenter;
 import de.in.uulm.map.quartett.util.BaseView;
 
@@ -25,7 +26,7 @@ public interface GalleryContract {
 
         List<Fragment> createDummyList(long deckID);
 
-        void onCardImageLongClicked(CardImage cardImage);
+        void onImageLongClicked(Image image);
     }
 
     interface View extends BaseView<Presenter> {
@@ -34,7 +35,7 @@ public interface GalleryContract {
 
     interface SubView extends View {
 
-        void showCardImageDescription(CardImage image);
+        void showImageDescription(Image image);
     }
 
 }
