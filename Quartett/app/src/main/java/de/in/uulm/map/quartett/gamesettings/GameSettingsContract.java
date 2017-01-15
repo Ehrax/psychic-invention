@@ -23,7 +23,7 @@ public interface GameSettingsContract {
 
         String getName();
 
-        int getLimit();
+        long getLimit();
 
         GameMode getMode();
 

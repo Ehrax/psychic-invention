@@ -3,6 +3,7 @@ package de.in.uulm.map.quartett.gallery;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,7 +22,11 @@ import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.AttributeValue;
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.CardImage;
+
+import de.in.uulm.map.quartett.game.GameContract;
+
 import de.in.uulm.map.quartett.data.Image;
+
 import de.in.uulm.map.quartett.util.AssetUtils;
 import de.in.uulm.map.quartett.views.viewpagerindicator.CirclePageIndicator;
 
@@ -37,12 +42,28 @@ import java.util.List;
 
 public class CardFragment extends Fragment {
 
+    private List<AttributeValue> mAttributeValues = new ArrayList<>();
+    private GameContract.Presenter mGamePresenter;
+
     private GalleryContract.Presenter mPresenter;
     private Card mCard;
+
 
     public static CardFragment newInstance() {
 
         return new CardFragment();
+    }
+
+    /**
+     * This method is used to set the GamePresenter. The GamePresenter is used
+     * to set click listeners for the attributes. So the GamePresenter can
+     * handle the game logic.
+     *
+     * @param presenter the GamePresenter
+     */
+    public void setGamePresenter(GameContract.Presenter presenter) {
+
+        mGamePresenter = presenter;
     }
 
     /**
@@ -81,29 +102,29 @@ public class CardFragment extends Fragment {
                 .txt_card_title);
         TableLayout tableLayoutAttributes = (TableLayout) view.findViewById
                 (R.id.table_layout_card_attr);
+
+        tableLayoutAttributes.setWeightSum(mAttributeValues.size());
+
         titleTextView.setText(mCard.mTitle);
+
 
         List<AttributeValue> attrValues = mCard.getAttributeValues();
 
         //building the attribute layout
+
         for (int i = 0; i < attrValues.size(); i++) {
-            AttributeValue currentAttrValue = attrValues.get(i);
+            final AttributeValue currentAttrValue = attrValues.get(i);
 
             /*this table row holds the attribute title as well as the
              attribute value*/
-            TableRow tableRow = new TableRow(getContext());
+            final TableRow tableRow = new TableRow(getContext());
             tableRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup
                     .LayoutParams.MATCH_PARENT, 0, 1));
             tableRow.setBackgroundResource(R.drawable.table_border);
 
-            /*row background color appears as bottom border because the
-             TextViews has darker background color and they are matching
-             the tableRow except the tableRows padding.*/
-            //tableRow.setBackgroundColor(getResources().getColor(R
-            //       .color.colorTableDivider));
             /*setting bottom padding to one except for the last attribute to
              define a bottom border*/
-            if (i < attrValues.size() - 1) {
+            if (i < attrValues.size() - 2) {
                 tableRow.setPaddingRelative(0, 0, 0, 1);
             }
 
@@ -120,8 +141,8 @@ public class CardFragment extends Fragment {
             /*Instantiating the TextViews with the correct style and adding
              them to the table row*/
             //TODO: find out why the hell those TextViews don`t accept all of the set styles
-            TextView textViewAttrTitle = new TextView(tableRow.getContext(), null, 0,
-                    R.style.TextViewCardAttributesTitle);
+            TextView textViewAttrTitle = new TextView(tableRow.getContext(),
+                    null, 0, R.style.TextViewCardAttributesTitle);
             textViewAttrTitle.setText(currentAttrValue.mAttribute.mName);
             tableRow.addView(textViewAttrTitle);
 
@@ -131,6 +152,26 @@ public class CardFragment extends Fragment {
             textViewAttrValue.setText(currentAttrValue.mValue + " " +
                     "" + currentAttrValue.mAttribute.mUnit);
             tableRow.addView(textViewAttrValue);
+
+            //if the card fragment is used in game set a click listener to
+            // the tableRow
+            if (mGamePresenter != null) {
+                final View finalView = view;
+                tableRow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (mGamePresenter.getCurrentGameState().mIsUsersTurn) {
+                            mGamePresenter.chooseAttribute(currentAttrValue.mAttribute);
+                        } else {
+                            Snackbar.make(finalView, R.string.not_your_turn,
+                                    Snackbar
+                                            .LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+            }
 
             //finally adding the table row holding the attribute to the table
             tableLayoutAttributes.addView(tableRow);
@@ -223,8 +264,11 @@ public class CardFragment extends Fragment {
             imgView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-
-                    mPresenter.onImageLongClicked(img);
+                    if(mPresenter != null) {
+                        mPresenter.onImageLongClicked(img);
+                    }else{
+                        mGamePresenter.onImageLongClicked(img);
+                    }
                     return false;
                 }
             });

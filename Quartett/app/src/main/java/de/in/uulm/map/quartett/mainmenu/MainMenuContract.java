@@ -15,6 +15,8 @@ public interface MainMenuContract {
 
         void startNewLocalGame();
 
+        void continueLocalGame();
+
         void startNewOnlineGame();
 
         void startAchievements();

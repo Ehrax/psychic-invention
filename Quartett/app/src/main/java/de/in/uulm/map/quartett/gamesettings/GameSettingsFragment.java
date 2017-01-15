@@ -116,6 +116,7 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
         mLimitPicker.setMaxValue(100);
         mLimitPicker.setValue(10);
 
+
         return v;
     }
 
@@ -132,6 +133,7 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
 
     /**
      * Getter for the currently entered name.
+     *
      * @return the player name
      */
     @Override
@@ -140,18 +142,21 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
         return mEditTextName.getText().toString();
     }
 
-    /**
-     * Getter for the currently selected limit.
-     * @return selected limit
-     */
     @Override
-    public int getLimit() {
+    public long getLimit() {
 
-        return mLimitPicker.getValue();
+        switch (mRadioGroupMode.getCheckedRadioButtonId()) {
+            case R.id.rb_mode_time:
+                return mLimitPicker.getValue() * 60 * 1000;
+            default:
+                return mLimitPicker.getValue();
+        }
+
     }
 
     /**
      * Getter for the currently selected mode.
+     *
      * @return selected mode
      */
     @Override
@@ -171,18 +176,19 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
 
     /**
      * Getter for the currently selected level.
+     *
      * @return difficulty level
      */
     @Override
     public GameLevel getLevel() {
 
-       switch (mRadioGroupLevel.getCheckedRadioButtonId()) {
-           case R.id.rb_level_normal:
-               return GameLevel.NORMAL;
-           case R.id.rb_level_hard:
-               return GameLevel.HARD;
-           default:
-               return GameLevel.EASY;
-       }
+        switch (mRadioGroupLevel.getCheckedRadioButtonId()) {
+            case R.id.rb_level_normal:
+                return GameLevel.NORMAL;
+            case R.id.rb_level_hard:
+                return GameLevel.HARD;
+            default:
+                return GameLevel.EASY;
+        }
     }
 }

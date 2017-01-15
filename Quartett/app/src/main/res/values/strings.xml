@@ -7,7 +7,7 @@
     <string name="new_online_game">Multiplayer</string>
     <string name="achievements">Achievements</string>
     <string name="setting">Settings</string>
-
+    <string name="continue_game">Spiel fortsetzen</string>
     <!--drawer navigation links -->
     <string name="main_menu">Main Menu</string>
     <string name="gallery">Gallery</string>
@@ -17,6 +17,13 @@
     <!--drawer misc -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
+    <!--In game-->
+    <string name="your_turn">Du bist am Zug</string>
+    <string name="ai_turn">Dein Gegner ist am Zug</string>
+    <!--snack bar text-->
+    <string name="not_your_turn">Du bist nicht am Zug!</string>
 
     <!-- game settings -->
     <string name="game_end_win">You Win</string>
@@ -36,6 +43,7 @@
     <string name="game_settings_mode_insane">Insane</string>
     <string name="game_settings_name">Name</string>
     <string name="game_settings_btn_ok">Start Game</string>
+
     <string name="game_settings_level_easy">Easy</string>
     <string name="game_settings_level_normal">Normal</string>
     <string name="game_settings_level_hard">Hard</string>
@@ -45,4 +53,8 @@
     <string name="no_title">No Title</string>
     <string name="image_description_title">Beschreibung</string>
 
+
+    <!-- game end -->
+    <string name="user_no_cards">Du hast alle Karten verloren!</string>
+    <string name="ai_no_cards">Dein Gegner hat alle Karten verloren!</string>
 </resources>

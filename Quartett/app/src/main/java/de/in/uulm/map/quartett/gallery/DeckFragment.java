@@ -3,6 +3,9 @@ package de.in.uulm.map.quartett.gallery;
 import android.app.AlertDialog;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.support.transition.AutoTransition;
+import android.support.transition.Fade;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
@@ -130,14 +133,18 @@ public class DeckFragment extends Fragment implements GalleryContract.SubView {
 
             if (deckID != null && !isCancelled()) {
                 mCardFragmentAdapter = new CardFragmentAdapter(getChildFragmentManager(), mDeckCards);
-
+                ViewGroup rootView = (ViewGroup) getActivity().findViewById(R
+                        .id.linear_layout_deck_fragment);
+                //animating the removing of the progressbar
+                AutoTransition transition =new AutoTransition();
+                TransitionManager.beginDelayedTransition(rootView,transition);
                 //removing the progress bar
                 ProgressBar progressBar = (ProgressBar) getActivity()
                         .findViewById(R.id.progress_bar_deck);
-                ((ViewManager) progressBar.getParent()).removeView(progressBar);
+                rootView.removeView(progressBar);
                 View placeHolderView = getActivity().findViewById(R.id
                         .deck_placeholder_view);
-                ((ViewManager) placeHolderView.getParent()).removeView(placeHolderView);
+                rootView.removeView(placeHolderView);
 
                 //initialising the flippable stack view
                 mFlippableStack.initStack(mDeckCards.size(),
