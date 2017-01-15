@@ -72,6 +72,12 @@ public class GalleryPresenter implements GalleryContract.Presenter {
         }
     }
 
+    @Override
+    public Card getCard(long deckId, int position) {
+
+        return Deck.findById(Deck.class, deckId).getCards().get(position);
+    }
+
     /**
      * create a card fragment from a card in a given deck on a given position
      *
@@ -88,7 +94,6 @@ public class GalleryPresenter implements GalleryContract.Presenter {
 
         CardFragment currentCard = CardFragment.newInstance();
         currentCard.setPresenter(this);
-        currentCard.setCard(card);
 
         return currentCard;
     }
