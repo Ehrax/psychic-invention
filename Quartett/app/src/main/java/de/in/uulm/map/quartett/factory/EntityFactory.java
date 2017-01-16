@@ -191,7 +191,11 @@ public class EntityFactory {
         JSONArray jsonImages = jsonCard.getJSONArray("images");
         JSONArray jsonAttributeValues = jsonCard.getJSONArray("values");
 
-        Card card = new Card(jsonCard.getString("name"), deck);
+        Card card = new Card(
+                jsonCard.getString("name"),
+                deck,
+                jsonCard.getInt("id"));
+
         mCards.add(card);
 
         for (int i = 0; i < jsonImages.length(); i++) {
