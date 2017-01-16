@@ -4,10 +4,12 @@
         <item>@string/round</item>
         <item>@string/time</item>
         <item>@string/point</item>
+        <item>@string/game_settings_mode_insane</item>
     </string-array>
     <string-array name="game_mode_values">
         <item>round</item>
         <item>time</item>
         <item>point</item>
+        <item>insane</item>
     </string-array>
 </resources>
