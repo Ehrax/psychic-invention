@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.gallery.GalleryActivity;
@@ -54,6 +55,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
     protected DrawerLayout mDrawer;
     private CircularImageView mProfilePic;
+    private TextView mUserTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +88,13 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         if (sp.contains(SettingsFragment.PROFILE_URI)) {
             mProfilePic.setImageURI(Uri.parse(sp.getString(SettingsFragment
                     .PROFILE_URI, null)));
+        }
+
+        mUserTextView = (TextView) drawerHeader.findViewById
+                (R.id.txt_drawer_username);
+
+        if (sp.contains("user_name")) {
+            mUserTextView.setText(sp.getString("user_name", "Quartet"));
         }
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawer,

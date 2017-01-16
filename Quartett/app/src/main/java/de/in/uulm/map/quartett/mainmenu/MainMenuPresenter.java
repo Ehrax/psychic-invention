@@ -28,7 +28,6 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
     @NotNull
     private final MainMenuContract.Backend mBackend;
 
-
     public MainMenuPresenter(@NonNull MainMenuContract.View mainMenuView,
                              MainMenuContract.Backend backend,
                              Context ctx) {
