@@ -148,6 +148,12 @@ public class GamePresenter implements GameContract.Presenter {
 
     }
 
+    @Override
+    public Card getCard(long deckId, int position) {
+
+        return Deck.findById(Deck.class, deckId).getCards().get(position);
+    }
+
     /**
      * Use this method to create a CardFragment which contains the card on top
      * of the users deck.
@@ -158,7 +164,8 @@ public class GamePresenter implements GameContract.Presenter {
     public CardFragment getCurrentCardFragment() {
 
         CardFragment currentCard = CardFragment.newInstance();
-        currentCard.setCard(mCurrentGameState.getUserDeck().get(0).mCard);
+        currentCard.setDeckId(mCurrentGameState.mDeckID);
+        currentCard.setPosition(mCurrentGameState.getUserDeck().get(0).mCard.mPosition);
         currentCard.setGamePresenter(this);
         return currentCard;
     }
