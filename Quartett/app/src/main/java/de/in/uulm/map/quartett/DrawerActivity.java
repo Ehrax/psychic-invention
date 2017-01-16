@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.gallery.GalleryActivity;
 import de.in.uulm.map.quartett.mainmenu.MainMenuActivity;
 
@@ -36,6 +37,9 @@ import de.in.uulm.map.quartett.stats.StatsActivity;
 
 import de.in.uulm.map.quartett.settings.SettingsActivity;
 import de.in.uulm.map.quartett.settings.SettingsFragment;
+import de.in.uulm.map.quartett.stats.TabFactoryFragment;
+import de.in.uulm.map.quartett.stats.achievements.AchievementsFragment;
+import de.in.uulm.map.quartett.stats.stats.StatsFragment;
 import de.in.uulm.map.quartett.views.CircularImageView;
 
 import java.io.IOException;
@@ -129,6 +133,15 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         switch (id) {
             case R.id.nav_achievements:
+                if (!this.getClass().getSimpleName().equals("StatsActivity")) {
+                    Intent intent = new Intent(this, StatsActivity.class);
+                    intent.putExtra(TabFactoryFragment.TAB_TITLE,
+                            AchievementsFragment.TAB_ACHIEVEMENTS);
+                    ActivityOptionsCompat options = ActivityOptionsCompat
+                            .makeSceneTransitionAnimation(this);
+
+                    startActivity(intent, options.toBundle());
+                }
                 break;
             case R.id.nav_editor:
                 break;
@@ -165,6 +178,8 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             case R.id.nav_statistic:
                 if (!this.getClass().getSimpleName().equals("StatsActivity")) {
                     Intent intent = new Intent(this, StatsActivity.class);
+                    intent.putExtra(TabFactoryFragment.TAB_TITLE,
+                            StatsFragment.TAB_STATISTICS);
                     ActivityOptionsCompat options = ActivityOptionsCompat
                             .makeSceneTransitionAnimation(this);
 
