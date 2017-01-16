@@ -15,13 +15,26 @@
             card_view:srcCompat="@drawable/main_menu_car"
             android:scaleType="centerCrop" />
 
-    <TextView
-            style="@style/ImageTitleTextView"
-            android:id="@+id/txt_deck_title_gallery"
+    <LinearLayout
+            style="@style/DeckTextBox"
+            android:layout_gravity="bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            />
+        <TextView
+                style="@style/DeckTitle"
+                android:id="@+id/txt_deck_title_gallery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        <TextView
+                style="@style/DeckDescription"
+                android:id="@+id/txt_deck_desc_gallery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
 
 </android.support.v7.widget.CardView>

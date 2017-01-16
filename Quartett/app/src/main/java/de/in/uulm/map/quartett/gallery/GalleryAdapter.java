@@ -42,12 +42,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
 
         public ImageView mImageView;
         public TextView mTextView;
+        public TextView mDescriptionView;
 
         public ViewHolder(View v) {
 
             super(v);
             mImageView = (ImageView) v.findViewById(R.id.img_deck_gallery);
             mTextView = (TextView) v.findViewById(R.id.txt_deck_title_gallery);
+            mDescriptionView = (TextView) v.findViewById(R.id.txt_deck_desc_gallery);
         }
     }
 
@@ -69,11 +71,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
     }
 
     @Override
-    public GalleryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int
-            viewType) {
+    public GalleryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout
-                .gallery_row, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).
+                inflate(R.layout.gallery_row, parent, false);
+
         return new ViewHolder(v);
     }
 
@@ -113,6 +115,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
             viewHolder.mTextView.setText(currentDeck.mTitle);
         } else {
             viewHolder.mTextView.setText(R.string.no_title);
+        }
+
+        if(currentDeck.mDescription != null) {
+            viewHolder.mDescriptionView.setText(currentDeck.mDescription);
+        } else {
+            viewHolder.mTextView.setText("");
         }
 
         viewHolder.mImageView.setOnClickListener(new View.OnClickListener() {
