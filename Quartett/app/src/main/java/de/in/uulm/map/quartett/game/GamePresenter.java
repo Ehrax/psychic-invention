@@ -388,7 +388,7 @@ public class GamePresenter implements GameContract.Presenter {
     public void chooseAttribute(Attribute chosenAttr) {
 
         GameCompareFragment compareFragment = GameCompareFragment.newInstance();
-        mChosenAttribute=chosenAttr;
+        mChosenAttribute = chosenAttr;
 
         new AsyncLastImageLoader().executeOnExecutor(AsyncTask
                 .THREAD_POOL_EXECUTOR);
@@ -415,7 +415,7 @@ public class GamePresenter implements GameContract.Presenter {
         //check who wins and update stats
         winner = checkWinner(userAttributeValue, aiAttributeValue, chosenAttr);
         new AsyncStatUpdater().executeOnExecutor(AsyncTask
-                .THREAD_POOL_EXECUTOR,winner);
+                .THREAD_POOL_EXECUTOR, winner);
 
         //check if one player lost his last card
         if (!(mCurrentGameState.getUserDeck().size() <= 1 && winner == RoundWinner
@@ -448,13 +448,12 @@ public class GamePresenter implements GameContract.Presenter {
         mCurrentGameState.save();
         try {
             mCountDownLatchImageLoader.await();
-        }catch(InterruptedException e){
+        } catch (InterruptedException e) {
 
         }
         mBackEnd.switchToView(compareFragment);
 
     }
-
 
 
     /**
@@ -469,6 +468,16 @@ public class GamePresenter implements GameContract.Presenter {
         boolean isFinish = false;
         //first of all check if one of the players has no cards anymore
         if (!mHasAICards) {
+            int pointBasic = mCurrentGameState
+                    .mUserPoints / mCurrentGameState.mAIPoints;
+            int points = mCurrentGameState.mGameLevel == GameLevel.EASY ?
+                    pointBasic * 1000 + 150 : mCurrentGameState.mGameLevel ==
+                    GameLevel.NORMAL ? pointBasic * 1100 + 200 : pointBasic *
+                    1300 + 300;
+
+            intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
+                    .mUserName);
+            intent.putExtra(GameEndPresenter.POINTS, points);
             intent.putExtra(GameEndPresenter.WINNER, GameEndState.WIN);
             intent.putExtra(GameEndPresenter.SUB, mCtx.getString(R.string
                     .ai_no_cards));
@@ -486,6 +495,16 @@ public class GamePresenter implements GameContract.Presenter {
             if (mCurrentGameState.mAIPoints == mCurrentGameState.mLimit ||
                     mCurrentGameState.mUserPoints == mCurrentGameState.mLimit) {
 
+                int pointBasic = mCurrentGameState
+                        .mUserPoints / mCurrentGameState.mAIPoints;
+                int points = mCurrentGameState.mGameLevel == GameLevel.EASY ?
+                        pointBasic * 1000 : mCurrentGameState.mGameLevel ==
+                        GameLevel.NORMAL ? pointBasic * 1100 : pointBasic * 1300;
+
+                intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
+                        .mUserName);
+                intent.putExtra(GameEndPresenter.POINTS, points);
+
                 intent.putExtra(GameEndPresenter.WINNER, winner == RoundWinner
                         .USER ? GameEndState.WIN : GameEndState.LOSE);
                 intent.putExtra(GameEndPresenter.SUB, " ");
@@ -497,6 +516,17 @@ public class GamePresenter implements GameContract.Presenter {
         } else if (mCurrentGameState.mGameMode == GameMode.ROUNDS ||
                 mCurrentGameState.mGameMode == GameMode.INSANE) {
             if (mCurrentGameState.mCurrentRound == mCurrentGameState.mLimit) {
+
+                int pointBasic = mCurrentGameState
+                        .mUserPoints / mCurrentGameState.mAIPoints;
+                int points = mCurrentGameState.mGameLevel == GameLevel.EASY ?
+                        pointBasic * 1000 : mCurrentGameState.mGameLevel ==
+                        GameLevel.NORMAL ? pointBasic * 1100 : pointBasic * 1300;
+
+                intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
+                        .mUserName);
+                intent.putExtra(GameEndPresenter.POINTS, points);
+
                 intent.putExtra(GameEndPresenter.WINNER, mCurrentGameState
                         .mAIPoints > mCurrentGameState.mUserPoints ? GameEndState
                         .LOSE : mCurrentGameState
@@ -767,6 +797,18 @@ public class GamePresenter implements GameContract.Presenter {
         public void onFinish() {
 
             Intent intent = new Intent(mCtx, GameEndActivity.class);
+
+            int pointBasic = mCurrentGameState
+                    .mUserPoints / mCurrentGameState.mAIPoints;
+            int points = mCurrentGameState.mGameLevel == GameLevel.EASY ?
+                    pointBasic * 1000 : mCurrentGameState.mGameLevel ==
+                    GameLevel.NORMAL ? pointBasic * 1100 : pointBasic * 1300;
+
+            intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
+                    .mUserName);
+            intent.putExtra(GameEndPresenter.POINTS, points);
+
+
             intent.putExtra(GameEndPresenter.WINNER, mCurrentGameState
                     .mAIPoints > mCurrentGameState.mUserPoints ? GameEndState
                     .LOSE : mCurrentGameState
@@ -783,7 +825,7 @@ public class GamePresenter implements GameContract.Presenter {
     /**
      * This task is used to update the stats after each round.
      */
-    private class AsyncStatUpdater extends AsyncTask<RoundWinner,Void,Void>{
+    private class AsyncStatUpdater extends AsyncTask<RoundWinner, Void, Void> {
 
         @Override
         protected Void doInBackground(RoundWinner... params) {
@@ -853,7 +895,7 @@ public class GamePresenter implements GameContract.Presenter {
 
     }
 
-    private class AsyncLastImageLoader extends AsyncTask<Void,Void,Void>{
+    private class AsyncLastImageLoader extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
