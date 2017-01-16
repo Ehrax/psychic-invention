@@ -18,7 +18,6 @@
 
 
     <TextView
-            android:text="Alexander Rasputin"
             android:id="@+id/txt_drawer_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
