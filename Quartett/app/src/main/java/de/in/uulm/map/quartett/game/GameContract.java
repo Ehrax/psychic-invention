@@ -5,11 +5,14 @@ import android.graphics.drawable.Drawable;
 
 
 import de.in.uulm.map.quartett.data.Attribute;
+import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.data.LocalGameState;
 import de.in.uulm.map.quartett.gallery.CardFragment;
 import de.in.uulm.map.quartett.util.BasePresenter;
 import de.in.uulm.map.quartett.util.BaseView;
+
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by maxka on 08.01.2017.
@@ -40,6 +43,9 @@ public interface GameContract {
         void restartGameTimer();
 
         void onImageLongClicked(Image image);
+
+        Card getCard(long deckId, int position);
+
 
     }
 

@@ -40,22 +40,17 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
         galleryFragment.setPresenter(mGalleryPresenter);
     }
 
-<<<<<<< HEAD
-    public interface ViewSwitcher {
-=======
+
     @Override
     public void onBackPressed() {
 
-        //Cancel deck initialization if there is one running
-        if (DeckFragment.deckInitializer != null) {
-            DeckFragment.deckInitializer.cancel(true);
-        }
+
         super.onBackPressed();
     }
 
     @Override
     public void switchToView(GalleryContract.View view) {
->>>>>>> develop
+
 
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                 (Fragment) view, R.id.contentFrame);

@@ -13,15 +13,17 @@ public class Card extends SugarRecord {
 
     public String mTitle;
     public Deck mDeck;
+    public int mPosition;
 
     public Card() {
 
     }
 
-    public Card(String mTitle, Deck mDeck) {
+    public Card(String mTitle, Deck mDeck,int mPosition) {
 
         this.mTitle = mTitle;
         this.mDeck = mDeck;
+        this.mPosition = mPosition;
     }
 
     /**
