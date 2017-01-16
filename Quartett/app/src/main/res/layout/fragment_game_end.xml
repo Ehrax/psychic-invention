@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -10,117 +10,120 @@
             style="@style/GameEndStatusText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="25dp" />
+            android:paddingTop="25dp"
+            android:layout_alignParentStart="true"/>
 
     <TextView
             android:id="@+id/end_status_sub_text"
             style="@style/GameEndStatusSubText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@id/end_status_text"/>
 
-
-    <GridLayout
+    <LinearLayout
+            android:id="@+id/end_lower_buttons"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingTop="30dp"
-            android:paddingBottom="30dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-
-            android:rowCount="2"
-            android:columnCount="2">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
 
         <LinearLayout
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_column="0"
-                android:layout_row="0"
-                android:layout_columnSpan="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical"
-                android:background="@drawable/game_end_border"
-                android:padding="1dp"
-                android:layout_marginBottom="@dimen/game_end_btn_margin">
+                android:layout_gravity="bottom"
+                android:clickable="true"
+                android:padding="10dp">
 
             <ImageButton
                     style="?android:attr/borderlessButtonStyle"
-                    android:id="@+id/btn_restart"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:src="@drawable/ic_continue_game"
-                    android:scaleType="fitCenter" />
-
-            <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:textAlignment="center"
-                    android:textSize="18sp"
-                    android:text="@string/game_end_restart"
-                    android:layout_marginBottom="5dp"/>
-        </LinearLayout>
-
-
-        <LinearLayout
-                android:layout_column="0"
-                android:layout_row="1"
-                android:layout_columnSpan="1"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="0.5"
-                android:orientation="vertical"
-                android:background="@drawable/game_end_border"
-                android:padding="1dp"
-                android:layout_marginEnd="@dimen/game_end_btn_margin">
-
-            <ImageButton
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_columnWeight="0.5"
                     android:id="@+id/btn_restart_settings"
                     android:src="@drawable/ic_restart_setting"
                     android:scaleType="fitCenter"
-                    android:layout_height="0dp"
                     android:layout_width="match_parent"
-                    android:layout_weight="1"/>
+                    android:layout_height="100dp" />
 
             <TextView
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:textSize="18sp"
                     android:text="@string/game_end_settings"
-                    android:layout_marginBottom="5dp"/>
+                    android:layout_marginBottom="5dp" />
         </LinearLayout>
 
+        <View
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                style="@style/HorizontalDivider" />
 
         <LinearLayout
-                android:layout_column="1"
-                android:layout_row="1"
-                android:layout_columnSpan="1"
-                android:layout_columnWeight="0.5"
-                android:layout_rowWeight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical"
-                android:background="@drawable/game_end_border"
-                android:padding="1dp">
+                android:layout_gravity="bottom"
+                android:clickable="true"
+                android:padding="10dp">
 
             <ImageButton
                     style="?android:attr/borderlessButtonStyle"
                     android:id="@+id/btn_main_menu"
                     android:src="@drawable/ic_menu_game_end"
                     android:scaleType="fitCenter"
-                    android:layout_height="0dp"
                     android:layout_width="match_parent"
-                    android:layout_weight="1"/>
+                    android:layout_height="100dp"
+                    android:layout_weight="1" />
+
             <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:textAlignment="center"
                     android:textSize="18sp"
                     android:text="@string/game_end_menu"
-                    android:layout_marginBottom="5dp"/>
+                    android:layout_marginBottom="5dp" />
         </LinearLayout>
 
+    </LinearLayout>
 
-    </GridLayout>
+    <View
+            android:id="@+id/end_lower_divider"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_above="@id/end_lower_buttons"
+            style="@style/VerticalDivider" />
+
+    <LinearLayout
+            android:id="@+id/end_upper_button"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_above="@id/end_lower_divider"
+            android:padding="10dp">
+
+        <ImageButton
+                style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btn_restart"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_autorenew_white"
+                android:scaleType="fitCenter" />
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:text="@string/game_end_restart" />
+    </LinearLayout>
+
+    <View
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_above="@id/end_upper_button"
+            style="@style/VerticalDivider" />
 
 
-</LinearLayout>
+</RelativeLayout>

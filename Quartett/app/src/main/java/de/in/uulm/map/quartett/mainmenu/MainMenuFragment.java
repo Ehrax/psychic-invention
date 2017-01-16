@@ -59,19 +59,17 @@ public class MainMenuFragment extends Fragment implements MainMenuContract.View 
         setGameContinueButtonVisibility(getView());
     }
 
-    private void setGameContinueButtonVisibility(View view){
-        LinearLayout btnContinue = (LinearLayout) view.findViewById(R.id
-                .btn_continue_game);
+    private void setGameContinueButtonVisibility(View view) {
+
+        LinearLayout layoutContinue =
+                (LinearLayout) view.findViewById(R.id.layout_continue_game);
 
         if (LocalGameState.listAll(LocalGameState.class).isEmpty()) {
-            btnContinue.setVisibility(View.GONE);
-            view.findViewById(R.id.divider_main_menu_bottom).setVisibility
-                    (View.GONE);
+            layoutContinue.setVisibility(View.GONE);
         } else {
-            btnContinue.setVisibility(View.VISIBLE);
-            view.findViewById(R.id.divider_main_menu_bottom).setVisibility
-                    (View.VISIBLE);
-            btnContinue.setOnClickListener(new View.OnClickListener() {
+            layoutContinue.setVisibility(View.VISIBLE);
+            Button button = (Button) view.findViewById(R.id.btn_continue_game);
+            button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 

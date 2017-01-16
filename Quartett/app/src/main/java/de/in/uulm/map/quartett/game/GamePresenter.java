@@ -518,7 +518,7 @@ public class GamePresenter implements GameContract.Presenter {
             if (mCurrentGameState.mCurrentRound == mCurrentGameState.mLimit) {
 
                 int pointBasic = mCurrentGameState
-                        .mUserPoints / mCurrentGameState.mAIPoints;
+                        .mUserPoints / Math.max(mCurrentGameState.mAIPoints, 1);
                 int points = mCurrentGameState.mGameLevel == GameLevel.EASY ?
                         pointBasic * 1000 : mCurrentGameState.mGameLevel ==
                         GameLevel.NORMAL ? pointBasic * 1100 : pointBasic * 1300;
