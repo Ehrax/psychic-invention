@@ -200,7 +200,16 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View view =
+                inflater.inflate(R.layout.fragment_settings, container, false);
+        ViewGroup frame = (ViewGroup) view.findViewById(R.id.settings_frame);
+        View inner = super.onCreateView(inflater, frame, savedInstanceState);
+
+        if(inner != null) {
+            frame.addView(inner);
+        }
+
+        return view;
     }
 
     /**
