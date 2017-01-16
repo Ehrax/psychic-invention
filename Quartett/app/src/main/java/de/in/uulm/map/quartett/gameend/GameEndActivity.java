@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.LocalGameState;
 import de.in.uulm.map.quartett.mainmenu.MainMenuFragment;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 
@@ -23,6 +24,7 @@ public class GameEndActivity extends DrawerActivity implements GameEndContract.B
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         GameEndFragment gameEndFragment;
 
@@ -38,10 +40,14 @@ public class GameEndActivity extends DrawerActivity implements GameEndContract.B
         }
 
         GameEndContract.Presenter presenter =
-                new GameEndPresenter(gameEndFragment, this, getIntent(), this);
+                new GameEndPresenter(gameEndFragment, this, getIntent(),
+                        this, LocalGameState.listAll(LocalGameState.class)
+                        .get(0));
+        LocalGameState.deleteAll(LocalGameState.class);
+        presenter.start();
         gameEndFragment.setPresenter(presenter);
 
-        super.onCreate(savedInstanceState);
+
     }
 
     /**

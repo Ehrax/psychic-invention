@@ -8,9 +8,16 @@
     <dimen name="navigation_drawer_width">240dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="nav_header_vertical_spacing">16dp</dimen>
-    <dimen name="nav_header_height">160dp</dimen>
+
 
     <!--The width of a cards border -->
     <dimen name="card_border_width">15dp</dimen>
+    <!--The width of the win and lose frame (green and red border)-->
+    <dimen name="win_lose_border_width">2dp</dimen>
+    <!-- margin between game end btns-->
+    <dimen name="game_end_btn_margin">4dp</dimen>
+
+    <dimen name="nav_header_vertical_spacing">30dp</dimen>
+    <dimen name="nav_header_height">180dp</dimen>
+
 </resources>

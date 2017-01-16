@@ -11,6 +11,7 @@ public class Achievement extends SugarRecord {
     public String mTitle;
     public float mValue;
     public float mTargetValue;
+    public String mDescription;
 
     public Achievement() {
 

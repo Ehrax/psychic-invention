@@ -5,11 +5,23 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
         <!--enable activity transitions-->
         <item name="android:windowContentTransitions">true</item>
+
         <!--specify enter and exit transitions-->
-        <item name="android:windowEnterTransition">@transition/fade</item>
-        <item name="android:windowExitTransition">@transition/fade</item>
+        <item name="android:windowEnterTransition">@transition/fade_delay_100</item>
+        <item name="android:windowExitTransition">@transition/slide</item>
+
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/change_image_transform</item>
+
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+
 
     </style>
     <!-- main menu -->
@@ -67,11 +79,28 @@
         <item name="android:paddingEnd">10dp</item>
     </style>
 
+    <!--In game header text view style for displaying opponents name and
+    current points
+     -->
+    <style name="TextViewInGameHeader" parent="android:Widget.TextView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_weight">0.6</item>
+    </style>
+    <style name="TextViewInGameHeaderPoints"
+            parent="@style/TextViewInGameHeader">
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
     <!-- action bar -->
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
@@ -79,13 +108,28 @@
     <!-- game end -->
     <style name="GameEndStatusText"
             parent="android:Widget.Material.TextView">
-        <item name="android:textSize">90dp</item>
+        <item name="android:textSize">70dp</item>
         <item name="android:textAlignment">center</item>
     </style>
     <style name="GameEndStatusSubText"
             parent="android:Widget.Material.TextView">
-        <item name="android:textSize">50dp</item>
+        <item name="android:textSize">25dp</item>
         <item name="android:textAlignment">center</item>
+    </style>
+
+
+    <!-- divider style-->
+    <style name="VerticalDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+
+    <style name="HorizontalDivider">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">?android:attr/listDivider</item>
     </style>
 
 </resources>

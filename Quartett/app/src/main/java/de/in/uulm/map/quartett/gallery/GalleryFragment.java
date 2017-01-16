@@ -38,7 +38,7 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
     GalleryItemListener mItemListener = new GalleryItemListener() {
         @Override
         public void showDeckDetailView(long deckID) {
-            mPresenter.showDeckDetail(deckID);
+            mPresenter.onDeckClicked(deckID);
         }
     };
 
