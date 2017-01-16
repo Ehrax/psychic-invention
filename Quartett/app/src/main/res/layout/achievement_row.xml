@@ -24,7 +24,8 @@
                 custom:arc_unfinished_color="@color/colorTableDivider"
                 custom:arc_finished_color="@color/colorAccent"
                 custom:arc_text_color="@color/colorButtonText"
-                custom:arc_text_size="30sp" />
+                custom:arc_text_size="30sp"
+                custom:arc_suffix_text=" "/>
 
         <LinearLayout
                 android:orientation="vertical"
