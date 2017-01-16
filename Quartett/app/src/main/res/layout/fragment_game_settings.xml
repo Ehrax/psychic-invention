@@ -127,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/game_settings_btn_ok"
-                android:enabled="false"/>
+                android:enabled="true"/>
 
     </RelativeLayout>
 
