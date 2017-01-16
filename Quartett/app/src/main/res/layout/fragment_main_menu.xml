@@ -150,33 +150,21 @@
 
         </LinearLayout>
     </LinearLayout>
+
     <View
             android:id="@+id/divider_main_menu_bottom"
             style="@style/VerticalDivider"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp" />
-    <LinearLayout
-            android:id="@+id/btn_continue_game"
+            android:layout_marginTop="10dp" />
+
+    <Button
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-        <ImageButton
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_weight="0.33"
-
-                app:srcCompat="@drawable/ic_continue_game" />
-
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/continue_game"
-                android:textSize="18sp"
-                android:textAlignment="gravity"
-                android:gravity="center"
-                android:paddingEnd="150dp" />
-    </LinearLayout>
+            android:layout_height="50dp"
+            android:paddingLeft="110dp"
+            android:paddingRight="110dp"
+            android:textSize="17sp"
+            android:drawableLeft="@drawable/ic_continue_game"
+            android:textAllCaps="false"
+            android:text="@string/continue_game" />
 
 </LinearLayout>
