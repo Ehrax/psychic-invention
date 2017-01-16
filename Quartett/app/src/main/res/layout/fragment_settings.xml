@@ -10,7 +10,7 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:orientation="horizontal"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="0.25"
             android:gravity="center_horizontal">
 
@@ -32,9 +32,10 @@
 
     <View style="@style/VerticalDivider" />
 
-    <ListView
-            android:id="@android:id/list"
+    <FrameLayout
+            android:id="@+id/settings_frame"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.75" />
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"/>
+
 </LinearLayout>
