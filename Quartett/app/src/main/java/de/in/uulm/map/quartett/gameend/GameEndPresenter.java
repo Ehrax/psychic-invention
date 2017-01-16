@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.Highscore;
 import de.in.uulm.map.quartett.data.LocalGameState;
 import de.in.uulm.map.quartett.data.Statistic;
 import de.in.uulm.map.quartett.game.GameActivity;
@@ -35,6 +36,8 @@ public class GameEndPresenter implements GameEndContract.Presenter {
 
     public static final String WINNER = "game-status";
     public static final String SUB = "game-sub-status";
+    public static final String NAME = "game-name";
+    public static final String POINTS = "game-points";
 
     /**
      * Simple constructor to initialize member variables.
@@ -133,12 +136,15 @@ public class GameEndPresenter implements GameEndContract.Presenter {
     }
 
     /**
-     * This class updates the games won, games lost and total games stats.
+     * This class updates the games won, games lost and total games stats. And
+     * Highscore.
      */
     private class AsyncStatUpdater extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
+
+            Intent callingIntent = mCallingIntent;
 
             String query = "SELECT * FROM Statistic WHERE m_Title = ?";
 
@@ -165,7 +171,7 @@ public class GameEndPresenter implements GameEndContract.Presenter {
             gamesTotal.mValue++;
             gamesTotal.save();
 
-            GameEndState gameEndState = (GameEndState) mCallingIntent
+            GameEndState gameEndState = (GameEndState) callingIntent
                     .getSerializableExtra(WINNER);
             if (gameEndState == GameEndState.WIN) {
                 gamesWon.mValue++;
@@ -175,7 +181,22 @@ public class GameEndPresenter implements GameEndContract.Presenter {
 
             gamesLost.save();
             gamesWon.save();
-            Log.d("Statistics: ", "gamesWon:" + gamesWon.toString());
+
+            int highscorePoints = callingIntent.getIntExtra(POINTS, 0);
+            String name = callingIntent.getStringExtra(NAME);
+            List<Highscore> highScores = Highscore.listAll(Highscore.class);
+            Highscore newHighscore = new Highscore(highscorePoints, name);
+            if (highScores.size() < 10) {
+                newHighscore.save();
+            } else {
+                for (Highscore highScore : highScores) {
+                    if (highScore.mValue < newHighscore.mValue) {
+                        highScore.delete();
+                        newHighscore.save();
+                        break;
+                    }
+                }
+            }
 
             return null;
         }
