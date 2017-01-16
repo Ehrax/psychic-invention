@@ -1,5 +1,7 @@
 package de.in.uulm.map.quartett.gamesettings;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -65,6 +67,17 @@ public class GameSettingsFragment extends Fragment implements GameSettingsContra
         mRadioGroupLevel = (RadioGroup) v.findViewById(R.id.rg_game_level);
 
         mLimitPicker = (NumberPicker) v.findViewById(R.id.limit_picker);
+
+        // getting shard preferences
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(getContext());
+
+        String userName = preferences.getString("user_name", "NULL");
+        String gameMode = preferences.getString("game_mode", "NULL");
+
+        // setting views depending on shard preferences
+        mPresenter.setGameMode(mRadioGroupMode, gameMode);
+        mPresenter.setUserName(mEditTextName, userName);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
