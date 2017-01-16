@@ -20,6 +20,7 @@ import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.data.GameCard;
 import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.data.LocalGameState;
+import de.in.uulm.map.quartett.data.Statistic;
 import de.in.uulm.map.quartett.gallery.CardFragment;
 import de.in.uulm.map.quartett.gameend.GameEndActivity;
 import de.in.uulm.map.quartett.gameend.GameEndPresenter;
@@ -27,6 +28,7 @@ import de.in.uulm.map.quartett.gameend.GameEndState;
 import de.in.uulm.map.quartett.gamesettings.GameLevel;
 import de.in.uulm.map.quartett.gamesettings.GameMode;
 import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
+import de.in.uulm.map.quartett.stats.stats.StatsPresenter;
 import de.in.uulm.map.quartett.util.AssetUtils;
 
 import java.io.FileNotFoundException;
@@ -72,6 +74,11 @@ public class GamePresenter implements GameContract.Presenter {
      */
     private CountDownLatch mCountDownLatchDeckLoader;
     /*
+    This CountdownLatch guarantees that the images for the compare fragment
+    are loaded if we want to show it
+     */
+    private CountDownLatch mCountDownLatchImageLoader;
+    /*
     The "AI" AsyncTask
      */
     AI mAI = new AI();
@@ -91,6 +98,10 @@ public class GamePresenter implements GameContract.Presenter {
      */
     private boolean mHasUserCards;
     private boolean mHasAICards;
+    /*
+    currently or last chosen attribute
+     */
+    Attribute mChosenAttribute;
     /*
     Timer for the Time mode
      */
@@ -370,6 +381,12 @@ public class GamePresenter implements GameContract.Presenter {
     public void chooseAttribute(Attribute chosenAttr) {
 
         GameCompareFragment compareFragment = GameCompareFragment.newInstance();
+        mChosenAttribute=chosenAttr;
+
+        new AsyncLastImageLoader().executeOnExecutor(AsyncTask
+                .THREAD_POOL_EXECUTOR);
+        mCountDownLatchImageLoader = new CountDownLatch(1);
+
 
         //getting the users and ais value for the compared attribute
         float userAttributeValue = 0, aiAttributeValue = 0;
@@ -388,15 +405,10 @@ public class GamePresenter implements GameContract.Presenter {
                 aiAttributeValue = attributeValue.mValue;
             }
         }
-        //check who wins
+        //check who wins and update stats
         winner = checkWinner(userAttributeValue, aiAttributeValue, chosenAttr);
-        //saving the images of the current card for the compare fragment view
-        //there are a lot of better ways to do this but i needed to change some
-        // things and this was the way with the least coding effort ;)
-        mUserCompareImage = setCompareImage(true);
-        mAICompareImage = setCompareImage(false);
-        mUserCompareValue = setCompareAttributeValue(true, chosenAttr);
-        mAICompareValue = setCompareAttributeValue(false, chosenAttr);
+        new AsyncStatUpdater().executeOnExecutor(AsyncTask
+                .THREAD_POOL_EXECUTOR,winner);
 
         //check if one player lost his last card
         if (!(mCurrentGameState.getUserDeck().size() <= 1 && winner == RoundWinner
@@ -425,10 +437,17 @@ public class GamePresenter implements GameContract.Presenter {
                 mCurrentGameState.mGameMode == GameMode.INSANE) {
             mCurrentGameState.mCurrentRound++;
         }
+
         mCurrentGameState.save();
+        try {
+            mCountDownLatchImageLoader.await();
+        }catch(InterruptedException e){
+
+        }
         mBackEnd.switchToView(compareFragment);
 
     }
+
 
 
     /**
@@ -755,6 +774,50 @@ public class GamePresenter implements GameContract.Presenter {
     }
 
     /**
+     * This task is used to update the stats after each round.
+     */
+    private class AsyncStatUpdater extends AsyncTask<RoundWinner,Void,Void>{
+
+        @Override
+        protected Void doInBackground(RoundWinner... params) {
+
+            String query = "SELECT * FROM Statistic WHERE m_Title = ?";
+            RoundWinner winner = params[0];
+            List<Statistic> handsWonList = Statistic.findWithQuery(Statistic.class,
+                    query, StatsPresenter.HAND_WON);
+            List<Statistic> handsTotalList = Statistic.findWithQuery(Statistic
+                            .class,
+                    query, StatsPresenter.TOTAL_HANDS);
+            List<Statistic> handsLostList = Statistic.findWithQuery(Statistic.class,
+                    query,
+                    StatsPresenter.HAND_LOST);
+            Statistic handsWon, handsLost, handsTotal;
+
+            handsWon = handsWonList.isEmpty() ? new Statistic(StatsPresenter
+                    .HAND_WON, 0, mCtx.getString(R.string
+                    .stat_description_hands_win)) : handsWonList.get(0);
+            handsLost = handsLostList.isEmpty() ? new Statistic(StatsPresenter
+                    .HAND_LOST, 0, mCtx.getString(R.string
+                    .stat_description_hands_lost)) : handsLostList.get(0);
+            handsTotal = handsTotalList.isEmpty() ? new Statistic(StatsPresenter
+                    .TOTAL_HANDS, 0, mCtx.getString(R.string
+                    .stat_description_hands_total)) : handsTotalList.get(0);
+
+            handsTotal.mValue++;
+            handsTotal.save();
+            if (winner == RoundWinner.USER) {
+                handsWon.mValue++;
+            } else if (winner == RoundWinner.AI) {
+                handsLost.mValue++;
+            }
+            handsLost.save();
+            handsWon.save();
+
+            return null;
+        }
+    }
+
+    /**
      * Loading the Users and AIs Decks into DB. This is a fucking long task
      * because we have to save them redundant because sugar orm can handle
      * neither lists nor arrays.
@@ -783,6 +846,24 @@ public class GamePresenter implements GameContract.Presenter {
 
     }
 
+    private class AsyncLastImageLoader extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            //saving the images of the current card for the compare fragment view
+            //there are a lot of better ways to do this but i needed to change some
+            // things and this was the way with the least coding effort ;)
+            mUserCompareImage = setCompareImage(true);
+            mAICompareImage = setCompareImage(false);
+            mUserCompareValue = setCompareAttributeValue(true, mChosenAttribute);
+            mAICompareValue = setCompareAttributeValue(false, mChosenAttribute);
+            mCountDownLatchImageLoader.countDown();
+
+            return null;
+        }
+    }
+
     /**
      * This class is used to rearrange the users and ais deck after each round.
      */
@@ -790,6 +871,7 @@ public class GamePresenter implements GameContract.Presenter {
 
         @Override
         protected Void doInBackground(RoundWinner... params) {
+
             //params[0] == RoundWinner winner
             //remove first card from loser deck and add it to winner deck
             changeLostCardOwner(params[0]);
