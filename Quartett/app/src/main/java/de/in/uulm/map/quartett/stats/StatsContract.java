@@ -51,7 +51,8 @@ public interface StatsContract {
 
         void setAchievementProgress(ProgressBar progress);
 
-        void setAchievementDonut(DonutProgress donutProgress, Achievement achievement);
+        void setAchievementDonut(BetterArcProgress progress, Achievement
+                achievement);
 
         void setAchievementRowTitle(TextView textView, Achievement achievement);
 
