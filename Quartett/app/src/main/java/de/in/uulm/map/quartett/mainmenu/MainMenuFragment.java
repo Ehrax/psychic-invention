@@ -1,5 +1,6 @@
 package de.in.uulm.map.quartett.mainmenu;
 
+import android.support.v4.animation.AnimatorCompatHelper;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,9 +15,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.data.LocalGameState;
 import de.in.uulm.map.quartett.gallery.GalleryContract;
 import de.in.uulm.map.quartett.util.BasePresenter;
+
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -81,6 +85,31 @@ public class MainMenuFragment extends Fragment implements MainMenuContract.View 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        List<Achievement> achievements = Achievement.listAll(Achievement.class);
+
+        if (achievements.isEmpty()) {
+            Achievement achievement = new Achievement();
+            achievement.mTitle = "Games played";
+            achievement.mDescription = "Win 5 games!";
+            achievement.mValue = 0;
+            achievement.mTargetValue = 5;
+            achievement.save();
+
+            Achievement achievement1 = new Achievement();
+            achievement1.mTitle = "unlucky devil";
+            achievement1.mDescription = "Lose 10 games in a row.";
+            achievement1.mValue = 0;
+            achievement1.mTargetValue = 10;
+            achievement1.save();
+
+            Achievement achievement2 = new Achievement();
+            achievement2.mTitle = "Cheater";
+            achievement2.mDescription = "win a game without loosing a hand";
+            achievement2.mValue = 0;
+            achievement2.mTargetValue = 1;
+            achievement2.save();
+        }
 
         View view = inflater.inflate(R.layout.fragment_main_menu, container, false);
 

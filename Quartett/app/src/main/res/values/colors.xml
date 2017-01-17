@@ -18,8 +18,8 @@
     <color name="colorBlackTransparent">#CE000000</color>
     <color name="colorCardTitle">#c0303030</color>
     <!-- color for the win and lose borders at compare fragment-->
-    <color name="colorWinFrameBorder">#00ff00</color>
-    <color name="colorLoseFrameBorder">#ff0000</color>
+    <color name="colorWinFrameBorder">#3f9f30</color>
+    <color name="colorLoseFrameBorder">#9f303f</color>
     <color name="colorDrawFrameBorder">#BDBDBD</color>
 
 </resources>
