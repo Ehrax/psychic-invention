@@ -167,6 +167,7 @@ public class GamePresenter implements GameContract.Presenter {
         currentCard.setDeckId(mCurrentGameState.mDeckID);
         currentCard.setPosition(mCurrentGameState.getUserDeck().get(0).mCard.mPosition);
         currentCard.setGamePresenter(this);
+        currentCard.setIsInGame(true);
         return currentCard;
     }
 

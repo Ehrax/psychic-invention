@@ -5,8 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/card_border"
-        android:padding="@dimen/card_border_width"
-        >
+        android:padding="@dimen/card_border_width">
 
     <FrameLayout
             android:id="@+id/frame_lay_card_img"
@@ -21,7 +20,6 @@
                 android:layout_height="200dp"
                 android:backgroundTint="@color/colorAccent"
                 android:transitionName="img_user_shared_element" />
-
 
         <de.in.uulm.map.quartett.views.viewpagerindicator.CirclePageIndicator
                 android:id="@+id/page_indicator_card"
@@ -38,9 +36,6 @@
                 android:textSize="30sp"
                 android:background="@color/colorCardTitle"
                 android:visibility="gone"/>
-
-
-
     </FrameLayout>
 
     <ProgressBar

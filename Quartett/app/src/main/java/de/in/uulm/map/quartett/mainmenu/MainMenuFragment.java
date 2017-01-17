@@ -48,8 +48,6 @@ public class MainMenuFragment extends Fragment implements MainMenuContract.View 
     public void onActivityCreated(Bundle savedInstance) {
 
         super.onActivityCreated(savedInstance);
-
-
     }
 
     @Override

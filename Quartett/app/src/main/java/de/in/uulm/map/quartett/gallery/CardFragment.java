@@ -55,7 +55,7 @@ public class CardFragment extends Fragment {
 
     private long mDeckId;
     private int mPosition;
-
+    private boolean mIsInGame = false;
 
     public static CardFragment newInstance() {
 
@@ -63,7 +63,7 @@ public class CardFragment extends Fragment {
     }
 
     /**
-     * <<<<<<< HEAD Use this method to set the cards presenter.
+     * Use this method to set the cards presenter.
      *
      * @param presenter the presenter to be used
      */
@@ -108,6 +108,16 @@ public class CardFragment extends Fragment {
     }
 
     /**
+     * This method is used to tell the card fragment if is displayed in a game
+     * view or somewhere else. Setting this will activate different load
+     * behavior and alter the way in which the card is displayed.
+     */
+    public void setIsInGame(boolean isInGame) {
+
+        mIsInGame = isInGame;
+    }
+
+    /**
      * Creating the Card. Loading the Images and Attributes into the Layout.
      *
      * @param inflater           see onCreateView in Fragment class
@@ -120,10 +130,19 @@ public class CardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_card, container, false);
+        View view = inflater.inflate(R.layout.fragment_card, container, false);
 
+        if(mIsInGame) {
+            view.setBackgroundResource(R.drawable.card_border_game);
+        }
+
+        return view;
     }
 
+    /**
+     * This method is called when the view has been fully initialized. It is
+     * used to start loading the data into the card.
+     */
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
@@ -347,13 +366,10 @@ public class CardFragment extends Fragment {
                             }
                         }
                     });
-
                 }
 
                 //finally adding the table row holding the attribute to the table
                 tableLayoutAttributes.addView(tableRow);
-
-
             }
         }
     }
