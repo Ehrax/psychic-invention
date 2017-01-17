@@ -162,13 +162,9 @@
     <LinearLayout
             android:id="@+id/layout_continue_game"
             android:orientation="vertical"
+            android:background="?android:attr/listDivider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-        <View
-                android:id="@+id/divider_main_menu_bottom"
-                style="@style/VerticalDivider"
-                android:layout_marginTop="10dp"/>
 
         <Button
                 android:id="@+id/btn_continue_game"

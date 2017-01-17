@@ -79,7 +79,6 @@ public class MainMenuFragment extends Fragment implements MainMenuContract.View 
         }
     }
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
