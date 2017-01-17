@@ -81,7 +81,7 @@ public class DeckFragment extends Fragment implements GalleryContract.SubView {
                 String[]{"" + currentDeckID});
 
         mCardFragmentAdapter =
-                new CardFragmentAdapter(getChildFragmentManager(), cardsLength);
+                new CardFragmentAdapter(getChildFragmentManager(), 32);
 
         mFlippableStack.initStack(2,
                 StackPageTransformer.Orientation.VERTICAL);

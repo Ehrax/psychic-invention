@@ -41,7 +41,7 @@
     <string name="game_settings_mode_rounds">Round</string>
     <string name="game_settings_mode_insane">Insane</string>
     <string name="game_settings_name">Name</string>
-    <string name="game_settings_btn_ok">Start Game</string>
+    <string name="game_settings_btn_ok">Next</string>
 
     <string name="game_settings_level_easy">Easy</string>
     <string name="game_settings_level_normal">Normal</string>

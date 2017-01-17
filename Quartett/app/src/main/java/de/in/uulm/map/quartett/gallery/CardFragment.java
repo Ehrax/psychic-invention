@@ -312,7 +312,10 @@ public class CardFragment extends Fragment {
                 TableRow tableRow = new TableRow(getContext());
                 tableRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup
                         .LayoutParams.MATCH_PARENT, 0, 1));
-                tableRow.setBackgroundResource(R.drawable.table_border);
+
+                if(i < mAttributeValues.size() - 1) {
+                    tableRow.setBackgroundResource(R.drawable.table_border);
+                }
 
                 /*row background color appears as bottom border because the
                  TextViews has darker background color and they are matching

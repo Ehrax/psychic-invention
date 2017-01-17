@@ -22,7 +22,6 @@
 
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
 
-
     </style>
     <!-- main menu -->
 
@@ -36,9 +35,9 @@
     <!-- game settings -->
     <style name="GameSettingsSectionFont"
            parent="android:Widget.Material.TextView">
-        <item name="android:textSize">20sp</item>
-        <item name="android:paddingLeft">15dp</item>
-        <item name="android:paddingBottom">10dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
     <style name="GameSettingsOkButton"
            parent="android:Widget.Material.Button.Colored">

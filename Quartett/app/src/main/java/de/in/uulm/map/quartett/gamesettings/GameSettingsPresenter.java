@@ -103,16 +103,16 @@ public class GameSettingsPresenter implements GameSettingsContract.Presenter {
     public void setGameMode(RadioGroup radioGroup, String mode) {
 
         switch (mode) {
-            case "round":
+            case "Round":
                 radioGroup.check(R.id.rb_mode_rounds);
                 break;
-            case "time":
+            case "Minute":
                 radioGroup.check(R.id.rb_mode_time);
                 break;
-            case "point":
+            case "Point":
                 radioGroup.check(R.id.rb_mode_points);
                 break;
-            case "insane":
+            case "Insane":
                 radioGroup.check(R.id.rb_mode_insane);
                 break;
         }

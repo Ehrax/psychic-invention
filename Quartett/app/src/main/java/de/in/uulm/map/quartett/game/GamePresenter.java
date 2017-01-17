@@ -508,7 +508,8 @@ public class GamePresenter implements GameContract.Presenter {
 
                 intent.putExtra(GameEndPresenter.WINNER, winner == RoundWinner
                         .USER ? GameEndState.WIN : GameEndState.LOSE);
-                intent.putExtra(GameEndPresenter.SUB, " ");
+                intent.putExtra(GameEndPresenter.SUB,
+                        "You scored " + points + "!");
                 mDeckRearranger.cancel(true);
                 mBackEnd.startActivity(intent, winner);
                 isFinish = true;
@@ -533,7 +534,8 @@ public class GamePresenter implements GameContract.Presenter {
                         .LOSE : mCurrentGameState
                         .mUserPoints > mCurrentGameState.mAIPoints ? GameEndState
                         .WIN : GameEndState.DRAW);
-                intent.putExtra(GameEndPresenter.SUB, " ");
+                intent.putExtra(GameEndPresenter.SUB,
+                        "You scored " + points + " points!");
                 mDeckRearranger.cancel(true);
                 mBackEnd.startActivity(intent, winner);
                 isFinish = true;

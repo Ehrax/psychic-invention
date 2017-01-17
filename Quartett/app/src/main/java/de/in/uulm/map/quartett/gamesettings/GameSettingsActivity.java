@@ -34,7 +34,6 @@ public class GameSettingsActivity extends DrawerActivity implements GameSettings
                     gameSettingsFragment, R.id.contentFrame);
         }
 
-
         GameSettingsPresenter presenter =
                 new GameSettingsPresenter(gameSettingsFragment, this, this);
         gameSettingsFragment.setPresenter(presenter);
