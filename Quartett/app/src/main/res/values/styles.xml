@@ -10,8 +10,8 @@
         <item name="android:windowContentTransitions">true</item>
 
         <!--specify enter and exit transitions-->
-        <item name="android:windowEnterTransition">@transition/fade_delay_100</item>
-        <item name="android:windowExitTransition">@transition/slide</item>
+        <item name="android:windowEnterTransition">@transition/fade_in</item>
+        <item name="android:windowExitTransition">@transition/fade_out</item>
 
 
         <!-- enable window content transitions -->

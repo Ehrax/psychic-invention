@@ -282,6 +282,15 @@ public class CardFragment extends Fragment {
             }
             view.findViewById(R.id.txt_card_title).setVisibility(View.VISIBLE);
             view.findViewById(R.id.progress_bar_card).setVisibility(View.GONE);
+
+            if(!mIsInGame) {
+                FrameLayout crdImage = (FrameLayout)view.findViewById(R.id
+                        .frame_lay_card_img);
+                ViewGroup.LayoutParams layoutParams = crdImage
+                        .getLayoutParams();
+                layoutParams.height = layoutParams.height+750;
+                crdImage.setLayoutParams(layoutParams);
+            }
             //initializing the viewpager for multiple image support
             ViewPager viewPagerImages = (ViewPager) view.findViewById(R.id
                     .view_pager_img_card);

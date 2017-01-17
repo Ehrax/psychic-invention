@@ -76,10 +76,11 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
                 .drawer_layout_main);
 
         //Setting profile pic
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences
+        final SharedPreferences sp = PreferenceManager
+                .getDefaultSharedPreferences
                 (this);
 
-        View drawerHeader = getLayoutInflater().inflate(R.layout
+        final View drawerHeader = getLayoutInflater().inflate(R.layout
                 .drawer_header, (ViewGroup) this.mDrawer.findViewById(R.id
                 .drawer_view));
         mProfilePic = (CircularImageView)
@@ -99,7 +100,15 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawer,
                 toolbar, R.string.navigation_drawer_open, R.string
-                .navigation_drawer_close);
+                .navigation_drawer_close){
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+                mUserTextView.setText(sp.getString
+                        ("user_name",null));
+                super.onDrawerStateChanged(newState);
+            }
+        };
         mDrawer.setDrawerListener(toggle);
         toggle.syncState();
 
