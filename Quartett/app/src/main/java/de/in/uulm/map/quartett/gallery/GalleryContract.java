@@ -41,6 +41,8 @@ public interface GalleryContract {
         void switchToView(GalleryContract.View view);
 
         void loadServerImage(String url, ImageView imageView);
+
+        void downloadDeck(Deck deck);
     }
 
     interface SubView extends View {

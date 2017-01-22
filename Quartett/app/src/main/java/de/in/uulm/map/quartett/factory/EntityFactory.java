@@ -114,7 +114,8 @@ public class EntityFactory {
         mDeckInfo = new DeckInfo(
                 mJsonLoader.getSource(),
                 mJsonLoader.getHash(),
-                new Date().getTime());
+                new Date().getTime(),
+                true);
 
         mDeck = new Deck(
                 jsonDeck.getString("name"),

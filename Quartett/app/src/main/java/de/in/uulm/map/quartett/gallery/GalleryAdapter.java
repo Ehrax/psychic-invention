@@ -120,7 +120,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 currentDeck.mDescription == null ? "" : currentDeck.mDescription);
 
         viewHolder.mDownloadIcon.setVisibility(
-                currentDeck.mDeckInfo == null ? View.VISIBLE : View.GONE);
+                currentDeck.mDeckInfo.mOnDisk ? View.GONE : View.VISIBLE);
 
         viewHolder.mImageView.setOnClickListener(new View.OnClickListener() {
             @Override

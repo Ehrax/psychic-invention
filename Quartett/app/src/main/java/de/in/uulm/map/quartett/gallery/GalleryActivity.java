@@ -1,11 +1,13 @@
 package de.in.uulm.map.quartett.gallery;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.method.BaseKeyListener;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.android.volley.Response;
@@ -23,7 +25,6 @@ import java.util.List;
 /**
  * Created by maxka on 25.12.2016.
  */
-
 
 public class GalleryActivity extends DrawerActivity implements GalleryContract.Backend {
 
@@ -113,7 +114,34 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
     @Override
     public void loadServerImage(String url, ImageView imageView) {
 
-        mRestLoader.loadImage(url, imageView, R.drawable.empty,
-                R.drawable.empty);
+        mRestLoader.loadImage(url, imageView, R.drawable.empty, R.drawable.empty);
+    }
+
+    /**
+     * This method is used to download a Deck into the local database.
+     * Part of the Backend interface.
+     *
+     * @param deck the deck to be downloaded
+     */
+    @Override
+    public void downloadDeck(Deck deck) {
+
+        int id = Integer.parseInt(
+                Uri.parse(deck.mDeckInfo.mSource).getLastPathSegment());
+
+        mRestLoader.loadDeck(id, new Response.Listener<Deck>() {
+                    @Override
+                    public void onResponse(Deck response) {
+
+                        Log.d("Done", "done");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        Log.d("Fail", "fail");
+                    }
+                });
     }
 }

@@ -2,6 +2,7 @@ package de.in.uulm.map.quartett.gallery;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
@@ -89,27 +90,22 @@ public class GalleryPresenter implements GalleryContract.Presenter {
         GalleryMode mode = (GalleryMode)
                 mBackend.getIntent().getSerializableExtra("mode");
 
-        if(mode == GalleryMode.CHOOSE) {
-
+        if (mode == GalleryMode.CHOOSE) {
             Intent intent = new Intent(mCtx, GameActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             intent.putExtras(mBackend.getIntent());
             intent.putExtra(GameSettingsPresenter.DECK, deck.getId());
             intent.removeExtra("mode");
-
             mBackend.startActivity(intent);
-
             return;
         }
 
-        if (deck.mDeckInfo == null) {
-
-            // start downloading the deck here ...
-
-        } else {
+        if (deck.mDeckInfo.mOnDisk) {
             DeckFragment deckFragment = DeckFragment.newInstance();
             deckFragment.setCurrentDeckID(deck.getId());
             mBackend.switchToView(deckFragment);
+        } else {
+            mBackend.downloadDeck(deck);
         }
     }
 }

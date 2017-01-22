@@ -13,16 +13,18 @@ public class DeckInfo extends SugarRecord {
     public String mSource;
     public int mHash;
     public long mTimestamp;
+    public boolean mOnDisk;
 
     public DeckInfo() {
 
     }
 
-    public DeckInfo(String mSource, int mHash, long mTimestamp) {
+    public DeckInfo(String mSource, int mHash, long mTimestamp, boolean mOnDisk) {
 
         this.mSource = mSource;
         this.mHash = mHash;
         this.mTimestamp = mTimestamp;
+        this.mOnDisk = mOnDisk;
     }
 
     public Deck getDeck() {
