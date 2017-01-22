@@ -11,6 +11,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 import de.in.uulm.map.quartett.data.Deck;
+import de.in.uulm.map.quartett.data.DeckInfo;
 import de.in.uulm.map.quartett.data.Image;
 
 import org.json.JSONArray;
@@ -18,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,8 +60,9 @@ public class RestLoader {
 
         mContext = context;
         mRequestQueue = Volley.newRequestQueue(mContext);
-        mImageLoader = new AuthImageLoader(
-                mRequestQueue, new LruBitmapCache(context));
+        mImageLoader = new ImageLoader(
+                mRequestQueue,
+                new LruBitmapCache(LruBitmapCache.getCacheSize(context)));
     }
 
     /**
@@ -91,10 +94,16 @@ public class RestLoader {
                                         obj.getString("image"),
                                         obj.getString("name"));
 
+                                final DeckInfo deckInfo = new DeckInfo(
+                                        SERVER_URL + "/decks/" + obj.getInt ("id"),
+                                        obj.toString().hashCode(),
+                                        new Date().getTime());
+
                                 final Deck deck = new Deck(
                                         obj.getString("name"),
                                         obj.getString("description"),
-                                        image);
+                                        image,
+                                        deckInfo);
 
                                 decks.add(deck);
                             } catch (JSONException e) {
@@ -154,7 +163,8 @@ public class RestLoader {
                             final Deck deck = new Deck(
                                     response.getString("name"),
                                     response.getString("description"),
-                                    image);
+                                    image,
+                                    null);
 
                             deckListener.onResponse(deck);
                         } catch (JSONException e) {

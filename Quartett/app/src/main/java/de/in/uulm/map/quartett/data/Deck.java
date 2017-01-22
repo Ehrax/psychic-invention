@@ -14,16 +14,19 @@ public class Deck extends SugarRecord {
     public String mTitle;
     public String mDescription;
     public Image mImage;
+    public DeckInfo mDeckInfo;
 
     public Deck() {
 
     }
 
-    public Deck(String mTitle, String mDescription, Image mImage) {
+    public Deck(String mTitle, String mDescription, Image mImage,
+                DeckInfo mDeckInfo) {
 
         this.mTitle = mTitle;
         this.mDescription = mDescription;
         this.mImage = mImage;
+        this.mDeckInfo = mDeckInfo;
     }
 
     /**
@@ -40,7 +43,7 @@ public class Deck extends SugarRecord {
             public void manipulateInTransaction() {
 
                 Deck.super.delete();
-                getDeckInfo().delete();
+                mDeckInfo.delete();
 
                 if (mImage != null) {
                     mImage.delete();
@@ -57,23 +60,6 @@ public class Deck extends SugarRecord {
         });
 
         return true;
-    }
-
-    /**
-     * Use this method to get the DeckInfo for this Deck.
-     *
-     * @return a DeckInfo object or null if no DeckInfo object could be found
-     */
-    public DeckInfo getDeckInfo() {
-
-        List<DeckInfo> deckInfos =
-                DeckInfo.find(DeckInfo.class, "m_deck = ?", "" + this.getId());
-
-        if (deckInfos.size() > 0) {
-            return deckInfos.get(0);
-        }
-
-        return null;
     }
 
     /**

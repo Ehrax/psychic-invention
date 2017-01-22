@@ -15,7 +15,7 @@
             card_view:srcCompat="@drawable/main_menu_car"
             android:scaleType="centerCrop" />
 
-    <LinearLayout
+    <RelativeLayout
             style="@style/DeckTextBox"
             android:layout_gravity="bottom"
             android:layout_width="match_parent"
@@ -25,16 +25,26 @@
         <TextView
                 style="@style/DeckTitle"
                 android:id="@+id/txt_deck_title_gallery"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"/>
 
         <TextView
                 style="@style/DeckDescription"
                 android:id="@+id/txt_deck_desc_gallery"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_deck_title_gallery"/>
 
-    </LinearLayout>
+        <ImageView
+                android:id="@+id/download_icon"
+                android:src="@drawable/ic_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
 
 
 </android.support.v7.widget.CardView>

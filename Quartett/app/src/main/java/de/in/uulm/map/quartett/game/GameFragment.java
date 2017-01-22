@@ -77,8 +77,6 @@ public class GameFragment extends Fragment implements GameContract.View {
         builder.show();
     }
 
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -148,9 +146,7 @@ public class GameFragment extends Fragment implements GameContract.View {
             mPresenter.start();
         }
         mPresenter.startAI();
-
     }
-
 
     @Override
     public void onResume() {

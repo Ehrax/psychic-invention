@@ -10,38 +10,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.orm.dsl.NotNull;
+
 import de.in.uulm.map.quartett.R;
-import de.in.uulm.map.quartett.data.Deck;
-
-import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by maxka on 25.12.2016. This fragment uses a simple RecyclerView to
  * display all deck images + title
  */
-
 public class GalleryFragment extends Fragment implements GalleryContract.View {
 
-    private GalleryContract.Presenter mPresenter;
     private RecyclerView mRecyclerView;
+
     private RecyclerView.Adapter mAdapter;
+
     private RecyclerView.LayoutManager mLayoutManager;
-
-    private List<Deck> deckList;
-
-    /**
-     * This listener method is called by the GalleryAdapter to switch to the
-     * deckDetail fragment.
-     */
-    GalleryItemListener mItemListener = new GalleryItemListener() {
-        @Override
-        public void showDeckDetailView(long deckID) {
-
-            mPresenter.onDeckClicked(deckID);
-        }
-    };
 
     public static GalleryFragment newInstance() {
 
@@ -51,7 +34,11 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
     @Override
     public void setPresenter(@NonNull GalleryContract.Presenter presenter) {
 
-        mPresenter = checkNotNull(presenter);
+    }
+
+    public void setAdapter(@NotNull GalleryAdapter adapter) {
+
+        mAdapter = adapter;
     }
 
     @Override
@@ -59,19 +46,14 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
 
         super.onActivityCreated(savedInstance);
 
-        deckList = mPresenter.populateDeckList();
-
         mRecyclerView = (RecyclerView) getActivity().findViewById(R.id
                 .recycler_view_gallery);
-
-        /*set "has fixed size" to improve performance because the layout size
-        will never change*/
-        mRecyclerView.setHasFixedSize(true);
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new GalleryAdapter(deckList, mItemListener, getContext());
+        mRecyclerView.setHasFixedSize(true);
+
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -81,10 +63,5 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
                              Bundle savedInstanceState) {
 
         return inflater.inflate(R.layout.fragment_gallery, container, false);
-    }
-
-    public interface GalleryItemListener {
-
-        void showDeckDetailView(long deckID);
     }
 }

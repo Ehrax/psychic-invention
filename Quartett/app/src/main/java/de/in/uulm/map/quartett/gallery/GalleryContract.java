@@ -1,10 +1,9 @@
 package de.in.uulm.map.quartett.gallery;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import android.widget.ImageView;
 
 import de.in.uulm.map.quartett.data.Card;
-import de.in.uulm.map.quartett.data.CardImage;
 import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.util.BasePresenter;
@@ -20,17 +19,13 @@ public interface GalleryContract {
 
     interface Presenter extends BasePresenter {
 
-        Fragment createCardFragment(long deckID, int position);
-
-        List<Deck> populateDeckList();
-
-        void onDeckClicked(long deckID);
-
-        List<Fragment> createDummyList(long deckID);
+        void onDeckClicked(Deck deck);
 
         void onImageLongClicked(Image image);
 
         Card getCard(long deckId, int position);
+
+        void loadServerImage(String url, ImageView imageView);
     }
 
     interface View extends BaseView<Presenter> {
@@ -39,18 +34,17 @@ public interface GalleryContract {
 
     interface Backend {
 
-        void startActivity(Intent intent);
-
         Intent getIntent();
 
+        void startActivity(Intent intent);
+
         void switchToView(GalleryContract.View view);
+
+        void loadServerImage(String url, ImageView imageView);
     }
 
     interface SubView extends View {
 
         void showImageDescription(Image image);
-
-
     }
-
 }

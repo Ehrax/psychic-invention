@@ -1,13 +1,9 @@
 package de.in.uulm.map.quartett.gallery;
 
 import android.content.Context;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,31 +14,27 @@ import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.util.AssetUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 /**
  * Created by maxka on 26.12.2016. Adapter for the RecyclerView in the gallery.
  * Setting the decks image and title for each row.
  */
+public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder>
+        implements GalleryContract.View {
 
-public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
-        .ViewHolder> {
+    final private Context context;
 
-    /*
-    List of all available decks
-     */
-    private List<Deck> mDeckList;
-    private GalleryFragment.GalleryItemListener mItemListener;
+    final private List<Deck> mDeckList;
 
-    private Context context;
+    private GalleryContract.Presenter mPresenter;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView mImageView;
         public TextView mTextView;
         public TextView mDescriptionView;
+        public ImageView mDownloadIcon;
 
         public ViewHolder(View v) {
 
@@ -50,25 +42,30 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
             mImageView = (ImageView) v.findViewById(R.id.img_deck_gallery);
             mTextView = (TextView) v.findViewById(R.id.txt_deck_title_gallery);
             mDescriptionView = (TextView) v.findViewById(R.id.txt_deck_desc_gallery);
+            mDownloadIcon = (ImageView) v.findViewById(R.id.download_icon);
         }
     }
 
     /**
-     * Simple constructor to set the dataset for the gallery and a listener for
-     * the click event
+     * Simple constructor to initialize member variables.
      *
-     * @param deckList     A List of all Decks you want to insert into the
-     *                     RecyclerView
-     * @param itemListener A GalleryItemListener (inner interface from
-     *                     GalleryFragment) to call methods from the presenter.
+     * @param ctx the current application context
      */
-    public GalleryAdapter(List<Deck> deckList,
-                          GalleryFragment.GalleryItemListener itemListener,
-                          Context ctx) {
+    public GalleryAdapter(List<Deck> decks, Context ctx) {
 
-        mDeckList = deckList;
-        mItemListener = itemListener;
+        mDeckList = decks;
         context = ctx;
+    }
+
+    /**
+     * Use this method to set the presenter.
+     *
+     * @param presenter the presenter to be set
+     */
+    @Override
+    public void setPresenter(GalleryContract.Presenter presenter) {
+
+        mPresenter = presenter;
     }
 
     @Override
@@ -95,12 +92,16 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
 
         final Deck currentDeck = mDeckList.get(position);
+
         if (currentDeck.mImage != null) {
-            if (!currentDeck.mImage.mUri.contains("android_asset")) {
-                viewHolder.mImageView.setImageURI(Uri.parse(currentDeck.mImage
-                        .mUri));
-            } else {
+            if (currentDeck.mImage.mUri.contains("http")) {
+                mPresenter.loadServerImage(currentDeck.mImage.mUri,
+                        viewHolder.mImageView);
+            } else if (currentDeck.mImage.mUri.contains("android_asset")) {
                 setAssetDrawable(viewHolder, Uri.parse(currentDeck.mImage.mUri));
+            } else {
+                viewHolder.mImageView.setImageURI(Uri.parse(
+                        currentDeck.mImage.mUri));
             }
         } else {
             Uri imageCardUri = Uri.parse(currentDeck.getCards()
@@ -112,30 +113,26 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
             }
         }
 
-        if (currentDeck.mTitle != null) {
-            viewHolder.mTextView.setText(currentDeck.mTitle);
-        } else {
-            viewHolder.mTextView.setText(R.string.no_title);
-        }
+        viewHolder.mTextView.setText(
+                currentDeck.mTitle == null ? "" : currentDeck.mTitle);
 
-        if(currentDeck.mDescription != null) {
-            viewHolder.mDescriptionView.setText(currentDeck.mDescription);
-        } else {
-            viewHolder.mTextView.setText("");
-        }
+        viewHolder.mDescriptionView.setText(
+                currentDeck.mDescription == null ? "" : currentDeck.mDescription);
+
+        viewHolder.mDownloadIcon.setVisibility(
+                currentDeck.mDeckInfo == null ? View.VISIBLE : View.GONE);
 
         viewHolder.mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
 
-                mItemListener.showDeckDetailView(currentDeck.getId());
+                mPresenter.onDeckClicked(currentDeck);
             }
         });
-
     }
 
     /**
-     * this method is called by onBindViewHolder to set a imageviews source by
+     * this method is called by onBindViewHolder to set a image views source by
      * an asset uri.
      *
      * @param viewHolder the current ViewHolder for getting the ImageViews
@@ -144,16 +141,22 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
      */
     private void setAssetDrawable(ViewHolder viewHolder, Uri uri) {
 
-        Drawable drawable = AssetUtils.getDrawableFromAssetUri
-                (context, uri);
+        Drawable drawable = AssetUtils.getDrawableFromAssetUri(context, uri);
+
         if (drawable != null) {
             viewHolder.mImageView.setImageDrawable(drawable);
         } else {
-            viewHolder.mImageView.setImageDrawable(context.getDrawable(R.drawable
-                    .ic_cards_playing));
+            viewHolder.mImageView.setImageDrawable(
+                    context.getDrawable(R.drawable.ic_cards_playing));
         }
     }
 
+    /**
+     * This method will return the current count of items contained in the
+     * adapter.
+     *
+     * @return count of items in the adapter
+     */
     @Override
     public int getItemCount() {
 
