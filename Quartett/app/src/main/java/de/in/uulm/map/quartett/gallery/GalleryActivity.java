@@ -33,9 +33,7 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
                     galleryFragment, R.id.contentFrame);
         }
 
-
         mGalleryPresenter = new GalleryPresenter(galleryFragment, this, this);
-
 
         galleryFragment.setPresenter(mGalleryPresenter);
     }
@@ -44,13 +42,11 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
     @Override
     public void onBackPressed() {
 
-
         super.onBackPressed();
     }
 
     @Override
     public void switchToView(GalleryContract.View view) {
-
 
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                 (Fragment) view, R.id.contentFrame);

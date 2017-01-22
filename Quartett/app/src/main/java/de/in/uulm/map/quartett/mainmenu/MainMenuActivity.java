@@ -9,15 +9,10 @@ import android.util.Log;
 
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
-import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.data.Deck;
-
-import de.in.uulm.map.quartett.data.Highscore;
 
 import de.in.uulm.map.quartett.factory.EntityImportTask;
 import de.in.uulm.map.quartett.util.ActivityUtils;
-
-import java.util.Random;
 
 
 public class MainMenuActivity extends DrawerActivity implements MainMenuContract.Backend {
@@ -59,7 +54,6 @@ public class MainMenuActivity extends DrawerActivity implements MainMenuContract
                 // in this callback all decks are loaded, i promise :P
             }
         }).execute();
-
     }
 
     /**
@@ -70,8 +64,9 @@ public class MainMenuActivity extends DrawerActivity implements MainMenuContract
      */
     @Override
     public void startActivity(Intent intent) {
+
         ActivityOptionsCompat options = ActivityOptionsCompat
                 .makeSceneTransitionAnimation(this);
-        super.startActivity(intent,options.toBundle());
+        super.startActivity(intent, options.toBundle());
     }
 }

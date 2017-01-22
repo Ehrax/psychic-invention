@@ -38,6 +38,7 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
     GalleryItemListener mItemListener = new GalleryItemListener() {
         @Override
         public void showDeckDetailView(long deckID) {
+
             mPresenter.onDeckClicked(deckID);
         }
     };
@@ -70,10 +71,8 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new GalleryAdapter(deckList, mItemListener,getContext());
+        mAdapter = new GalleryAdapter(deckList, mItemListener, getContext());
         mRecyclerView.setAdapter(mAdapter);
-
-
     }
 
     @Nullable
@@ -88,6 +87,4 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
 
         void showDeckDetailView(long deckID);
     }
-
-
 }

@@ -62,8 +62,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter
      * @param itemListener A GalleryItemListener (inner interface from
      *                     GalleryFragment) to call methods from the presenter.
      */
-    public GalleryAdapter(List<Deck> deckList, GalleryFragment
-            .GalleryItemListener itemListener, Context ctx) {
+    public GalleryAdapter(List<Deck> deckList,
+                          GalleryFragment.GalleryItemListener itemListener,
+                          Context ctx) {
 
         mDeckList = deckList;
         mItemListener = itemListener;
