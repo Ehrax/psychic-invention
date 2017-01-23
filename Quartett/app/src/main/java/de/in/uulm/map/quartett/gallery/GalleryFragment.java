@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import com.orm.dsl.NotNull;
 
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.Deck;
+import de.in.uulm.map.quartett.game.GameContract;
 
 /**
  * Created by maxka on 25.12.2016. This fragment uses a simple RecyclerView to
@@ -28,6 +30,8 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
 
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private GalleryContract.Presenter mPresenter;
+
     public static GalleryFragment newInstance() {
 
         return new GalleryFragment();
@@ -36,6 +40,7 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
     @Override
     public void setPresenter(@NonNull GalleryContract.Presenter presenter) {
 
+        mPresenter = presenter;
     }
 
     public void setAdapter(@NotNull GalleryAdapter adapter) {
@@ -65,5 +70,43 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
                              Bundle savedInstanceState) {
 
         return inflater.inflate(R.layout.fragment_gallery, container, false);
+    }
+
+    @Override
+    public void showDownloadDialog(final Deck deck) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        builder.setTitle(R.string.gallery_download_title);
+        builder.setMessage(R.string.gallery_download_msg);
+        builder.setNegativeButton(R.string.gallery_btn_cancel, null);
+        builder.setPositiveButton(R.string.gallery_btn_ok,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        mPresenter.onDownloadDialogOk(deck);
+                    }
+                });
+
+        builder.show();
+    }
+
+    public void showDeleteDialog(final Deck deck) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        builder.setTitle(R.string.gallery_delete_title);
+        builder.setMessage(R.string.gallery_delete_msg);
+        builder.setNegativeButton(R.string.gallery_btn_cancel, null);
+        builder.setPositiveButton(R.string.gallery_btn_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                mPresenter.onDeleteDialogOk(deck);
+            }
+        });
+
+        builder.show();
     }
 }

@@ -38,6 +38,7 @@ import de.in.uulm.map.quartett.game.GamePresenter;
 import de.in.uulm.map.quartett.util.AssetUtils;
 import de.in.uulm.map.quartett.views.viewpagerindicator.CirclePageIndicator;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
@@ -71,7 +72,6 @@ public class CardFragment extends Fragment {
 
         mPresenter = presenter;
     }
-
 
     /**
      * Use this method to set the deck id the card content will be load from.
@@ -199,27 +199,20 @@ public class CardFragment extends Fragment {
         public Object instantiateItem(ViewGroup container, int position) {
 
             final Image img = mImages.get(position).mImage;
-            Drawable drawable = null;
-
-            if (img.mUri.contains("android_asset")) {
-                drawable = AssetUtils.getDrawableFromAssetUri(
-                        mContext, Uri.parse(img.mUri));
-            } else {
-                try {
-                    InputStream inputStream = getActivity()
-                            .getContentResolver()
-                            .openInputStream((Uri.parse(img.mUri)));
-                    drawable = Drawable.createFromStream(inputStream, img.mUri);
-                } catch (FileNotFoundException e) {
-                    drawable = getResources().getDrawable(
-                            R.drawable.ic_cards_playing, null);
-                }
-            }
 
             ImageView imgView = new ImageView(mContext);
             imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imgView.setImageDrawable(drawable);
-            ((ViewPager) container).addView(imgView, 0);
+
+            if (img.mUri.contains("android_asset")) {
+                Drawable drawable = AssetUtils.getDrawableFromAssetUri(
+                        mContext, Uri.parse(img.mUri));
+                imgView.setImageDrawable(drawable);
+            } else {
+                imgView.setImageURI(Uri.parse(mContext.getFilesDir() +
+                            File.separator + img.mUri));
+            }
+
+            container.addView(imgView, 0);
 
             imgView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override

@@ -10,21 +10,27 @@ import java.util.List;
 
 public class DeckInfo extends SugarRecord {
 
+    public enum State {
+        DISK,
+        SERVER,
+        DOWNLOADING
+    }
+
     public String mSource;
     public int mHash;
     public long mTimestamp;
-    public boolean mOnDisk;
+    public State mState;
 
     public DeckInfo() {
 
     }
 
-    public DeckInfo(String mSource, int mHash, long mTimestamp, boolean mOnDisk) {
+    public DeckInfo(String mSource, int mHash, long mTimestamp, State mState) {
 
         this.mSource = mSource;
         this.mHash = mHash;
         this.mTimestamp = mTimestamp;
-        this.mOnDisk = mOnDisk;
+        this.mState = mState;
     }
 
     public Deck getDeck() {

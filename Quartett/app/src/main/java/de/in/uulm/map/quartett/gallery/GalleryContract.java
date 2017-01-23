@@ -6,9 +6,11 @@ import android.widget.ImageView;
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.data.Image;
+import de.in.uulm.map.quartett.gameend.GameEndContract;
 import de.in.uulm.map.quartett.util.BasePresenter;
 import de.in.uulm.map.quartett.util.BaseView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,17 +21,35 @@ public interface GalleryContract {
 
     interface Presenter extends BasePresenter {
 
+        void onDeckLoaded(List<Deck> decks);
+
+        void onDeckDownloaded(Deck oldDeck, Deck newDeck);
+
+        void onDeleteDeckClicked(Deck deck);
+
         void onDeckClicked(Deck deck);
 
         void onImageLongClicked(Image image);
 
-        Card getCard(long deckId, int position);
-
         void loadServerImage(String url, ImageView imageView);
+
+        void onDownloadDialogOk(Deck deck);
+
+        void onDeleteDialogOk(Deck deck);
+
+        Card getCard(long deckId, int position);
     }
 
     interface View extends BaseView<Presenter> {
 
+        void showDownloadDialog(Deck deck);
+
+        void showDeleteDialog(Deck deck);
+    }
+
+    interface SubView extends View {
+
+        void showImageDescription(Image image);
     }
 
     interface Backend {
@@ -42,11 +62,18 @@ public interface GalleryContract {
 
         void loadServerImage(String url, ImageView imageView);
 
+        void loadDecks();
+
+        void loadServerDecks();
+
         void downloadDeck(Deck deck);
     }
 
-    interface SubView extends View {
+    interface Model {
 
-        void showImageDescription(Image image);
+        void update();
+
+        ArrayList<Deck> getDecks();
     }
+
 }

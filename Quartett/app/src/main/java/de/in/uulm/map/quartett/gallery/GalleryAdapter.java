@@ -7,53 +7,40 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Deck;
+import de.in.uulm.map.quartett.data.DeckInfo;
 import de.in.uulm.map.quartett.util.AssetUtils;
 
-import java.util.List;
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by maxka on 26.12.2016. Adapter for the RecyclerView in the gallery.
  * Setting the decks image and title for each row.
  */
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder>
-        implements GalleryContract.View {
+        implements GalleryContract.Model {
 
     final private Context context;
 
-    final private List<Deck> mDeckList;
+    final private ArrayList<Deck> mDeckList;
 
     private GalleryContract.Presenter mPresenter;
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        public ImageView mImageView;
-        public TextView mTextView;
-        public TextView mDescriptionView;
-        public ImageView mDownloadIcon;
-
-        public ViewHolder(View v) {
-
-            super(v);
-            mImageView = (ImageView) v.findViewById(R.id.img_deck_gallery);
-            mTextView = (TextView) v.findViewById(R.id.txt_deck_title_gallery);
-            mDescriptionView = (TextView) v.findViewById(R.id.txt_deck_desc_gallery);
-            mDownloadIcon = (ImageView) v.findViewById(R.id.download_icon);
-        }
-    }
 
     /**
      * Simple constructor to initialize member variables.
      *
      * @param ctx the current application context
      */
-    public GalleryAdapter(List<Deck> decks, Context ctx) {
+    public GalleryAdapter(Context ctx) {
 
-        mDeckList = decks;
+        mDeckList = new ArrayList<>();
         context = ctx;
     }
 
@@ -62,12 +49,43 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
      *
      * @param presenter the presenter to be set
      */
-    @Override
     public void setPresenter(GalleryContract.Presenter presenter) {
 
         mPresenter = presenter;
     }
 
+    /**
+     * This is part of the Model Interface. Should be called when something has
+     * changed in the underlying data.
+     */
+    @Override
+    public void update() {
+
+        notifyDataSetChanged();
+    }
+
+    /**
+     * This is part of the Model interface. But as the Gallery Adapter is part
+     * of both (model and view) we implement it here. This gives access to the
+     * deck list of the model
+     *
+     * @return the list of all decks in the adapter
+     */
+    @Override
+    public ArrayList<Deck> getDecks() {
+
+        return mDeckList;
+
+    }
+
+    /**
+     * This will be called when a view holder object must be created.
+     *
+     * @param parent   the paren view group in which the layout will be
+     *                 inflated
+     * @param viewType the type of the view
+     * @return a new ViewHolder instance
+     */
     @Override
     public GalleryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -101,7 +119,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 setAssetDrawable(viewHolder, Uri.parse(currentDeck.mImage.mUri));
             } else {
                 viewHolder.mImageView.setImageURI(Uri.parse(
-                        currentDeck.mImage.mUri));
+                        context.getFilesDir() + File.separator +
+                                currentDeck.mImage.mUri));
             }
         } else {
             Uri imageCardUri = Uri.parse(currentDeck.getCards()
@@ -120,7 +139,25 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 currentDeck.mDescription == null ? "" : currentDeck.mDescription);
 
         viewHolder.mDownloadIcon.setVisibility(
-                currentDeck.mDeckInfo.mOnDisk ? View.GONE : View.VISIBLE);
+                currentDeck.mDeckInfo.mState == DeckInfo.State.SERVER
+                        ? View.VISIBLE : View.GONE);
+
+        viewHolder.mDownloadProgress.setVisibility(
+                currentDeck.mDeckInfo.mState == DeckInfo.State.DOWNLOADING
+                        ? View.VISIBLE : View.GONE);
+
+        viewHolder.mBtnDelete.setVisibility(
+                currentDeck.mDeckInfo.mSource.contains("http://") &&
+                        currentDeck.mDeckInfo.mState == DeckInfo.State.DISK
+                        ? View.VISIBLE : View.GONE);
+
+        viewHolder.mBtnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mPresenter.onDeleteDeckClicked(currentDeck);
+            }
+        });
 
         viewHolder.mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,5 +198,26 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     public int getItemCount() {
 
         return mDeckList.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public ImageView mImageView;
+        public TextView mTextView;
+        public TextView mDescriptionView;
+        public ImageView mDownloadIcon;
+        public ProgressBar mDownloadProgress;
+        public ImageButton mBtnDelete;
+
+        public ViewHolder(View v) {
+
+            super(v);
+            mImageView = (ImageView) v.findViewById(R.id.img_deck_gallery);
+            mTextView = (TextView) v.findViewById(R.id.txt_deck_title_gallery);
+            mDescriptionView = (TextView) v.findViewById(R.id.txt_deck_desc_gallery);
+            mDownloadIcon = (ImageView) v.findViewById(R.id.download_icon);
+            mDownloadProgress = (ProgressBar) v.findViewById(R.id.download_progress);
+            mBtnDelete = (ImageButton) v.findViewById(R.id.btn_delete_deck);
+        }
     }
 }

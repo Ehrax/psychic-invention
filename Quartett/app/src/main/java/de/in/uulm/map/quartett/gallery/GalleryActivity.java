@@ -29,52 +29,33 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
 
     private RestLoader mRestLoader;
 
+    private GalleryAdapter mAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        final GalleryMode mode =
-                (GalleryMode) getIntent().getSerializableExtra("mode");
-
-        final List<Deck> decks = Deck.listAll(Deck.class);
-        final GalleryAdapter adapter = new GalleryAdapter(decks, this);
-
+        mAdapter = new GalleryAdapter(this);
         mRestLoader = new RestLoader(this);
-
-        if (mode != GalleryMode.CHOOSE) {
-            mRestLoader.loadAllDecks(new Response.Listener<List<Deck>>() {
-                @Override
-                public void onResponse(List<Deck> response) {
-
-                    for (Deck d : response) {
-                        decks.add(d);
-                    }
-
-                    adapter.notifyDataSetChanged();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                    // display a snack bar or something ...
-                }
-            });
-        }
 
         GalleryFragment galleryFragment = (GalleryFragment)
                 getSupportFragmentManager().findFragmentById(R.id.contentFrame);
 
         if (galleryFragment == null) {
             galleryFragment = GalleryFragment.newInstance();
-            galleryFragment.setAdapter(adapter);
+            galleryFragment.setAdapter(mAdapter);
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     galleryFragment, R.id.contentFrame);
         }
 
-        mGalleryPresenter = new GalleryPresenter(galleryFragment, this, this);
+        mGalleryPresenter =
+                new GalleryPresenter(this, galleryFragment, this, mAdapter);
+
         galleryFragment.setPresenter(mGalleryPresenter);
-        adapter.setPresenter(mGalleryPresenter);
+        mAdapter.setPresenter(mGalleryPresenter);
+
+        mGalleryPresenter.start();
     }
 
     @Override
@@ -83,16 +64,26 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
         super.onBackPressed();
     }
 
+    /**
+     * This is used to change the currently displayed fragment. Part of the
+     * Backend Interface.
+     *
+     * @param view the new view that should be displayed
+     */
     @Override
     public void switchToView(GalleryContract.View view) {
 
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                 (Fragment) view, R.id.contentFrame);
-        mGalleryPresenter = new GalleryPresenter(view,
-                getApplicationContext(), this);
+        mGalleryPresenter = new GalleryPresenter(this, view, this, mAdapter);
         view.setPresenter(mGalleryPresenter);
     }
 
+    /**
+     * Part of the Backend Interface. Is used to switch to another activity.
+     *
+     * @param intent the intent with which to start the other activity.
+     */
     @Override
     public void startActivity(Intent intent) {
 
@@ -115,17 +106,55 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
     }
 
     /**
+     * Part of the Backend interface. Is use to load the decks from the
+     * Database. Will be called by the presenter.
+     */
+    @Override
+    public void loadDecks() {
+
+        mGalleryPresenter.onDeckLoaded(Deck.listAll(Deck.class));
+    }
+
+    /**
+     * Part of the Backend interface. This is used to load the decks from the
+     * Server. Will be called by the presenter.
+     */
+    @Override
+    public void loadServerDecks() {
+
+        mRestLoader.loadAllDecks(new Response.Listener<List<Deck>>() {
+            @Override
+            public void onResponse(List<Deck> response) {
+
+                mGalleryPresenter.onDeckLoaded(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                // display a snack bar or something ...
+            }
+        });
+    }
+
+    /**
      * This method is used to download a Deck into the local database. Part of
-     * the Backend interface.
+     * the Backend interface, will be called by the presenter.
      *
      * @param deck the deck to be downloaded
      */
     @Override
-    public void downloadDeck(Deck deck) {
+    public void downloadDeck(final Deck deck) {
 
         int id = Integer.parseInt(
                 Uri.parse(deck.mDeckInfo.mSource).getLastPathSegment());
 
-        new DeckDownloadTask(id, mRestLoader).execute();
+        new DeckDownloadTask(id, mRestLoader, new DeckDownloadTask.Callback() {
+            @Override
+            public void onFinished(Deck newDeck) {
+
+                mGalleryPresenter.onDeckDownloaded(deck, newDeck);
+            }
+        }).execute();
     }
 }

@@ -3,14 +3,21 @@ package de.in.uulm.map.quartett.gallery;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.widget.Gallery;
 import android.widget.ImageView;
 
 import de.in.uulm.map.quartett.data.Card;
+import de.in.uulm.map.quartett.data.CardImage;
 import de.in.uulm.map.quartett.data.Deck;
+import de.in.uulm.map.quartett.data.DeckInfo;
 import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.game.GameActivity;
 import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by maxka on 25.12.2016.
@@ -20,22 +27,37 @@ public class GalleryPresenter implements GalleryContract.Presenter {
 
     @NonNull
     private final Context mCtx;
+
     private final GalleryContract.View mView;
+
     private final GalleryContract.Backend mBackend;
 
+    private final GalleryContract.Model mModel;
 
-    public GalleryPresenter(@NonNull GalleryContract.View galleryView,
-                            Context ctx,
-                            GalleryContract.Backend backend) {
+    public GalleryPresenter(@NonNull Context ctx,
+                            @NonNull GalleryContract.View galleryView,
+                            @NonNull GalleryContract.Backend backend,
+                            @NonNull GalleryContract.Model model) {
 
         mCtx = ctx;
         mView = galleryView;
         mBackend = backend;
+        mModel = model;
     }
 
     @Override
     public void start() {
 
+        mBackend.loadDecks();
+
+        GalleryMode mode =
+                (GalleryMode) mBackend.getIntent().getSerializableExtra("mode");
+
+        if(mode == GalleryMode.CHOOSE) {
+            return;
+        }
+
+        mBackend.loadServerDecks();
     }
 
     /**
@@ -79,6 +101,97 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     }
 
     /**
+     * This method will be called on confirmation of the download dialog.
+     *
+     * @param deck the deck to be downloaded
+     */
+    @Override
+    public void onDownloadDialogOk(Deck deck) {
+
+        mBackend.downloadDeck(deck);
+        deck.mDeckInfo.mState = DeckInfo.State.DOWNLOADING;
+        mModel.update();
+    }
+
+    /**
+     * This method will be called on confirmation of the download dialog.
+     *
+     * @param deck the deck to be deleted
+     */
+    @Override
+    public void onDeleteDialogOk(Deck deck) {
+
+        mModel.getDecks().remove(deck);
+
+        for(Card c : deck.getCards()) {
+            for(CardImage i : c.getCardImages()) {
+                mCtx.deleteFile(i.mImage.mUri);
+            }
+        }
+
+        deck.delete();
+        mBackend.loadServerDecks();
+    }
+
+    /**
+     * This method will be called when Deck objects have been loaded.
+     *
+     * @param decks all decks in the database
+     */
+    @Override
+    public void onDeckLoaded(List<Deck> decks) {
+
+        ArrayList<Deck> modelDecks = mModel.getDecks();
+
+        for (Deck d : decks) {
+            boolean contains = false;
+            for (Deck dl : modelDecks) {
+                contains = contains || (
+                        dl.mDeckInfo.mSource.equals(d.mDeckInfo.mSource) &&
+                                dl.mTitle.equals(d.mTitle));
+            }
+            if (!contains) {
+                modelDecks.add(d);
+            }
+        }
+
+        mModel.update();
+    }
+
+    /**
+     * This method will be called when the download of a deck is completed.
+     *
+     * @param oldDeck the original Deck from the model
+     * @param newDeck the new Deck that is stored in the database
+     */
+    @Override
+    public void onDeckDownloaded(Deck oldDeck, Deck newDeck) {
+
+        if(newDeck == null) {
+            return;
+        }
+
+        ArrayList<Deck> decks = mModel.getDecks();
+        int oldIndex = decks.indexOf(oldDeck);
+
+        decks.remove(oldDeck);
+        decks.add(oldIndex, newDeck);
+
+        mModel.update();
+    }
+
+    /**
+     * This is called if the delete button of an online Deck was clicked.
+     *
+     * @param deck the deck on which was clicked
+     */
+    @Override
+    public void onDeleteDeckClicked(Deck deck) {
+
+        mView.showDeleteDialog(deck);
+    }
+
+    /**
      * Use this method to switch to the deck detail fragment or to pass the deck
      * to further activities.
      *
@@ -100,12 +213,18 @@ public class GalleryPresenter implements GalleryContract.Presenter {
             return;
         }
 
-        if (deck.mDeckInfo.mOnDisk) {
-            DeckFragment deckFragment = DeckFragment.newInstance();
-            deckFragment.setCurrentDeckID(deck.getId());
-            mBackend.switchToView(deckFragment);
-        } else {
-            mBackend.downloadDeck(deck);
+        switch (deck.mDeckInfo.mState) {
+
+            case DISK:
+                DeckFragment deckFragment = DeckFragment.newInstance();
+                deckFragment.setCurrentDeckID(deck.getId());
+                mBackend.switchToView(deckFragment);
+                break;
+            case SERVER:
+                mView.showDownloadDialog(deck);
+                break;
+            default:
+                break;
         }
     }
 }

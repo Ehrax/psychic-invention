@@ -125,7 +125,7 @@ public class RestLoader {
                                         SERVER_URL + "/decks/" + obj.getInt("id"),
                                         obj.toString().hashCode(),
                                         new Date().getTime(),
-                                        false);
+                                        DeckInfo.State.SERVER);
 
                                 final Deck deck = new Deck(
                                         obj.getString("name"),
@@ -231,13 +231,13 @@ public class RestLoader {
                 SERVER_URL + "/decks/" + id,
                 res.toString().hashCode(),
                 new Date().getTime(),
-                true);
+                DeckInfo.State.DISK);
 
         c.mDeck = new Deck(
                 res.getString("name"),
                 res.getString("description"),
                 image,
-                null);
+                c.mDeckInfo);
 
         loadCards(id, c);
     }
@@ -393,6 +393,7 @@ public class RestLoader {
 
         final CountDownLatch latch = new CountDownLatch(images.size());
         final String tag = "image";
+        final ArrayList<Image> saved = new ArrayList<>();
 
         for (final Image i : images) {
 
@@ -406,6 +407,7 @@ public class RestLoader {
                         public void onResponse(String uri) {
 
                             i.mUri = uri;
+                            saved.add(i);
                             latch.countDown();
                         }
                     },
@@ -413,7 +415,6 @@ public class RestLoader {
                         @Override
                         public void onErrorResponse(VolleyError error) {
 
-                            mContext.deleteFile(path);
                             mRequestQueue.cancelAll(tag);
                             latch.countDown();
                         }
@@ -425,6 +426,19 @@ public class RestLoader {
             mRequestQueue.add(req);
         }
 
-        latch.await();
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            for(Image s : saved) {
+                mContext.deleteFile(s.mUri);
+            }
+            throw e;
+        }
+
+        if(saved.size() != images.size()) {
+            for(Image s : saved) {
+                mContext.deleteFile(s.mUri);
+            }
+        }
     }
 }

@@ -51,6 +51,15 @@
     <!--gallery-->
     <string name="no_title">No Title</string>
     <string name="image_description_title">Beschreibung</string>
+    <string name="gallery_download_title">Download</string>
+    <string name="gallery_btn_ok">Ja</string>
+    <string name="gallery_btn_cancel">Nein</string>
+    <string name="gallery_download_msg">
+        Diese Deck ist nicht installiert.
+        Soll es heruntergeladen werden?
+    </string>
+    <string name="gallery_delete_title">Löschen</string>
+    <string name="gallery_delete_msg">Diese Deck wirklich löschen?</string>
 
     <!--stats -->
     <string name="stats_games_won">Games Won</string>
