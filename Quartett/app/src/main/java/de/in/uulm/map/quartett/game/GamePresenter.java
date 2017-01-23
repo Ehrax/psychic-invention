@@ -469,18 +469,9 @@ public class GamePresenter implements GameContract.Presenter {
         boolean isFinish = false;
         //first of all check if one of the players has no cards anymore
         if (!mHasAICards) {
-            float pointBasic = mCurrentGameState
-                    .mUserPoints / Math.max(mCurrentGameState.mAIPoints, 1);
-            float pointsFloat = mCurrentGameState.mGameLevel == GameLevel
-                    .EASY ?
-                    pointBasic * 1000 : mCurrentGameState
-                    .mGameLevel ==
-                    GameLevel.NORMAL ? pointBasic * 1100 :pointBasic * 1300;
-            int points = (int)pointsFloat;
-
             intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
                     .mUserName);
-            intent.putExtra(GameEndPresenter.POINTS, points);
+            intent.putExtra(GameEndPresenter.POINTS, calculatePoints());
             intent.putExtra(GameEndPresenter.WINNER, GameEndState.WIN);
             intent.putExtra(GameEndPresenter.SUB, mCtx.getString(R.string
                     .ai_no_cards));
@@ -509,16 +500,8 @@ public class GamePresenter implements GameContract.Presenter {
         if (mCurrentGameState.mGameMode == GameMode.POINTS) {
             if (mCurrentGameState.mAIPoints == mCurrentGameState.mLimit ||
                     mCurrentGameState.mUserPoints == mCurrentGameState.mLimit) {
-
-                float pointBasic = mCurrentGameState
-                        .mUserPoints / Math.max(mCurrentGameState.mAIPoints, 1);
-                float pointsFloat = mCurrentGameState.mGameLevel == GameLevel
-                        .EASY ?
-                        pointBasic * 1000 : mCurrentGameState
-                        .mGameLevel ==
-                        GameLevel.NORMAL ? pointBasic * 1100 :pointBasic * 1300;
-                int points = (int)pointsFloat;
-
+                int points = calculatePoints();
+              
                 intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
                         .mUserName);
                 intent.putExtra(GameEndPresenter.POINTS, points);
@@ -535,15 +518,7 @@ public class GamePresenter implements GameContract.Presenter {
         } else if (mCurrentGameState.mGameMode == GameMode.ROUNDS ||
                 mCurrentGameState.mGameMode == GameMode.INSANE) {
             if (mCurrentGameState.mCurrentRound == mCurrentGameState.mLimit) {
-
-                float pointBasic = mCurrentGameState
-                        .mUserPoints / Math.max(mCurrentGameState.mAIPoints, 1);
-                float pointsFloat = mCurrentGameState.mGameLevel == GameLevel
-                        .EASY ?
-                        pointBasic * 1000 : mCurrentGameState
-                        .mGameLevel ==
-                        GameLevel.NORMAL ? pointBasic * 1100 :pointBasic * 1300;
-                int points = (int)pointsFloat;
+                int points = calculatePoints();
 
                 intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
                         .mUserName);
@@ -626,6 +601,22 @@ public class GamePresenter implements GameContract.Presenter {
             }
         }
         return image;
+    }
+
+    /**
+     * Use this method to calculate the high score points after a game.
+     *
+     * @return the reached points by the user.
+     */
+    private int calculatePoints() {
+
+        float pointBasic = mCurrentGameState
+                .mUserPoints / (float)Math.max(mCurrentGameState.mAIPoints,1);
+        float points = mCurrentGameState.mGameLevel == GameLevel.EASY ?
+                pointBasic * 1000 : mCurrentGameState.mGameLevel ==
+                GameLevel.NORMAL ? pointBasic * 1100 : pointBasic * 1300;
+
+        return (int)points;
     }
 
     /**
@@ -821,18 +812,7 @@ public class GamePresenter implements GameContract.Presenter {
 
             Intent intent = new Intent(mCtx, GameEndActivity.class);
 
-            float pointBasic = mCurrentGameState
-                    .mUserPoints / Math.max(mCurrentGameState.mAIPoints, 1);
-            float pointsFloat = mCurrentGameState.mGameLevel == GameLevel
-                    .EASY ?
-                    pointBasic * 1000 : mCurrentGameState
-                    .mGameLevel ==
-                    GameLevel.NORMAL ? pointBasic * 1100 :pointBasic * 1300;
-            int points = (int)pointsFloat;
-
-            intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
-                    .mUserName);
-            intent.putExtra(GameEndPresenter.POINTS, points);
+            int points = calculatePoints();
 
             intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
                     .mUserName);
