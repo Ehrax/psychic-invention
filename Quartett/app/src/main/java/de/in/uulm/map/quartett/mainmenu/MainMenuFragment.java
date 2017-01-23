@@ -92,14 +92,14 @@ public class MainMenuFragment extends Fragment implements MainMenuContract.View 
             Achievement achievement = new Achievement();
             achievement.mTitle = "Beginner";
             achievement.mDescription = "Win 5 games!";
-            achievement.mValue = 0;
+            achievement.mValue = 2;
             achievement.mTargetValue = 5;
             achievement.save();
 
             Achievement achievement1 = new Achievement();
             achievement1.mTitle = "Unlucky";
             achievement1.mDescription = "Lose 10 games in a row!";
-            achievement1.mValue = 0;
+            achievement1.mValue = 4;
             achievement1.mTargetValue = 10;
             achievement1.save();
 
@@ -109,6 +109,14 @@ public class MainMenuFragment extends Fragment implements MainMenuContract.View 
             achievement2.mValue = 0;
             achievement2.mTargetValue = 1;
             achievement2.save();
+
+            Achievement achievement3 = new Achievement();
+            achievement2.mTitle = "K.O.";
+            achievement2.mDescription = "Win a game by winning all cards!";
+            achievement2.mValue = 0;
+            achievement2.mTargetValue = 1;
+            achievement2.save();
+
         }
 
         View view = inflater.inflate(R.layout.fragment_main_menu, container, false);
