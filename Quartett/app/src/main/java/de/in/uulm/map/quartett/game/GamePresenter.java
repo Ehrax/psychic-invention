@@ -469,7 +469,6 @@ public class GamePresenter implements GameContract.Presenter {
         boolean isFinish = false;
         //first of all check if one of the players has no cards anymore
         if (!mHasAICards) {
-
             intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
                     .mUserName);
             intent.putExtra(GameEndPresenter.POINTS, calculatePoints());
@@ -479,6 +478,18 @@ public class GamePresenter implements GameContract.Presenter {
             mBackEnd.startActivity(intent, winner);
             isFinish = true;
         } else if (!mHasUserCards) {
+            float pointBasic = mCurrentGameState
+                    .mUserPoints / Math.max(mCurrentGameState.mAIPoints, 1);
+            float pointsFloat = mCurrentGameState.mGameLevel == GameLevel
+                    .EASY ?
+                    pointBasic * 1000 : mCurrentGameState
+                    .mGameLevel ==
+                    GameLevel.NORMAL ? pointBasic * 1100 :pointBasic * 1300;
+            int points = (int)pointsFloat;
+
+            intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
+                    .mUserName);
+            intent.putExtra(GameEndPresenter.POINTS, points);
             intent.putExtra(GameEndPresenter.WINNER, GameEndState.LOSE);
             intent.putExtra(GameEndPresenter.SUB, mCtx.getString(R.string
                     .user_no_cards));
@@ -489,8 +500,8 @@ public class GamePresenter implements GameContract.Presenter {
         if (mCurrentGameState.mGameMode == GameMode.POINTS) {
             if (mCurrentGameState.mAIPoints == mCurrentGameState.mLimit ||
                     mCurrentGameState.mUserPoints == mCurrentGameState.mLimit) {
-
                 int points = calculatePoints();
+              
                 intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
                         .mUserName);
                 intent.putExtra(GameEndPresenter.POINTS, points);
@@ -507,7 +518,6 @@ public class GamePresenter implements GameContract.Presenter {
         } else if (mCurrentGameState.mGameMode == GameMode.ROUNDS ||
                 mCurrentGameState.mGameMode == GameMode.INSANE) {
             if (mCurrentGameState.mCurrentRound == mCurrentGameState.mLimit) {
-
                 int points = calculatePoints();
 
                 intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
