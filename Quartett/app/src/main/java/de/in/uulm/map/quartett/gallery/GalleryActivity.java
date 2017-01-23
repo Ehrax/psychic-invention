@@ -2,12 +2,9 @@ package de.in.uulm.map.quartett.gallery;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.design.widget.Snackbar;
+import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
-import android.text.method.BaseKeyListener;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.android.volley.Response;
@@ -16,10 +13,10 @@ import com.android.volley.VolleyError;
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Deck;
+import de.in.uulm.map.quartett.rest.DeckDownloadTask;
 import de.in.uulm.map.quartett.rest.RestLoader;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,7 +42,7 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
 
         mRestLoader = new RestLoader(this);
 
-        if(mode != GalleryMode.CHOOSE) {
+        if (mode != GalleryMode.CHOOSE) {
             mRestLoader.loadAllDecks(new Response.Listener<List<Deck>>() {
                 @Override
                 public void onResponse(List<Deck> response) {
@@ -108,7 +105,7 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
     /**
      * Use this method to asynchronously load an image over the Network.
      *
-     * @param url the url of the image to be loaded
+     * @param url       the url of the image to be loaded
      * @param imageView the image view in which the image will be placed
      */
     @Override
@@ -118,8 +115,8 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
     }
 
     /**
-     * This method is used to download a Deck into the local database.
-     * Part of the Backend interface.
+     * This method is used to download a Deck into the local database. Part of
+     * the Backend interface.
      *
      * @param deck the deck to be downloaded
      */
@@ -129,19 +126,6 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
         int id = Integer.parseInt(
                 Uri.parse(deck.mDeckInfo.mSource).getLastPathSegment());
 
-        mRestLoader.loadDeck(id, new Response.Listener<Deck>() {
-                    @Override
-                    public void onResponse(Deck response) {
-
-                        Log.d("Done", "done");
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                        Log.d("Fail", "fail");
-                    }
-                });
+        new DeckDownloadTask(id, mRestLoader).execute();
     }
 }
