@@ -183,6 +183,7 @@ public class CardFragment extends Fragment {
 
     /**
      * This Adapter populates the cards images into a viewpager.
+     *
      */
     private class ImagePagerAdapter extends PagerAdapter {
 
@@ -344,8 +345,10 @@ public class CardFragment extends Fragment {
                     (getContext());
             recyclerViewAttributes.setLayoutManager(layoutManager);
 
+
             RecyclerView.Adapter adapter = new AttributeAdapter
-                    (mAttributeValues, getContext(), mAttributeListener);
+                    (mAttributeValues, getContext(), mAttributeListener,
+                            recyclerViewAttributes.getHeight());
             recyclerViewAttributes.addItemDecoration(new
                     DividerItemDecoration(recyclerViewAttributes.getContext()
                     , layoutManager.getOrientation()));

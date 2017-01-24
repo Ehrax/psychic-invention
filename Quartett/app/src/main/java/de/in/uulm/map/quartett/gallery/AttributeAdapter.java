@@ -14,14 +14,15 @@ import de.in.uulm.map.quartett.data.AttributeValue;
 import java.util.List;
 
 /**
- * Created by maxka on 23.01.2017.
- * Simple adapter for the recycler view holding the cards attributes.
+ * Created by maxka on 23.01.2017. Simple adapter for the recycler view holding
+ * the cards attributes.
  */
 
 public class AttributeAdapter extends RecyclerView
         .Adapter<AttributeAdapter.ViewHolder> {
 
     private List<AttributeValue> mAttributeList;
+    private int mHeight;
 
     private Context mContext;
     private CardFragment.AttributeClickListener mClickListener;
@@ -47,11 +48,13 @@ public class AttributeAdapter extends RecyclerView
     }
 
     public AttributeAdapter(List<AttributeValue> attributeList, Context ctx,
-                            CardFragment.AttributeClickListener listener) {
+                            CardFragment.AttributeClickListener listener, int
+                                    recyclerViewHeight) {
 
         mAttributeList = attributeList;
         mContext = ctx;
         mClickListener = listener;
+        mHeight = recyclerViewHeight;
     }
 
     @Override
@@ -78,6 +81,7 @@ public class AttributeAdapter extends RecyclerView
         }
         viewHolder.mAttributeValue.setText(currentAttributeValue.mValue + " " +
                 "" + currentAttributeValue.mAttribute.mUnit);
+
         viewHolder.mRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

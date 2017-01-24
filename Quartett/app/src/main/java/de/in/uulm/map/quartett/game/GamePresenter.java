@@ -31,6 +31,8 @@ import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
 import de.in.uulm.map.quartett.stats.stats.StatsPresenter;
 import de.in.uulm.map.quartett.util.AssetUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -592,8 +594,8 @@ public class GamePresenter implements GameContract.Presenter {
                     .parse(imageUri));
         } else {
             try {
-                InputStream stream = mCtx.getContentResolver()
-                        .openInputStream(Uri.parse(imageUri));
+                FileInputStream stream = new FileInputStream(mCtx.getFilesDir()+
+                                File.separator+imageUri);
                 image = Drawable.createFromStream(stream, imageUri);
             } catch (FileNotFoundException e) {
                 image = mCtx.getResources().getDrawable(R.drawable
