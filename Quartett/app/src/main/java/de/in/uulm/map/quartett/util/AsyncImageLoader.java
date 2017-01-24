@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
+import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.rest.RestLoader;
 
 import java.io.IOException;
@@ -17,8 +19,8 @@ import java.lang.ref.WeakReference;
  */
 
 /**
- * This class should be used for all ImageView that load something other than
- * a vector drawable or really small images.
+ * This class should be used for all ImageView that load something other than a
+ * vector drawable or really small images.
  */
 public class AsyncImageLoader extends AsyncTask<Void, Void, Bitmap> {
 
@@ -28,44 +30,67 @@ public class AsyncImageLoader extends AsyncTask<Void, Void, Bitmap> {
 
     final private Context mContext;
 
-    final private RestLoader mLoader;
-
+    /**
+     * This constructor will set all required member variables. If the uri
+     * can contain web urls a RestLoader must be set. Else the RestLoader is
+     * not required and can be set to null.
+     *
+     * @param uri the uri of the image
+     * @param view the view in which the image should be loaded
+     * @param context the current context
+     * @param loader a rest loader or null
+     */
     public AsyncImageLoader(String uri,
-                            WeakReference<ImageView> view,
-                            Context context) {
-
-        this.mView = view;
-        this.mContext = context;
-        this.mUri = uri;
-        this.mLoader = null;
-
-        view.get().setTag(uri);
-    }
-
-    public AsyncImageLoader(String uri,
-                            WeakReference<ImageView> view,
+                            ImageView view,
                             Context context,
-                            RestLoader loader) {
+                            @Nullable RestLoader loader) {
 
-        this.mUri = uri;
-        this.mView = view;
+        this.mView = new WeakReference<>(view);
         this.mContext = context;
-        this.mLoader = loader;
 
-        view.get().setTag(uri);
+        if (uri.contains("http://") && loader != null) {
+            loader.loadImage(uri, view, R.drawable.empty, R.drawable.empty);
+            this.mUri = null;
+        } else {
+            view.setTag(uri);
+            this.mUri = uri;
+        }
     }
 
     @Override
     protected Bitmap doInBackground(Void... params) {
 
-        if(mUri.contains("http://")) {
-            if(mLoader != null){
-                // load image here ...
-            }
+        if (mUri == null || mUri.isEmpty()) {
             return null;
         }
 
-        return loadBitmap(mUri);
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        Bitmap bitmap;
+
+        try (InputStream in = getInputStream(mUri)) {
+            BitmapFactory.decodeStream(in, null, options);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        options.inSampleSize = calculateInSampleSize(options, 512, 512);
+        options.inJustDecodeBounds = false;
+
+        if (isCancelled()) {
+            return null;
+        }
+
+        try (InputStream in = getInputStream(mUri)) {
+            bitmap = BitmapFactory.decodeStream(in, null, options);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return bitmap;
     }
 
     @Override
@@ -109,53 +134,17 @@ public class AsyncImageLoader extends AsyncTask<Void, Void, Bitmap> {
     }
 
     /**
-     * This function is used to open the right input stream for any uri.
+     * This function is used to open the right input stream for a uri.
      *
      * @param mUri a valid uri to the image
      * @return an opened input stream
      */
     private InputStream getInputStream(String mUri) throws IOException {
 
-        if(mUri.contains("android_asset")) {
-            return mContext.getAssets().open(mUri.substring(15));
+        if (mUri.contains("android_asset")) {
+            return mContext.getAssets().open(mUri.substring(20));
         }
 
         return mContext.openFileInput(mUri);
-    }
-
-    /**
-     * Use this to load a very low sampled version of an image.
-     *
-     * @return the loaded bitmap
-     */
-    private Bitmap loadBitmap(String uri) {
-
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-
-        Bitmap bitmap;
-
-        try (InputStream in = getInputStream(uri)) {
-            BitmapFactory.decodeStream(in, null, options);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        options.inSampleSize = calculateInSampleSize(options, 512, 512);
-        options.inJustDecodeBounds = false;
-
-        if (isCancelled()) {
-            return null;
-        }
-
-        try (InputStream in = getInputStream(uri)) {
-            bitmap = BitmapFactory.decodeStream(in, null, options);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return bitmap;
     }
 }

@@ -168,14 +168,14 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     public void onDeckDownloaded(Deck oldDeck, Deck newDeck) {
 
         if(newDeck == null) {
-            return;
+            oldDeck.mDeckInfo.mState = DeckInfo.State.SERVER;
+        } else {
+            ArrayList<Deck> decks = mModel.getDecks();
+            int oldIndex = decks.indexOf(oldDeck);
+
+            decks.remove(oldDeck);
+            decks.add(oldIndex, newDeck);
         }
-
-        ArrayList<Deck> decks = mModel.getDecks();
-        int oldIndex = decks.indexOf(oldDeck);
-
-        decks.remove(oldDeck);
-        decks.add(oldIndex, newDeck);
 
         mModel.update();
     }

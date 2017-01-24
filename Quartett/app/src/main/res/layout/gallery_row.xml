@@ -12,7 +12,6 @@
             android:id="@+id/img_deck_gallery"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            card_view:srcCompat="@drawable/main_menu_car"
             android:scaleType="centerCrop" />
 
     <RelativeLayout
@@ -59,7 +58,7 @@
                 android:layout_height="40dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:background="@color/colorBlackTransparent"/>
+                android:background="@android:color/transparent"/>
 
     </RelativeLayout>
 
