@@ -1,26 +1,20 @@
 package de.in.uulm.map.quartett.gallery;
 
 import android.content.Context;
-
 import android.content.Intent;
-
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.widget.TextView;
-
-import com.github.lzyzsd.circleprogress.ArcProgress;
+import android.widget.Gallery;
+import android.widget.ImageView;
 
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.CardImage;
 import de.in.uulm.map.quartett.data.Deck;
-
-
+import de.in.uulm.map.quartett.data.DeckInfo;
 import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.game.GameActivity;
-import de.in.uulm.map.quartett.gameend.GameEndPresenter;
 import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
-import de.in.uulm.map.quartett.mainmenu.MainMenuActivity;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,43 +26,38 @@ import java.util.List;
 public class GalleryPresenter implements GalleryContract.Presenter {
 
     @NonNull
-    private final GalleryContract.View mView;
     private final Context mCtx;
+
+    private final GalleryContract.View mView;
+
     private final GalleryContract.Backend mBackend;
 
+    private final GalleryContract.Model mModel;
 
-    public GalleryPresenter(@NonNull GalleryContract.View galleryView,
-                            Context ctx, GalleryContract.Backend
-                                    viewSwitcher) {
+    public GalleryPresenter(@NonNull Context ctx,
+                            @NonNull GalleryContract.View galleryView,
+                            @NonNull GalleryContract.Backend backend,
+                            @NonNull GalleryContract.Model model) {
 
+        mCtx = ctx;
         mView = galleryView;
-        this.mCtx = ctx;
-        mBackend = viewSwitcher;
-
+        mBackend = backend;
+        mModel = model;
     }
 
     @Override
     public void start() {
 
-    }
+        mBackend.loadDecks();
 
-    /**
-     * Fill a list with empty fragment. This method is used to initialize the
-     * FlippableStackView and load the the Actual card fragments on the fly.
-     *
-     * @param deckID the deckID from the deck you later want to load in the
-     *               flippable stack view. This is important to initialise the
-     *               list with the correct size.
-     */
-    @Override
-    public List<Fragment> createDummyList(long deckID) {
+        GalleryMode mode =
+                (GalleryMode) mBackend.getIntent().getSerializableExtra("mode");
 
-        Deck currentDeck = Deck.findById(Deck.class, deckID);
-        List<Fragment> dummyList = new ArrayList<>();
-        for (int i = 0; i < currentDeck.getCards().size(); i++) {
-            dummyList.add(new Fragment());
+        if(mode == GalleryMode.CHOOSE) {
+            return;
         }
-        return dummyList;
+
+        mBackend.loadServerDecks();
     }
 
     /**
@@ -85,6 +74,13 @@ public class GalleryPresenter implements GalleryContract.Presenter {
         }
     }
 
+    /**
+     * This method is used by the CardFragment to access the underlying data.
+     *
+     * @param deckId   the id of the deck the card belongs to
+     * @param position the position of the card in the deck
+     * @return a Card object
+     */
     @Override
     public Card getCard(long deckId, int position) {
 
@@ -92,69 +88,143 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     }
 
     /**
-     * create a card fragment from a card in a given deck on a given position
+     * This method is used by the GalleryAdapter to asynchronously load deck
+     * images from the server.
      *
-     * @param deckID   the deckId you want the card from
-     * @param position the position of the card you want to load
-     * @return a complete card fragment from the wanted card
+     * @param url       the url of the image
+     * @param imageView the image view to load the image into
      */
     @Override
-    public Fragment createCardFragment(long deckID, int position) {
+    public void loadServerImage(String url, ImageView imageView) {
 
-        Deck currentDeck = Deck.findById(Deck.class, deckID);
-        List<Card> cards = currentDeck.getCards();
-        Card card = cards.get(position);
-
-        CardFragment currentCard = CardFragment.newInstance();
-        currentCard.setPresenter(this);
-
-        return currentCard;
+        mBackend.loadServerImage(url, imageView);
     }
 
     /**
-     * Use this method to get a ArrayList of all available decks.
+     * This method will be called on confirmation of the download dialog.
      *
-     * @return A ArrayList of all available decks
+     * @param deck the deck to be downloaded
      */
     @Override
-    public List<Deck> populateDeckList() {
+    public void onDownloadDialogOk(Deck deck) {
 
-        List<Deck> decks;
-        try {
-            decks = Deck.listAll(Deck.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        mBackend.downloadDeck(deck);
+        deck.mDeckInfo.mState = DeckInfo.State.DOWNLOADING;
+        mModel.update();
+    }
+
+    /**
+     * This method will be called on confirmation of the download dialog.
+     *
+     * @param deck the deck to be deleted
+     */
+    @Override
+    public void onDeleteDialogOk(Deck deck) {
+
+        mModel.getDecks().remove(deck);
+
+        for(Card c : deck.getCards()) {
+            for(CardImage i : c.getCardImages()) {
+                mCtx.deleteFile(i.mImage.mUri);
+            }
         }
-        return decks;
+
+        deck.delete();
+        mBackend.loadServerDecks();
+    }
+
+    /**
+     * This method will be called when Deck objects have been loaded.
+     *
+     * @param decks all decks in the database
+     */
+    @Override
+    public void onDeckLoaded(List<Deck> decks) {
+
+        ArrayList<Deck> modelDecks = mModel.getDecks();
+
+        for (Deck d : decks) {
+            boolean contains = false;
+            for (Deck dl : modelDecks) {
+                contains = contains || (
+                        dl.mDeckInfo.mSource.equals(d.mDeckInfo.mSource) &&
+                                dl.mTitle.equals(d.mTitle));
+            }
+            if (!contains) {
+                modelDecks.add(d);
+            }
+        }
+
+        mModel.update();
+    }
+
+    /**
+     * This method will be called when the download of a deck is completed.
+     *
+     * @param oldDeck the original Deck from the model
+     * @param newDeck the new Deck that is stored in the database
+     */
+    @Override
+    public void onDeckDownloaded(Deck oldDeck, Deck newDeck) {
+
+        if(newDeck == null) {
+            return;
+        }
+
+        ArrayList<Deck> decks = mModel.getDecks();
+        int oldIndex = decks.indexOf(oldDeck);
+
+        decks.remove(oldDeck);
+        decks.add(oldIndex, newDeck);
+
+        mModel.update();
+    }
+
+    /**
+     * This is called if the delete button of an online Deck was clicked.
+     *
+     * @param deck the deck on which was clicked
+     */
+    @Override
+    public void onDeleteDeckClicked(Deck deck) {
+
+        mView.showDeleteDialog(deck);
     }
 
     /**
      * Use this method to switch to the deck detail fragment or to pass the deck
      * to further activities.
      *
-     * @param deckID the ID of the deck you want to show in detail.
+     * @param deck the model of the Deck on which was clicked
      */
     @Override
+    public void onDeckClicked(Deck deck) {
 
-    public void onDeckClicked(long deckID) {
+        GalleryMode mode = (GalleryMode)
+                mBackend.getIntent().getSerializableExtra("mode");
 
-        Intent callingIntent = mBackend.getIntent();
-        GalleryMode mode =
-                (GalleryMode) callingIntent.getSerializableExtra("mode");
-
-        if (mode == null || mode == GalleryMode.VIEW) {
-            DeckFragment deckFragment = DeckFragment.newInstance();
-            deckFragment.setCurrentDeckID(deckID);
-            mBackend.switchToView(deckFragment);
-        } else {
+        if (mode == GalleryMode.CHOOSE) {
             Intent intent = new Intent(mCtx, GameActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             intent.putExtras(mBackend.getIntent());
-            intent.putExtra(GameSettingsPresenter.DECK, deckID);
+            intent.putExtra(GameSettingsPresenter.DECK, deck.getId());
             intent.removeExtra("mode");
             mBackend.startActivity(intent);
+            return;
         }
 
+        switch (deck.mDeckInfo.mState) {
+
+            case DISK:
+                DeckFragment deckFragment = DeckFragment.newInstance();
+                deckFragment.setCurrentDeckID(deck.getId());
+                mBackend.switchToView(deckFragment);
+                break;
+            case SERVER:
+                mView.showDownloadDialog(deck);
+                break;
+            default:
+                break;
+        }
     }
 }

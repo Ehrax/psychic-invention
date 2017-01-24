@@ -21,8 +21,7 @@ import de.in.uulm.map.quartett.util.ActivityUtils;
  * Created by maxka on 08.01.2017.
  */
 
-public class GameActivity extends DrawerActivity implements GameContract
-        .BackEnd {
+public class GameActivity extends DrawerActivity implements GameContract.BackEnd {
 
     private GamePresenter mPresenter;
 
@@ -114,7 +113,5 @@ public class GameActivity extends DrawerActivity implements GameContract
             getWindow().setExitTransition(inflater.inflateTransition(R.transition
                     .slide));
         }
-
-
     }
 }

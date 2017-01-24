@@ -111,16 +111,17 @@ public class EntityFactory {
         JSONArray jsonCards = jsonDeck.getJSONArray("cards");
         JSONArray jsonAttributes = jsonDeck.getJSONArray("properties");
 
+        mDeckInfo = new DeckInfo(
+                mJsonLoader.getSource(),
+                mJsonLoader.getHash(),
+                new Date().getTime(),
+                DeckInfo.State.DISK);
+
         mDeck = new Deck(
                 jsonDeck.getString("name"),
                 jsonDeck.getString("description"),
-                null);
-
-        mDeckInfo = new DeckInfo(
-                mDeck,
-                mJsonLoader.getSource(),
-                mJsonLoader.getHash(),
-                new Date().getTime());
+                null,
+                mDeckInfo);
 
         HashMap<Integer, Attribute> attrs = new HashMap<>();
 
@@ -167,8 +168,8 @@ public class EntityFactory {
                 }
 
                 SugarRecord.saveInTx(mImages);
-                mDeck.save();
                 mDeckInfo.save();
+                mDeck.save();
                 SugarRecord.saveInTx(mAttributes);
                 SugarRecord.saveInTx(mCards);
                 SugarRecord.saveInTx(mAttributeValues);

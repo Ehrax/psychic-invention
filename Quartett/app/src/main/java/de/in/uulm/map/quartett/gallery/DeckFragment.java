@@ -24,6 +24,7 @@ import com.bartoszlipinski.flippablestackview.StackPageTransformer;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.CardImage;
+import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.data.Image;
 
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class DeckFragment extends Fragment implements GalleryContract.SubView {
                 String[]{"" + currentDeckID});
 
         mCardFragmentAdapter =
-                new CardFragmentAdapter(getChildFragmentManager(), 32);
+                new CardFragmentAdapter(getChildFragmentManager(), cardsLength);
 
         mFlippableStack.initStack(2,
                 StackPageTransformer.Orientation.VERTICAL);
@@ -106,6 +107,18 @@ public class DeckFragment extends Fragment implements GalleryContract.SubView {
         builder.setPositiveButton("OK", null);
 
         builder.show();
+    }
+
+    @Override
+    public void showDownloadDialog(Deck deck) {
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void showDeleteDialog(Deck deck) {
+
+        throw new UnsupportedOperationException();
     }
 
     /**
