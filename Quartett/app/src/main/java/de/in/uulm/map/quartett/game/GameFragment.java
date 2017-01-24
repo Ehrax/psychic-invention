@@ -28,6 +28,7 @@ import de.in.uulm.map.quartett.gamesettings.GameMode;
 import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
 
 import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -42,6 +43,7 @@ public class GameFragment extends Fragment implements GameContract.View {
     Used to load the card fragment async
      */
     public static AsyncCardLoader mCardLoader;
+    private CountDownLatch mCountDownLatchGame;
 
     private TextView mTxtLimit;
 
@@ -53,7 +55,9 @@ public class GameFragment extends Fragment implements GameContract.View {
     @Override
     public void setPresenter(GameContract.Presenter presenter) {
 
+        mCountDownLatchGame = new CountDownLatch(1);
         mPresenter = checkNotNull(presenter);
+
     }
 
     /**
@@ -85,6 +89,7 @@ public class GameFragment extends Fragment implements GameContract.View {
                 .inflateTransition(R.transition.fade));
         setEnterTransition(TransitionInflater.from(getContext())
                 .inflateTransition(R.transition.fade_delay));
+
         mCardLoader = new AsyncCardLoader();
         mCardLoader.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -141,9 +146,7 @@ public class GameFragment extends Fragment implements GameContract.View {
             mPresenter.start();
         }
         mPresenter.startAI();
-
     }
-
 
     @Override
     public void onResume() {
@@ -176,6 +179,12 @@ public class GameFragment extends Fragment implements GameContract.View {
         protected CardFragment doInBackground(Void... params) {
 
             CardFragment cardFragment = mPresenter.getCurrentCardFragment();
+            /*
+            try {
+                mCountDownLatchGame.await();
+            }catch(InterruptedException e){
+
+            }*/
             return isCancelled() ? null : cardFragment;
         }
 

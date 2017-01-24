@@ -5,6 +5,4 @@
             android:width="@dimen/win_lose_border_width"
             android:color="@color/colorDrawFrameBorder"
             />
-    <corners
-            android:radius="2dp"/>
 </shape>

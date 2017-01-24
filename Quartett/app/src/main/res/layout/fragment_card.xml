@@ -8,9 +8,11 @@
         android:padding="@dimen/card_border_width">
 
     <FrameLayout
+            android:id="@+id/frame_lay_card_img"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:transitionName="image_view_transition">
 
         <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager_img_card"
@@ -18,7 +20,6 @@
                 android:layout_height="200dp"
                 android:backgroundTint="@color/colorAccent"
                 android:transitionName="img_user_shared_element" />
-
 
         <de.in.uulm.map.quartett.views.viewpagerindicator.CirclePageIndicator
                 android:id="@+id/page_indicator_card"
@@ -33,19 +34,24 @@
                 android:id="@+id/txt_card_title"
                 android:padding="5dp"
                 android:textSize="30sp"
-                android:background="@color/colorCardTitle" />
-
+                android:background="@color/colorCardTitle"
+                android:visibility="gone" />
     </FrameLayout>
 
+    <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/progress_bar_card" />
 
-    <TableLayout
+    <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:id="@+id/table_layout_card_attr"
-            android:layout_weight="1"
-            android:stretchColumns="*">
+            android:scrollbars="vertical"
+            android:id="@+id/recycler_view_card_attr"
+            android:layout_weight="1">
 
-    </TableLayout>
-
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

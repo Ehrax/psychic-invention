@@ -3,10 +3,14 @@ package de.in.uulm.map.quartett.gamesettings;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.github.lzyzsd.circleprogress.ArcProgress;
 
+import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.gallery.GalleryActivity;
 import de.in.uulm.map.quartett.gallery.GalleryMode;
 
@@ -85,9 +89,42 @@ public class GameSettingsPresenter implements GameSettingsContract.Presenter {
         intent.putExtra(NAME, mView.getName());
         intent.putExtra(LIMIT, mView.getLimit());
         intent.putExtra(MODE, mView.getMode());
-        intent.putExtra(LEVEL,mView.getLevel());
+        intent.putExtra(LEVEL, mView.getLevel());
         intent.putExtra("mode", GalleryMode.CHOOSE);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         mBackend.nextActivity(intent);
+    }
+
+    /**
+     * This method will be called when the Fragment GameSettings is created, it
+     * will set the RadioButtons to the default value
+     */
+    @Override
+    public void setGameMode(RadioGroup radioGroup, String mode) {
+
+        switch (mode) {
+            case "Round":
+                radioGroup.check(R.id.rb_mode_rounds);
+                break;
+            case "Minute":
+                radioGroup.check(R.id.rb_mode_time);
+                break;
+            case "Point":
+                radioGroup.check(R.id.rb_mode_points);
+                break;
+            case "Insane":
+                radioGroup.check(R.id.rb_mode_insane);
+                break;
+        }
+    }
+
+    /**
+     * This method will be called when the Fragment GameSettings is created it
+     * will set the TextView to the default user name
+     */
+    @Override
+    public void setUserName(EditText editText, String name) {
+
+        editText.setText(name);
     }
 }

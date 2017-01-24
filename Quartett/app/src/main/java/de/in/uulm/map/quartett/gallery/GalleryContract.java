@@ -1,14 +1,16 @@
 package de.in.uulm.map.quartett.gallery;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import android.widget.ImageView;
 
-import de.in.uulm.map.quartett.data.CardImage;
+import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.data.Image;
+import de.in.uulm.map.quartett.gameend.GameEndContract;
 import de.in.uulm.map.quartett.util.BasePresenter;
 import de.in.uulm.map.quartett.util.BaseView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,35 +21,59 @@ public interface GalleryContract {
 
     interface Presenter extends BasePresenter {
 
-        Fragment createCardFragment(long deckID, int position);
+        void onDeckLoaded(List<Deck> decks);
 
-        List<Deck> populateDeckList();
+        void onDeckDownloaded(Deck oldDeck, Deck newDeck);
 
-        void onDeckClicked(long deckID);
+        void onDeleteDeckClicked(Deck deck);
 
-        List<Fragment> createDummyList(long deckID);
+        void onDeckClicked(Deck deck);
 
         void onImageLongClicked(Image image);
+
+        void loadServerImage(String url, ImageView imageView);
+
+        void onDownloadDialogOk(Deck deck);
+
+        void onDeleteDialogOk(Deck deck);
+
+        Card getCard(long deckId, int position);
     }
 
     interface View extends BaseView<Presenter> {
 
-    }
+        void showDownloadDialog(Deck deck);
 
-    interface Backend {
-
-        void startActivity(Intent intent);
-
-        Intent getIntent();
-
-        void switchToView(GalleryContract.View view);
+        void showDeleteDialog(Deck deck);
     }
 
     interface SubView extends View {
 
         void showImageDescription(Image image);
+    }
 
+    interface Backend {
 
+        Intent getIntent();
+
+        void startActivity(Intent intent);
+
+        void switchToView(GalleryContract.View view);
+
+        void loadServerImage(String url, ImageView imageView);
+
+        void loadDecks();
+
+        void loadServerDecks();
+
+        void downloadDeck(Deck deck);
+    }
+
+    interface Model {
+
+        void update();
+
+        ArrayList<Deck> getDecks();
     }
 
 }

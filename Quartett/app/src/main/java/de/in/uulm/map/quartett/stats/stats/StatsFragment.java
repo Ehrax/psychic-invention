@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.Statistic;
 import de.in.uulm.map.quartett.stats.StatsContract;
 import de.in.uulm.map.quartett.stats.TabFactoryFragment;
 import de.in.uulm.map.quartett.views.BetterArcProgress;
@@ -58,7 +59,6 @@ public class StatsFragment extends Fragment implements StatsContract.StatsView {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_stats_stats, container, false);
-
         /**
          * getting all TextViews and ArcProgress Circles and passing them to
          * the presenter start method

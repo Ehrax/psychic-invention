@@ -10,8 +10,8 @@
         <item name="android:windowContentTransitions">true</item>
 
         <!--specify enter and exit transitions-->
-        <item name="android:windowEnterTransition">@transition/fade_delay_100</item>
-        <item name="android:windowExitTransition">@transition/slide</item>
+        <item name="android:windowEnterTransition">@transition/fade_in</item>
+        <item name="android:windowExitTransition">@transition/fade_out</item>
 
 
         <!-- enable window content transitions -->
@@ -20,6 +20,7 @@
         <item name="android:windowSharedElementEnterTransition">
             @transition/change_image_transform</item>
 
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
 
     </style>
     <!-- main menu -->
@@ -34,9 +35,9 @@
     <!-- game settings -->
     <style name="GameSettingsSectionFont"
            parent="android:Widget.Material.TextView">
-        <item name="android:textSize">20sp</item>
-        <item name="android:paddingLeft">15dp</item>
-        <item name="android:paddingBottom">10dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
     <style name="GameSettingsOkButton"
            parent="android:Widget.Material.Button.Colored">
@@ -44,11 +45,24 @@
         <item name="android:textColor">@color/colorButtonText</item>
     </style>
 
+    <!-- gallery deck view -->
+    <style name="DeckTextBox">
+        <item name="android:padding">15dp</item>
+        <item name="android:background">@color/colorBlackTransparent</item>
+        <item name="android:textColor">@color/colorGalleryTitle</item>
+    </style>
+    <style name="DeckTitle" parent="android:Widget.TextView">
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="DeckDescription" parent="android:Widget.TextView">
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <!--This TextView style is used for the gallery to show a black
     transparent TextView containing the DeckTitle over the Deck Image-->
     <style name="ImageTitleTextView" parent="android:Widget.TextView">
-        <item name="android:textSize">20sp</item>
         <item name="android:layout_gravity">bottom</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:background">@color/colorBlackTransparent</item>
         <item name="android:padding">15dp</item>
         <item name="android:textColor">@color/colorGalleryTitle</item>

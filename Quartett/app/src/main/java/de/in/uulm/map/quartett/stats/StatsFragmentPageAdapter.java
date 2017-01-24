@@ -1,17 +1,9 @@
 package de.in.uulm.map.quartett.stats;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-
-import de.in.uulm.map.quartett.stats.achievements.AchievementsFragment;
-import de.in.uulm.map.quartett.stats.ranking.RankingFragment;
-import de.in.uulm.map.quartett.stats.stats.StatsFragment;
 
 import java.util.List;
 
@@ -21,18 +13,13 @@ import java.util.List;
 public class StatsFragmentPageAdapter extends FragmentPagerAdapter {
 
     private List<Fragment> mFragments;
-    private Context mContext;
-
-    private String mTitles[] = new String[]{"Stats", "Achievements", "Ranking"};
 
     /**
      * basic constructor for the Adapter
      */
-    public StatsFragmentPageAdapter(FragmentManager fm, Context ctx,
-                                    List<Fragment> fragments) {
+    public StatsFragmentPageAdapter(FragmentManager fm, List<Fragment> fragments) {
 
         super(fm);
-        this.mContext = ctx;
         this.mFragments = fragments;
     }
 
@@ -66,7 +53,6 @@ public class StatsFragmentPageAdapter extends FragmentPagerAdapter {
 
         Fragment fragment = mFragments.get(position);
         Bundle args = fragment.getArguments();
-
 
         return args.getString(TabFactoryFragment.TAB_TITLE);
     }

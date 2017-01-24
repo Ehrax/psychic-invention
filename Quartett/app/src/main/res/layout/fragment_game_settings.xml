@@ -7,7 +7,8 @@
 
     <TextView
             style="@style/GameSettingsSectionFont"
-            android:paddingTop="10dp"
+            android:paddingLeft="30dp"
+            android:paddingTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/game_settings_name"/>
@@ -16,8 +17,9 @@
             android:id="@+id/edit_text_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginTop="-5dp"
+            android:layout_marginLeft="26dp"
+            android:layout_marginRight="26dp"
             android:hint="@string/game_settings_name_hint"
             android:inputType="text"
             android:maxLines="1"
@@ -26,7 +28,8 @@
 
     <TextView
             style="@style/GameSettingsSectionFont"
-            android:paddingTop="15dp"
+            android:paddingLeft="30dp"
+            android:paddingTop="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/game_settings_level"/>
@@ -40,24 +43,24 @@
             android:id="@+id/rg_game_level">
 
         <RadioButton
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:paddingRight="15dp"
                 android:id="@+id/rb_level_easy"
                 android:text="@string/game_settings_level_easy"
                 android:checked="true"/>
 
         <RadioButton
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:paddingRight="15dp"
                 android:id="@+id/rb_level_normal"
                 android:text="@string/game_settings_level_normal"/>
 
         <RadioButton
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:paddingRight="15dp"
                 android:id="@+id/rb_level_hard"
                 android:text="@string/game_settings_level_hard"/>
 
@@ -65,7 +68,8 @@
 
     <TextView
             style="@style/GameSettingsSectionFont"
-            android:paddingTop="15dp"
+            android:paddingLeft="30dp"
+            android:paddingTop="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/game_settings_mode"/>
@@ -118,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center|bottom"
-            android:padding="25dp">
+            android:padding="24dp">
 
         <Button
                 android:id="@+id/btn_ok"
@@ -127,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/game_settings_btn_ok"
-                android:enabled="false"/>
+                android:enabled="true"/>
 
     </RelativeLayout>
 

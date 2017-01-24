@@ -8,24 +8,17 @@ import com.orm.SugarRecord;
 public class Highscore extends SugarRecord {
 
     public int mValue;
-    public int mPos;
     public String mName;
-    public HighScoreType mType;
 
-    public enum HighScoreType {
-
-        ROUND, POINT, TIME, ONLINE
-    }
 
     public Highscore() {
 
     }
 
-    public Highscore(int value, int pos, String name, HighScoreType type) {
+    public Highscore(int value, String name) {
 
         this.mValue = value;
-        this.mPos = pos;
         this.mName = name;
-        this.mType = type;
+
     }
 }

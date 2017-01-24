@@ -8,6 +8,7 @@ import com.github.lzyzsd.circleprogress.DonutProgress;
 
 import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.stats.StatsContract;
+import de.in.uulm.map.quartett.views.BetterArcProgress;
 
 import java.util.List;
 
@@ -104,12 +105,12 @@ public class AchievementsPresenter implements StatsContract.AchievementsPresente
      * achievement and is setting his corresponding view holder
      */
     @Override
-    public void setAchievementDonut(DonutProgress donutProgress,
+    public void setAchievementDonut(BetterArcProgress progress,
                                     Achievement achievement) {
 
         float percentage = achievement.mValue / achievement.mTargetValue * 100;
 
-        donutProgress.setProgress((int) percentage);
+        progress.setProgress((int) percentage);
     }
 
     /**

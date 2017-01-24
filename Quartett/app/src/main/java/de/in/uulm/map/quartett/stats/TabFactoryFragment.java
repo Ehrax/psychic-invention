@@ -1,5 +1,6 @@
 package de.in.uulm.map.quartett.stats;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -47,6 +48,7 @@ public class TabFactoryFragment extends Fragment {
 
         super.onActivityCreated(savedInstanceState);
 
+
         // creating StatsFragment and his presenter
         StatsFragment statsFragment = StatsFragment.newInstance();
         StatsPresenter statsPresenter = new StatsPresenter(statsFragment,
@@ -75,10 +77,20 @@ public class TabFactoryFragment extends Fragment {
         ViewPager viewPager = (ViewPager) getActivity().
                 findViewById(R.id.stats_viewpager);
 
-        viewPager.setAdapter(new StatsFragmentPageAdapter(getActivity()
-                .getSupportFragmentManager(), getActivity(),
-                mFragments));
+        StatsFragmentPageAdapter statsFragmentPageAdapter = new
+                StatsFragmentPageAdapter(getActivity()
+                .getSupportFragmentManager(), mFragments);
 
+        viewPager.setAdapter(statsFragmentPageAdapter);
+
+        // getting intent, and extra to load achievement fragment if necessary
+        Intent intent = getActivity().getIntent();
+        String intentExtra = intent.getStringExtra(TAB_TITLE);
+
+        if (intentExtra != null && intentExtra.equals(AchievementsFragment
+                .TAB_ACHIEVEMENTS)) {
+            viewPager.setCurrentItem(1);
+        }
 
         /**
          * this is needed because onResume is not called if a tab has changed,

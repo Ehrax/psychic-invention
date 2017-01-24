@@ -1,5 +1,6 @@
 package de.in.uulm.map.quartett.mainmenu;
 
+import android.support.v4.animation.AnimatorCompatHelper;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,9 +15,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.data.LocalGameState;
 import de.in.uulm.map.quartett.gallery.GalleryContract;
 import de.in.uulm.map.quartett.util.BasePresenter;
+
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -48,8 +52,6 @@ public class MainMenuFragment extends Fragment implements MainMenuContract.View 
     public void onActivityCreated(Bundle savedInstance) {
 
         super.onActivityCreated(savedInstance);
-
-
     }
 
     @Override
@@ -59,19 +61,17 @@ public class MainMenuFragment extends Fragment implements MainMenuContract.View 
         setGameContinueButtonVisibility(getView());
     }
 
-    private void setGameContinueButtonVisibility(View view){
-        LinearLayout btnContinue = (LinearLayout) view.findViewById(R.id
-                .btn_continue_game);
+    private void setGameContinueButtonVisibility(View view) {
+
+        LinearLayout layoutContinue =
+                (LinearLayout) view.findViewById(R.id.layout_continue_game);
 
         if (LocalGameState.listAll(LocalGameState.class).isEmpty()) {
-            btnContinue.setVisibility(View.GONE);
-            view.findViewById(R.id.divider_main_menu_bottom).setVisibility
-                    (View.GONE);
+            layoutContinue.setVisibility(View.GONE);
         } else {
-            btnContinue.setVisibility(View.VISIBLE);
-            view.findViewById(R.id.divider_main_menu_bottom).setVisibility
-                    (View.VISIBLE);
-            btnContinue.setOnClickListener(new View.OnClickListener() {
+            layoutContinue.setVisibility(View.VISIBLE);
+            Button button = (Button) view.findViewById(R.id.btn_continue_game);
+            button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -81,11 +81,43 @@ public class MainMenuFragment extends Fragment implements MainMenuContract.View 
         }
     }
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        List<Achievement> achievements = Achievement.listAll(Achievement.class);
+
+        if (achievements.isEmpty()) {
+            Achievement achievement = new Achievement();
+            achievement.mTitle = "Beginner";
+            achievement.mDescription = "Win 5 games!";
+            achievement.mValue = 2;
+            achievement.mTargetValue = 5;
+            achievement.save();
+
+            Achievement achievement1 = new Achievement();
+            achievement1.mTitle = "Unlucky";
+            achievement1.mDescription = "Lose 10 games in a row!";
+            achievement1.mValue = 4;
+            achievement1.mTargetValue = 10;
+            achievement1.save();
+
+            Achievement achievement2 = new Achievement();
+            achievement2.mTitle = "Cheater";
+            achievement2.mDescription = "Win a game without loosing once!";
+            achievement2.mValue = 0;
+            achievement2.mTargetValue = 1;
+            achievement2.save();
+
+            Achievement achievement3 = new Achievement();
+            achievement2.mTitle = "K.O.";
+            achievement2.mDescription = "Win a game by winning all cards!";
+            achievement2.mValue = 0;
+            achievement2.mTargetValue = 1;
+            achievement2.save();
+
+        }
 
         View view = inflater.inflate(R.layout.fragment_main_menu, container, false);
 

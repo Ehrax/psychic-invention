@@ -20,6 +20,7 @@ import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.data.GameCard;
 import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.data.LocalGameState;
+import de.in.uulm.map.quartett.data.Statistic;
 import de.in.uulm.map.quartett.gallery.CardFragment;
 import de.in.uulm.map.quartett.gameend.GameEndActivity;
 import de.in.uulm.map.quartett.gameend.GameEndPresenter;
@@ -27,8 +28,11 @@ import de.in.uulm.map.quartett.gameend.GameEndState;
 import de.in.uulm.map.quartett.gamesettings.GameLevel;
 import de.in.uulm.map.quartett.gamesettings.GameMode;
 import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
+import de.in.uulm.map.quartett.stats.stats.StatsPresenter;
 import de.in.uulm.map.quartett.util.AssetUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -72,6 +76,11 @@ public class GamePresenter implements GameContract.Presenter {
      */
     private CountDownLatch mCountDownLatchDeckLoader;
     /*
+    This CountdownLatch guarantees that the images for the compare fragment
+    are loaded if we want to show it
+     */
+    private CountDownLatch mCountDownLatchImageLoader;
+    /*
     The "AI" AsyncTask
      */
     AI mAI = new AI();
@@ -91,6 +100,10 @@ public class GamePresenter implements GameContract.Presenter {
      */
     private boolean mHasUserCards;
     private boolean mHasAICards;
+    /*
+    currently or last chosen attribute
+     */
+    Attribute mChosenAttribute;
     /*
     Timer for the Time mode
      */
@@ -137,6 +150,12 @@ public class GamePresenter implements GameContract.Presenter {
 
     }
 
+    @Override
+    public Card getCard(long deckId, int position) {
+
+        return Deck.findById(Deck.class, deckId).getCards().get(position);
+    }
+
     /**
      * Use this method to create a CardFragment which contains the card on top
      * of the users deck.
@@ -147,8 +166,10 @@ public class GamePresenter implements GameContract.Presenter {
     public CardFragment getCurrentCardFragment() {
 
         CardFragment currentCard = CardFragment.newInstance();
-        currentCard.setCard(mCurrentGameState.getUserDeck().get(0).mCard);
+        currentCard.setDeckId(mCurrentGameState.mDeckID);
+        currentCard.setPosition(mCurrentGameState.getUserDeck().get(0).mCard.mPosition);
         currentCard.setGamePresenter(this);
+        currentCard.setIsInGame(true);
         return currentCard;
     }
 
@@ -370,6 +391,12 @@ public class GamePresenter implements GameContract.Presenter {
     public void chooseAttribute(Attribute chosenAttr) {
 
         GameCompareFragment compareFragment = GameCompareFragment.newInstance();
+        mChosenAttribute = chosenAttr;
+
+        new AsyncLastImageLoader().executeOnExecutor(AsyncTask
+                .THREAD_POOL_EXECUTOR);
+        mCountDownLatchImageLoader = new CountDownLatch(1);
+
 
         //getting the users and ais value for the compared attribute
         float userAttributeValue = 0, aiAttributeValue = 0;
@@ -388,15 +415,10 @@ public class GamePresenter implements GameContract.Presenter {
                 aiAttributeValue = attributeValue.mValue;
             }
         }
-        //check who wins
+        //check who wins and update stats
         winner = checkWinner(userAttributeValue, aiAttributeValue, chosenAttr);
-        //saving the images of the current card for the compare fragment view
-        //there are a lot of better ways to do this but i needed to change some
-        // things and this was the way with the least coding effort ;)
-        mUserCompareImage = setCompareImage(true);
-        mAICompareImage = setCompareImage(false);
-        mUserCompareValue = setCompareAttributeValue(true, chosenAttr);
-        mAICompareValue = setCompareAttributeValue(false, chosenAttr);
+        new AsyncStatUpdater().executeOnExecutor(AsyncTask
+                .THREAD_POOL_EXECUTOR, winner);
 
         //check if one player lost his last card
         if (!(mCurrentGameState.getUserDeck().size() <= 1 && winner == RoundWinner
@@ -425,7 +447,13 @@ public class GamePresenter implements GameContract.Presenter {
                 mCurrentGameState.mGameMode == GameMode.INSANE) {
             mCurrentGameState.mCurrentRound++;
         }
+
         mCurrentGameState.save();
+        try {
+            mCountDownLatchImageLoader.await();
+        } catch (InterruptedException e) {
+
+        }
         mBackEnd.switchToView(compareFragment);
 
     }
@@ -443,12 +471,27 @@ public class GamePresenter implements GameContract.Presenter {
         boolean isFinish = false;
         //first of all check if one of the players has no cards anymore
         if (!mHasAICards) {
+            intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
+                    .mUserName);
+            intent.putExtra(GameEndPresenter.POINTS, calculatePoints());
             intent.putExtra(GameEndPresenter.WINNER, GameEndState.WIN);
             intent.putExtra(GameEndPresenter.SUB, mCtx.getString(R.string
                     .ai_no_cards));
             mBackEnd.startActivity(intent, winner);
             isFinish = true;
         } else if (!mHasUserCards) {
+            float pointBasic = mCurrentGameState
+                    .mUserPoints / Math.max(mCurrentGameState.mAIPoints, 1);
+            float pointsFloat = mCurrentGameState.mGameLevel == GameLevel
+                    .EASY ?
+                    pointBasic * 1000 : mCurrentGameState
+                    .mGameLevel ==
+                    GameLevel.NORMAL ? pointBasic * 1100 :pointBasic * 1300;
+            int points = (int)pointsFloat;
+
+            intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
+                    .mUserName);
+            intent.putExtra(GameEndPresenter.POINTS, points);
             intent.putExtra(GameEndPresenter.WINNER, GameEndState.LOSE);
             intent.putExtra(GameEndPresenter.SUB, mCtx.getString(R.string
                     .user_no_cards));
@@ -459,10 +502,16 @@ public class GamePresenter implements GameContract.Presenter {
         if (mCurrentGameState.mGameMode == GameMode.POINTS) {
             if (mCurrentGameState.mAIPoints == mCurrentGameState.mLimit ||
                     mCurrentGameState.mUserPoints == mCurrentGameState.mLimit) {
+                int points = calculatePoints();
+              
+                intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
+                        .mUserName);
+                intent.putExtra(GameEndPresenter.POINTS, points);
 
                 intent.putExtra(GameEndPresenter.WINNER, winner == RoundWinner
                         .USER ? GameEndState.WIN : GameEndState.LOSE);
-                intent.putExtra(GameEndPresenter.SUB, " ");
+                intent.putExtra(GameEndPresenter.SUB,
+                        "You scored " + points + "!");
                 mDeckRearranger.cancel(true);
                 mBackEnd.startActivity(intent, winner);
                 isFinish = true;
@@ -471,12 +520,19 @@ public class GamePresenter implements GameContract.Presenter {
         } else if (mCurrentGameState.mGameMode == GameMode.ROUNDS ||
                 mCurrentGameState.mGameMode == GameMode.INSANE) {
             if (mCurrentGameState.mCurrentRound == mCurrentGameState.mLimit) {
+                int points = calculatePoints();
+
+                intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
+                        .mUserName);
+                intent.putExtra(GameEndPresenter.POINTS, points);
+
                 intent.putExtra(GameEndPresenter.WINNER, mCurrentGameState
                         .mAIPoints > mCurrentGameState.mUserPoints ? GameEndState
                         .LOSE : mCurrentGameState
                         .mUserPoints > mCurrentGameState.mAIPoints ? GameEndState
                         .WIN : GameEndState.DRAW);
-                intent.putExtra(GameEndPresenter.SUB, " ");
+                intent.putExtra(GameEndPresenter.SUB,
+                        "You scored " + points + " points!");
                 mDeckRearranger.cancel(true);
                 mBackEnd.startActivity(intent, winner);
                 isFinish = true;
@@ -538,8 +594,8 @@ public class GamePresenter implements GameContract.Presenter {
                     .parse(imageUri));
         } else {
             try {
-                InputStream stream = mCtx.getContentResolver()
-                        .openInputStream(Uri.parse(imageUri));
+                FileInputStream stream = new FileInputStream(mCtx.getFilesDir()+
+                                File.separator+imageUri);
                 image = Drawable.createFromStream(stream, imageUri);
             } catch (FileNotFoundException e) {
                 image = mCtx.getResources().getDrawable(R.drawable
@@ -547,6 +603,22 @@ public class GamePresenter implements GameContract.Presenter {
             }
         }
         return image;
+    }
+
+    /**
+     * Use this method to calculate the high score points after a game.
+     *
+     * @return the reached points by the user.
+     */
+    private int calculatePoints() {
+
+        float pointBasic = mCurrentGameState
+                .mUserPoints / (float)Math.max(mCurrentGameState.mAIPoints,1);
+        float points = mCurrentGameState.mGameLevel == GameLevel.EASY ?
+                pointBasic * 1000 : mCurrentGameState.mGameLevel ==
+                GameLevel.NORMAL ? pointBasic * 1100 : pointBasic * 1300;
+
+        return (int)points;
     }
 
     /**
@@ -741,6 +813,14 @@ public class GamePresenter implements GameContract.Presenter {
         public void onFinish() {
 
             Intent intent = new Intent(mCtx, GameEndActivity.class);
+
+            int points = calculatePoints();
+
+            intent.putExtra(GameEndPresenter.NAME, mCurrentGameState
+                    .mUserName);
+            intent.putExtra(GameEndPresenter.POINTS, points);
+
+
             intent.putExtra(GameEndPresenter.WINNER, mCurrentGameState
                     .mAIPoints > mCurrentGameState.mUserPoints ? GameEndState
                     .LOSE : mCurrentGameState
@@ -751,6 +831,50 @@ public class GamePresenter implements GameContract.Presenter {
                 mDeckRearranger.cancel(true);
             }
             mBackEnd.startActivity(intent, null);
+        }
+    }
+
+    /**
+     * This task is used to update the stats after each round.
+     */
+    private class AsyncStatUpdater extends AsyncTask<RoundWinner, Void, Void> {
+
+        @Override
+        protected Void doInBackground(RoundWinner... params) {
+
+            String query = "SELECT * FROM Statistic WHERE m_Title = ?";
+            RoundWinner winner = params[0];
+            List<Statistic> handsWonList = Statistic.findWithQuery(Statistic.class,
+                    query, StatsPresenter.HAND_WON);
+            List<Statistic> handsTotalList = Statistic.findWithQuery(Statistic
+                            .class,
+                    query, StatsPresenter.TOTAL_HANDS);
+            List<Statistic> handsLostList = Statistic.findWithQuery(Statistic.class,
+                    query,
+                    StatsPresenter.HAND_LOST);
+            Statistic handsWon, handsLost, handsTotal;
+
+            handsWon = handsWonList.isEmpty() ? new Statistic(StatsPresenter
+                    .HAND_WON, 0, mCtx.getString(R.string
+                    .stat_description_hands_win)) : handsWonList.get(0);
+            handsLost = handsLostList.isEmpty() ? new Statistic(StatsPresenter
+                    .HAND_LOST, 0, mCtx.getString(R.string
+                    .stat_description_hands_lost)) : handsLostList.get(0);
+            handsTotal = handsTotalList.isEmpty() ? new Statistic(StatsPresenter
+                    .TOTAL_HANDS, 0, mCtx.getString(R.string
+                    .stat_description_hands_total)) : handsTotalList.get(0);
+
+            handsTotal.mValue++;
+            handsTotal.save();
+            if (winner == RoundWinner.USER) {
+                handsWon.mValue++;
+            } else if (winner == RoundWinner.AI) {
+                handsLost.mValue++;
+            }
+            handsLost.save();
+            handsWon.save();
+
+            return null;
         }
     }
 
@@ -783,6 +907,24 @@ public class GamePresenter implements GameContract.Presenter {
 
     }
 
+    private class AsyncLastImageLoader extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            //saving the images of the current card for the compare fragment view
+            //there are a lot of better ways to do this but i needed to change some
+            // things and this was the way with the least coding effort ;)
+            mUserCompareImage = setCompareImage(true);
+            mAICompareImage = setCompareImage(false);
+            mUserCompareValue = setCompareAttributeValue(true, mChosenAttribute);
+            mAICompareValue = setCompareAttributeValue(false, mChosenAttribute);
+            mCountDownLatchImageLoader.countDown();
+
+            return null;
+        }
+    }
+
     /**
      * This class is used to rearrange the users and ais deck after each round.
      */
@@ -790,6 +932,7 @@ public class GamePresenter implements GameContract.Presenter {
 
         @Override
         protected Void doInBackground(RoundWinner... params) {
+
             //params[0] == RoundWinner winner
             //remove first card from loser deck and add it to winner deck
             changeLostCardOwner(params[0]);

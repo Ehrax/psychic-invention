@@ -16,6 +16,8 @@ import de.in.uulm.map.quartett.data.Attribute;
 import de.in.uulm.map.quartett.data.AttributeValue;
 import de.in.uulm.map.quartett.data.Image;
 
+import java.util.concurrent.CountDownLatch;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -137,4 +139,5 @@ public class GameCompareFragment extends Fragment implements GameContract.View {
     public void showImageDescription(Image image) {
 
     }
+
 }
