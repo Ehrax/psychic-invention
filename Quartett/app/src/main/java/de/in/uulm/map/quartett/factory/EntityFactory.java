@@ -136,6 +136,10 @@ public class EntityFactory {
             loadCard((JSONObject) jsonCards.get(i), attrs, mDeck);
         }
 
+        if(mImages.size() > 0 && mDeck.mImage == null) {
+            mDeck.mImage = mImages.get(0);
+        }
+
         return mDeck;
     }
 
