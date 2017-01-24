@@ -5,7 +5,7 @@
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardElevation="5dp"
+        card_view:cardElevation="2dp"
         android:layout_marginTop="5dp"
         android:clickable="true"
         android:background="?android:attr/selectableItemBackground">
@@ -57,11 +57,11 @@
         <ImageButton
                 android:id="@+id/btn_delete_deck"
                 android:src="@drawable/ic_delete"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:background="@color/colorBlackTransparent"/>
+                android:background="@drawable/ic_delete"
+                android:layout_width="24dp"
+                android:layout_height="24dp" />
 
     </RelativeLayout>
 
