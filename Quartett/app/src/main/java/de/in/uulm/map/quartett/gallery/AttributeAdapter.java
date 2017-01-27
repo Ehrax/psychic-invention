@@ -2,6 +2,7 @@ package de.in.uulm.map.quartett.gallery;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.AttributeValue;
+import de.in.uulm.map.quartett.util.MetricsUtils;
 
 import java.util.List;
 
@@ -82,6 +84,15 @@ public class AttributeAdapter extends RecyclerView
         viewHolder.mAttributeValue.setText(currentAttributeValue.mValue + " " +
                 "" + currentAttributeValue.mAttribute.mUnit);
 
+        int padding = calculatePadding();
+
+        if (padding > 0) {
+            viewHolder.mAttributeTitle.setPadding(0, padding, 0, padding);
+            viewHolder.mAttributeValue.setPadding(0, padding, 0, padding);
+            viewHolder.mWinIndicator.setPadding(0, padding + MetricsUtils.dpToPx
+                    (mContext, 2), 0, padding);
+        }
+
         viewHolder.mRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,4 +108,30 @@ public class AttributeAdapter extends RecyclerView
 
         return mAttributeList.size();
     }
+
+    /**
+     * Calculating the padding for the attributes if they would not stretch over
+     * the complete height of the card. Returns -1 if there is nothing to
+     * change.
+     *
+     * @return -1 if there is nothing to change. Otherwise it returns the
+     * correct padding to stretch the attributes over the complete card. (Use
+     * this value for top and bottom padding.
+     */
+    private int calculatePadding() {
+
+        TextView textView = new TextView(mContext, null, 0, R.style
+                .TextViewCardAttributesTitle);
+
+        int heightShouldBe = mHeight / (mAttributeList.size());
+        int heightIs = MetricsUtils.measureTextViewHeight(mContext, textView);
+
+        if (heightShouldBe < heightIs) {
+            return -1;
+        }
+
+        return (heightShouldBe - heightIs) / 2;
+    }
+
+
 }

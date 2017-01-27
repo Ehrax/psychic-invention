@@ -15,16 +15,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Gravity;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
@@ -37,16 +33,11 @@ import de.in.uulm.map.quartett.game.GameContract;
 
 import de.in.uulm.map.quartett.data.Image;
 
-import de.in.uulm.map.quartett.game.GameFragment;
-import de.in.uulm.map.quartett.game.GamePresenter;
 import de.in.uulm.map.quartett.util.AssetUtils;
 import de.in.uulm.map.quartett.views.viewpagerindicator.CirclePageIndicator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by maxka on 25.12.2016. Represents a single card. Used to show cards
@@ -183,7 +174,6 @@ public class CardFragment extends Fragment {
 
     /**
      * This Adapter populates the cards images into a viewpager.
-     *
      */
     private class ImagePagerAdapter extends PagerAdapter {
 
@@ -235,7 +225,7 @@ public class CardFragment extends Fragment {
                 imgView.setImageDrawable(drawable);
             } else {
                 imgView.setImageURI(Uri.parse(mContext.getFilesDir() +
-                            File.separator + img.mUri));
+                        File.separator + img.mUri));
             }
 
             container.addView(imgView, 0);
@@ -311,17 +301,13 @@ public class CardFragment extends Fragment {
             view.findViewById(R.id.txt_card_title).setVisibility(View.VISIBLE);
             view.findViewById(R.id.progress_bar_card).setVisibility(View.GONE);
 
-            if (!mIsInGame) {
-                FrameLayout crdImage = (FrameLayout) view.findViewById(R.id
-                        .frame_lay_card_img);
-                ViewGroup.LayoutParams layoutParams = crdImage
-                        .getLayoutParams();
-                layoutParams.height = layoutParams.height + 750;
-                crdImage.setLayoutParams(layoutParams);
-            }
             //initializing the viewpager for multiple image support
             ViewPager viewPagerImages = (ViewPager) view.findViewById(R.id
                     .view_pager_img_card);
+
+            ViewGroup.LayoutParams params = viewPagerImages.getLayoutParams();
+            params.height = calculateImageHeight(view);
+            viewPagerImages.setLayoutParams(params);
 
             ImagePagerAdapter imgPagerAdapter =
                     new ImagePagerAdapter(getContext(), mCardImages);
@@ -353,6 +339,17 @@ public class CardFragment extends Fragment {
                     DividerItemDecoration(recyclerViewAttributes.getContext()
                     , layoutManager.getOrientation()));
             recyclerViewAttributes.setAdapter(adapter);
+
+        }
+
+        private int calculateImageHeight(View view) {
+
+            LinearLayout linearLayoutRoot = (LinearLayout) view.findViewById(R
+                    .id.lin_layout_card);
+            int cardHeight = linearLayoutRoot.getHeight();
+
+            return cardHeight * 5/12;
+
 
         }
     }
