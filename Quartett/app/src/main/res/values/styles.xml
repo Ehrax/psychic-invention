@@ -25,6 +25,13 @@
     </style>
     <!-- main menu -->
 
+    <style name="drawerTextAppearance">
+
+        <item name="android:textColorSecondary">@color/colorAccent</item>
+
+
+    </style>
+
     <!--style for the main menu buttons-->
     <style name="MainMenuButtonStyle" parent="android:Widget.Material.Button.Colored">
         <item name="android:textSize">18sp</item>
