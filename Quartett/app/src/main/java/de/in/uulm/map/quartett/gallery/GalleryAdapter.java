@@ -3,6 +3,7 @@ package de.in.uulm.map.quartett.gallery;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +16,13 @@ import android.widget.TextView;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.data.DeckInfo;
+import de.in.uulm.map.quartett.rest.RestLoader;
 import de.in.uulm.map.quartett.util.AssetUtils;
+import de.in.uulm.map.quartett.util.AsyncImageLoader;
 
-import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Created by maxka on 26.12.2016. Adapter for the RecyclerView in the gallery.
@@ -27,21 +31,36 @@ import java.util.ArrayList;
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder>
         implements GalleryContract.Model {
 
-    final private Context context;
+    /**
+     * This is used to instantiate image loader.
+     */
+    final private Context mContext;
 
+    /**
+     * This is needed to enable access to network images.
+     */
+    final private RestLoader mRestLoader;
+
+    /**
+     * This list contains all the Decks that can be shown by the adapter.
+     */
     final private ArrayList<Deck> mDeckList;
 
+    /**
+     * This is used to send click events to the presenter.
+     */
     private GalleryContract.Presenter mPresenter;
 
     /**
      * Simple constructor to initialize member variables.
      *
-     * @param ctx the current application context
+     * @param ctx the current application mContext
      */
-    public GalleryAdapter(Context ctx) {
+    public GalleryAdapter(Context ctx, RestLoader restLoader) {
 
         mDeckList = new ArrayList<>();
-        context = ctx;
+        mRestLoader = restLoader;
+        mContext = ctx;
     }
 
     /**
@@ -75,7 +94,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     public ArrayList<Deck> getDecks() {
 
         return mDeckList;
-
     }
 
     /**
@@ -111,25 +129,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
         final Deck currentDeck = mDeckList.get(position);
 
-        if (currentDeck.mImage != null) {
-            if (currentDeck.mImage.mUri.contains("http")) {
-                mPresenter.loadServerImage(currentDeck.mImage.mUri,
-                        viewHolder.mImageView);
-            } else if (currentDeck.mImage.mUri.contains("android_asset")) {
-                setAssetDrawable(viewHolder, Uri.parse(currentDeck.mImage.mUri));
-            } else {
-                viewHolder.mImageView.setImageURI(Uri.parse(
-                        context.getFilesDir() + File.separator +
-                                currentDeck.mImage.mUri));
-            }
-        } else {
-            Uri imageCardUri = Uri.parse(currentDeck.getCards()
-                    .get(0).getCardImages().get(0).mImage.mUri);
-            if (!imageCardUri.getPath().contains("android_asset")) {
-                viewHolder.mImageView.setImageURI(imageCardUri);
-            } else {
-                setAssetDrawable(viewHolder, imageCardUri);
-            }
+        viewHolder.mImageView.setImageResource(R.drawable.empty);
+
+        if(currentDeck.mImage != null) {
+            new AsyncImageLoader(currentDeck.mImage.mUri,
+                    viewHolder.mImageView, mContext, mRestLoader).
+                    executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
         viewHolder.mTextView.setText(
@@ -178,13 +183,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
      */
     private void setAssetDrawable(ViewHolder viewHolder, Uri uri) {
 
-        Drawable drawable = AssetUtils.getDrawableFromAssetUri(context, uri);
+        Drawable drawable = AssetUtils.getDrawableFromAssetUri(mContext, uri);
 
         if (drawable != null) {
             viewHolder.mImageView.setImageDrawable(drawable);
         } else {
             viewHolder.mImageView.setImageDrawable(
-                    context.getDrawable(R.drawable.ic_cards_playing));
+                    mContext.getDrawable(R.drawable.ic_cards_playing));
         }
     }
 

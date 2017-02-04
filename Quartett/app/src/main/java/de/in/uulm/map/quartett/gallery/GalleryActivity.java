@@ -2,6 +2,7 @@ package de.in.uulm.map.quartett.gallery;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -39,10 +40,9 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-        mAdapter = new GalleryAdapter(this);
         mRestLoader = new RestLoader(this,
                 Network.getInstance(getApplicationContext()).getRequestQueue());
+        mAdapter = new GalleryAdapter(this, mRestLoader);
 
         GalleryFragment galleryFragment = (GalleryFragment)
                 getSupportFragmentManager().findFragmentById(R.id.contentFrame);
@@ -170,6 +170,6 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
 
                 mGalleryPresenter.onDeckDownloaded(deck, newDeck);
             }
-        }).execute();
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }
