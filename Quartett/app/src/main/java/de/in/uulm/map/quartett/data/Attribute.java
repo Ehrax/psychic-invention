@@ -25,4 +25,16 @@ public class Attribute extends SugarRecord {
         this.mLargerWins = mLargerWins;
         this.mDeck = mDeck;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (o instanceof Attribute) {
+            Attribute a = (Attribute) o;
+            return mName.equals(a.mName) && mDeck.equals(a.mDeck);
+        }
+
+        return false;
+    }
+
 }
