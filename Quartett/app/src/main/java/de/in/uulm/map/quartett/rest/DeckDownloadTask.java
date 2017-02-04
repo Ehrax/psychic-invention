@@ -34,7 +34,7 @@ public class DeckDownloadTask extends AsyncTask<Void, Deck, Deck> {
     @Override
     protected void onPostExecute(Deck result) {
 
-        if(!isCancelled()) {
+        if (!isCancelled()) {
             mCallback.onFinished(result);
         }
         super.onPostExecute(result);
@@ -52,7 +52,7 @@ public class DeckDownloadTask extends AsyncTask<Void, Deck, Deck> {
                 @Override
                 public void manipulateInTransaction() {
 
-                    if(DeckInfo.find(DeckInfo.class, "m_source = ?",
+                    if (DeckInfo.find(DeckInfo.class, "m_source = ?",
                             c.mDeckInfo.mSource).size() > 0) {
                         return;
                     }
