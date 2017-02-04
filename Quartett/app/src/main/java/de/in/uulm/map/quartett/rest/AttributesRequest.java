@@ -33,16 +33,20 @@ public class AttributesRequest extends AuthRequest<List<AttributeValue>> {
      * Standard constructor, just calling super here and setting some member
      * variables.
      *
-     * @param url           the target url
+     * @param deckId        the id of the associated deck
+     * @param deck          the associated deck
+     * @param card          the associated card
      * @param errorListener the error listener/callback
      */
-    public AttributesRequest(String url,
-                             Card card,
+    public AttributesRequest(int deckId,
                              Deck deck,
+                             Card card,
                              Response.Listener<List<AttributeValue>> listener,
                              Response.ErrorListener errorListener) {
 
-        super(Method.GET, url, errorListener);
+        super(Method.GET,
+                URL + "/decks/" + deckId + "/cards/" + card.mServerId + "/attributes",
+                errorListener);
 
         mCard = card;
         mDeck = deck;

@@ -29,16 +29,18 @@ public class ImagesRequest extends AuthRequest<List<CardImage>> {
     /**
      * Standard constructor, just calling super here.
      *
-     * @param url      the target url
+     * @param deckId   the id of the associated deck
      * @param card     the card the images belong to
      * @param listener the error listener/callback
      */
-    public ImagesRequest(String url,
+    public ImagesRequest(int deckId,
                          Card card,
                          Response.Listener<List<CardImage>> listener,
                          Response.ErrorListener errorListener) {
 
-        super(Method.GET, url, errorListener);
+        super(Method.GET,
+                URL + "/decks/" + deckId + "/cards/" + card.mServerId + "/images",
+                errorListener);
 
         mCard = card;
         mListener = listener;

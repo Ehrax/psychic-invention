@@ -6,8 +6,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
-import de.in.uulm.map.quartett.rest.RestLoader;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -28,29 +26,13 @@ public class AsyncImageLoader extends AsyncTask<Void, Void, Bitmap> {
 
     final private Context mContext;
 
-    final private RestLoader mLoader;
-
     public AsyncImageLoader(String uri,
                             WeakReference<ImageView> view,
                             Context context) {
 
-        this.mView = view;
-        this.mContext = context;
-        this.mUri = uri;
-        this.mLoader = null;
-
-        view.get().setTag(uri);
-    }
-
-    public AsyncImageLoader(String uri,
-                            WeakReference<ImageView> view,
-                            Context context,
-                            RestLoader loader) {
-
         this.mUri = uri;
         this.mView = view;
         this.mContext = context;
-        this.mLoader = loader;
 
         view.get().setTag(uri);
     }
@@ -59,10 +41,7 @@ public class AsyncImageLoader extends AsyncTask<Void, Void, Bitmap> {
     protected Bitmap doInBackground(Void... params) {
 
         if(mUri.contains("http://")) {
-            if(mLoader != null){
-                // load image here ...
-            }
-            return null;
+            // load image here ...
         }
 
         return loadBitmap(mUri);

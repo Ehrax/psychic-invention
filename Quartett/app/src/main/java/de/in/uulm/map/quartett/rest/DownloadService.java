@@ -1,12 +1,16 @@
 package de.in.uulm.map.quartett.rest;
 
-import android.content.Context;
+import android.app.IntentService;
+import android.content.Intent;
 import android.net.Uri;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.RequestFuture;
+import com.orm.SugarRecord;
+import com.orm.SugarTransactionHelper;
 
 import de.in.uulm.map.quartett.data.Attribute;
 import de.in.uulm.map.quartett.data.AttributeValue;
@@ -16,51 +20,32 @@ import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.data.DeckInfo;
 import de.in.uulm.map.quartett.data.Image;
 
-import org.json.JSONException;
-
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Created by Jona on 21.01.2017.
+ * Created by Jona on 04.02.2017.
  */
 
-public class RestLoader {
-
-    private static final String SERVER_URL = "http://quartett.af-mba.dbis.info";
-
-    private final Context mContext;
-
-    private final RequestQueue mRequestQueue;
-
-    /**
-     * The constructor creates a request queue and initializes member
-     * variables.
-     *
-     * @param context the current context, needed to create message queue
-     */
-    public RestLoader(Context context, RequestQueue queue) {
-
-        mContext = context;
-        mRequestQueue = queue;
-    }
+public class DownloadService extends IntentService {
 
     /**
      * An instance of this special class is passed to the deck loading methods
      * to collect all the data in a single object.
      */
-    public class Collector {
+    class Collector {
 
-        public Deck mDeck;
-        public DeckInfo mDeckInfo;
+        Deck mDeck;
+        DeckInfo mDeckInfo;
 
-        public ArrayList<Image> mImages = new ArrayList<>();
-        public ArrayList<CardImage> mCardImages = new ArrayList<>();
-        public ArrayList<Card> mCards = new ArrayList<>();
-        public ArrayList<Attribute> mAttributes = new ArrayList<>();
-        public ArrayList<AttributeValue> mAttributeValues = new ArrayList<>();
+        ArrayList<Image> mImages = new ArrayList<>();
+        ArrayList<CardImage> mCardImages = new ArrayList<>();
+        ArrayList<Card> mCards = new ArrayList<>();
+        ArrayList<Attribute> mAttributes = new ArrayList<>();
+        ArrayList<AttributeValue> mAttributeValues = new ArrayList<>();
 
         public Collector() {
 
@@ -68,17 +53,85 @@ public class RestLoader {
     }
 
     /**
-     * This method should be used download and store a Deck in the internal
-     * Storage.
-     *
-     * @param id the id of the Deck to be downloaded
+     * This is the request queue, which is used make request to the server.
      */
-    public Collector loadDeck(int id)
-            throws InterruptedException, ExecutionException, JSONException {
+    private RequestQueue mRequestQueue;
+
+    /**
+     * Simple constructor. Calls super constructor.
+     */
+    public DownloadService() {
+
+        super("QuartetDownloadService");
+    }
+
+    /**
+     * This method is used to react to intents sent to the service. It will
+     * download the deck with the id contained in the intent to the database in
+     * the background.
+     *
+     * @param intent the Intent object that was passed to the service
+     */
+    @Override
+    protected void onHandleIntent(Intent intent) {
+
+        mRequestQueue =
+                Network.getInstance(getApplicationContext()).getRequestQueue();
+
+        final int id = intent.getIntExtra("id", -1);
+
+        if (id < 0) {
+            return;
+        }
 
         final Collector c = new Collector();
 
-        RequestFuture<Deck> deckFuture = RequestFuture.newFuture();
+        try {
+            getDeck(id, c);
+            getImages(c.mImages);
+
+            SugarTransactionHelper.doInTransaction(new SugarTransactionHelper.Callback() {
+
+                @Override
+                public void manipulateInTransaction() {
+
+                    if (DeckInfo.find(DeckInfo.class, "m_source = ?",
+                            c.mDeckInfo.mSource).size() > 0) {
+                        return;
+                    }
+
+                    SugarRecord.saveInTx(c.mImages);
+                    c.mDeckInfo.save();
+                    c.mDeck.save();
+                    SugarRecord.saveInTx(c.mAttributes);
+                    SugarRecord.saveInTx(c.mCards);
+                    SugarRecord.saveInTx(c.mAttributeValues);
+                    SugarRecord.saveInTx(c.mCardImages);
+                }
+            });
+
+            Toast.makeText(this, "Deck downloaded!", Toast.LENGTH_LONG);
+
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+
+            for(Image i : c.mImages) {
+                if(!i.mUri.contains(File.pathSeparator)) {
+                    deleteFile(i.mUri);
+                }
+            }
+        }
+    }
+
+    /**
+     * Use this method to download a deck from the server.
+     *
+     * @param id the id of the deck to be downloaded
+     */
+    private void getDeck(int id, final Collector c)
+            throws ExecutionException, InterruptedException {
+
+        final RequestFuture<Deck> deckFuture = RequestFuture.newFuture();
 
         DeckRequest deckRequest = new DeckRequest(id, deckFuture, deckFuture);
         mRequestQueue.add(deckRequest);
@@ -100,13 +153,10 @@ public class RestLoader {
 
         for (Card card : c.mCards) {
 
-            final String attrUrl = SERVER_URL + "/decks/" + id + "/cards/" +
-                    card.mServerId + "/attributes";
-
             AttributesRequest attrReq = new AttributesRequest(
-                    attrUrl,
-                    card,
+                    id,
                     c.mDeck,
+                    card,
                     new Response.Listener<List<AttributeValue>>() {
                         @Override
                         public void onResponse(List<AttributeValue> attrs) {
@@ -137,11 +187,8 @@ public class RestLoader {
 
             mRequestQueue.add(attrReq);
 
-            final String imagesUrl = SERVER_URL + "/decks/" + id + "/cards/" +
-                    card.mServerId + "/images";
-
             ImagesRequest imagesReq = new ImagesRequest(
-                    imagesUrl,
+                    id,
                     card,
                     new Response.Listener<List<CardImage>>() {
                         @Override
@@ -149,7 +196,7 @@ public class RestLoader {
 
                             c.mCardImages.addAll(images);
 
-                            for(CardImage i : images) {
+                            for (CardImage i : images) {
                                 c.mImages.add(i.mImage);
                             }
 
@@ -170,23 +217,19 @@ public class RestLoader {
         }
 
         latch.await();
-
-        return errors.isEmpty() ? c : null;
     }
 
     /**
-     * This method will download the files the URLs of the Image objects point
-     * to, store them in internal storage and alter the paths of the Image
-     * objects accordingly. This method will block until all Images are
-     * downloaded.
+     * Use this method to download all Images contained in a Deck to the
+     * internal storage.
      *
-     * @param images the Image objects to be downloaded
+     * @param images the list of Image objects to download
+     * @throws InterruptedException
      */
-    public void loadImages(List<Image> images) throws InterruptedException {
+    private void getImages(List<Image> images) throws InterruptedException {
 
         final CountDownLatch latch = new CountDownLatch(images.size());
         final String tag = "image";
-        final ArrayList<Image> saved = new ArrayList<>();
 
         for (final Image i : images) {
 
@@ -200,7 +243,6 @@ public class RestLoader {
                         public void onResponse(String uri) {
 
                             i.mUri = uri;
-                            saved.add(i);
                             latch.countDown();
                         }
                     },
@@ -212,26 +254,13 @@ public class RestLoader {
                             latch.countDown();
                         }
                     },
-                    mContext);
+                    getApplicationContext());
 
             req.setTag(tag);
 
             mRequestQueue.add(req);
         }
 
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            for (Image s : saved) {
-                mContext.deleteFile(s.mUri);
-            }
-            throw e;
-        }
-
-        if (saved.size() != images.size()) {
-            for (Image s : saved) {
-                mContext.deleteFile(s.mUri);
-            }
-        }
+        latch.await();
     }
 }

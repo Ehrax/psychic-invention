@@ -15,10 +15,9 @@ import com.android.volley.toolbox.ImageLoader;
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Deck;
-import de.in.uulm.map.quartett.rest.DeckDownloadTask;
 import de.in.uulm.map.quartett.rest.DecksRequest;
+import de.in.uulm.map.quartett.rest.DownloadService;
 import de.in.uulm.map.quartett.rest.Network;
-import de.in.uulm.map.quartett.rest.RestLoader;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 
 import java.util.List;
@@ -31,8 +30,6 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
 
     private GalleryPresenter mGalleryPresenter;
 
-    private RestLoader mRestLoader;
-
     private GalleryAdapter mAdapter;
 
     @Override
@@ -41,8 +38,6 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
         super.onCreate(savedInstanceState);
 
         mAdapter = new GalleryAdapter(this);
-        mRestLoader = new RestLoader(this,
-                Network.getInstance(getApplicationContext()).getRequestQueue());
 
         GalleryFragment galleryFragment = (GalleryFragment)
                 getSupportFragmentManager().findFragmentById(R.id.contentFrame);
@@ -164,12 +159,9 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
         int id = Integer.parseInt(
                 Uri.parse(deck.mDeckInfo.mSource).getLastPathSegment());
 
-        new DeckDownloadTask(id, mRestLoader, new DeckDownloadTask.Callback() {
-            @Override
-            public void onFinished(Deck newDeck) {
+        Intent intent = new Intent(getApplicationContext(), DownloadService.class);
+        intent.putExtra("id", id);
 
-                mGalleryPresenter.onDeckDownloaded(deck, newDeck);
-            }
-        }).execute();
+        startService(intent);
     }
 }
