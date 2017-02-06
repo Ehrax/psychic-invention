@@ -1,6 +1,9 @@
 package de.in.uulm.map.quartett.gallery;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -28,9 +31,14 @@ import java.util.List;
 
 public class GalleryActivity extends DrawerActivity implements GalleryContract.Backend {
 
+    private static final String BROADCAST_ACTION =
+            "de.in.uulm.map.quartett.rest.DOWNLOAD";
+
     private GalleryPresenter mGalleryPresenter;
 
     private GalleryAdapter mAdapter;
+
+    private DownloadBroadcastReceiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +64,22 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
         mAdapter.setPresenter(mGalleryPresenter);
 
         mGalleryPresenter.start();
+
+        mReceiver = new DownloadBroadcastReceiver();
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onResume() {
 
-        super.onBackPressed();
+        registerReceiver(mReceiver, new IntentFilter(BROADCAST_ACTION));
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+
+        unregisterReceiver(mReceiver);
+        super.onPause();
     }
 
     /**
@@ -105,7 +123,7 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
         Network.getInstance(getApplicationContext())
                 .getImageLoader()
                 .get(url, ImageLoader.getImageListener(
-                                imageView, R.drawable.empty, R.drawable.empty));
+                        imageView, R.drawable.empty, R.drawable.empty));
     }
 
     /**
@@ -161,7 +179,34 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
 
         Intent intent = new Intent(getApplicationContext(), DownloadService.class);
         intent.putExtra("id", id);
-
+        intent.putExtra("title", deck.mTitle);
         startService(intent);
+    }
+
+    /**
+     * This class is used to be notified by the background service when a new
+     * deck has been fully downloaded.
+     */
+    public class DownloadBroadcastReceiver extends BroadcastReceiver {
+
+        /**
+         * Simple zero argument constructor needed for instantiation by the
+         * android system.
+         */
+        public DownloadBroadcastReceiver() {
+
+            super();
+        }
+
+        /**
+         * Actual callback. Will be called when a broadcast message is
+         * received.
+         */
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            loadDecks();
+            loadServerDecks();
+        }
     }
 }

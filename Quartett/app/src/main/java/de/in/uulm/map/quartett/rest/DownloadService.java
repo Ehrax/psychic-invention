@@ -1,9 +1,11 @@
 package de.in.uulm.map.quartett.rest;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -12,6 +14,7 @@ import com.android.volley.toolbox.RequestFuture;
 import com.orm.SugarRecord;
 import com.orm.SugarTransactionHelper;
 
+import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Attribute;
 import de.in.uulm.map.quartett.data.AttributeValue;
 import de.in.uulm.map.quartett.data.Card;
@@ -53,9 +56,31 @@ public class DownloadService extends IntentService {
     }
 
     /**
+     * This is the name of the broadcast action that is used to notify the app,
+     * when a download has finished.
+     */
+    private static final String BROADCAST_ACTION =
+            "de.in.uulm.map.quartett.rest.DOWNLOAD";
+
+    /**
+     * The ID of the Notification to show the progress of the download.
+     */
+    private static final int NOTIFICATION_ID = 1;
+
+    /**
      * This is the request queue, which is used make request to the server.
      */
     private RequestQueue mRequestQueue;
+
+    /**
+     * This Notification Builder will be used for the Download Notifications.
+     */
+    private Notification.Builder builder;
+
+    /**
+     * This variable contains the download progress.
+     */
+    private float progress;
 
     /**
      * Simple constructor. Calls super constructor.
@@ -75,10 +100,23 @@ public class DownloadService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
+        progress = 0;
+
         mRequestQueue =
                 Network.getInstance(getApplicationContext()).getRequestQueue();
 
         final int id = intent.getIntExtra("id", -1);
+        final String title = intent.getStringExtra("title");
+
+        if(builder == null) {
+            builder = new Notification.Builder(this)
+                    .setContentTitle("Quartett Download")
+                    .setSmallIcon(R.drawable.ic_download)
+                    .setProgress(100, 0, false);
+        }
+
+        builder.setContentText("Downloading Deck: " + title);
+        showNotification();
 
         if (id < 0) {
             return;
@@ -110,17 +148,20 @@ public class DownloadService extends IntentService {
                 }
             });
 
-            Toast.makeText(this, "Deck downloaded!", Toast.LENGTH_LONG);
-
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (ExecutionException | InterruptedException | VolleyError e) {
             e.printStackTrace();
 
-            for(Image i : c.mImages) {
-                if(!i.mUri.contains(File.pathSeparator)) {
+            for (Image i : c.mImages) {
+                if (!i.mUri.contains(File.pathSeparator)) {
                     deleteFile(i.mUri);
                 }
             }
         }
+
+        closeNotification();
+
+        Intent broadcastIntent = new Intent(BROADCAST_ACTION);
+        sendBroadcast(broadcastIntent);
     }
 
     /**
@@ -172,6 +213,9 @@ public class DownloadService extends IntentService {
 
                             c.mAttributeValues.addAll(attrs);
 
+                            progress += 25.0f/(float)c.mCards.size();
+                            showNotification();
+
                             latch.countDown();
                         }
                     },
@@ -200,6 +244,9 @@ public class DownloadService extends IntentService {
                                 c.mImages.add(i.mImage);
                             }
 
+                            progress += 25.0f/(float)c.mCards.size();
+                            showNotification();
+
                             latch.countDown();
                         }
                     },
@@ -224,12 +271,12 @@ public class DownloadService extends IntentService {
      * internal storage.
      *
      * @param images the list of Image objects to download
-     * @throws InterruptedException
      */
-    private void getImages(List<Image> images) throws InterruptedException {
+    private void getImages(final List<Image> images) throws InterruptedException, VolleyError {
 
         final CountDownLatch latch = new CountDownLatch(images.size());
         final String tag = "image";
+        final ArrayList<VolleyError> errors = new ArrayList<>();
 
         for (final Image i : images) {
 
@@ -243,6 +290,8 @@ public class DownloadService extends IntentService {
                         public void onResponse(String uri) {
 
                             i.mUri = uri;
+                            progress += 50.0f/(float)images.size();
+                            showNotification();
                             latch.countDown();
                         }
                     },
@@ -252,6 +301,7 @@ public class DownloadService extends IntentService {
 
                             mRequestQueue.cancelAll(tag);
                             latch.countDown();
+                            errors.add(error);
                         }
                     },
                     getApplicationContext());
@@ -262,5 +312,42 @@ public class DownloadService extends IntentService {
         }
 
         latch.await();
+
+        if (errors.isEmpty()) {
+            return;
+        }
+
+        for (Image i : images) {
+            if (!i.mUri.contains(File.pathSeparator)) {
+                deleteFile(i.mUri);
+            }
+        }
+
+        throw errors.get(0);
+    }
+
+    /**
+     * This method is used to create or update the progress Notification.
+     */
+    public void showNotification() {
+
+        NotificationManager manager = (NotificationManager)
+                getSystemService(Context.NOTIFICATION_SERVICE);
+
+        builder.setProgress(100, (int)progress, false);
+
+        manager.notify(NOTIFICATION_ID, builder.build());
+    }
+
+    /**
+     * Use this method to remove the Notification, when the download is
+     * finished.
+     */
+    public void closeNotification() {
+
+        NotificationManager manager = (NotificationManager)
+                getSystemService(Context.NOTIFICATION_SERVICE);
+
+        manager.cancel(NOTIFICATION_ID);
     }
 }

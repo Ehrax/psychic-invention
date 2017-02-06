@@ -6,7 +6,6 @@ import android.widget.ImageView;
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.data.Image;
-import de.in.uulm.map.quartett.gameend.GameEndContract;
 import de.in.uulm.map.quartett.util.BasePresenter;
 import de.in.uulm.map.quartett.util.BaseView;
 
@@ -22,8 +21,6 @@ public interface GalleryContract {
     interface Presenter extends BasePresenter {
 
         void onDeckLoaded(List<Deck> decks);
-
-        void onDeckDownloaded(Deck oldDeck, Deck newDeck);
 
         void onDeleteDeckClicked(Deck deck);
 

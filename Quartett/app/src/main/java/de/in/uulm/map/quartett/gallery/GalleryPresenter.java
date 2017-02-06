@@ -2,10 +2,7 @@ package de.in.uulm.map.quartett.gallery;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.widget.Gallery;
 import android.widget.ImageView;
 
 import de.in.uulm.map.quartett.data.Card;
@@ -144,38 +141,18 @@ public class GalleryPresenter implements GalleryContract.Presenter {
         ArrayList<Deck> modelDecks = mModel.getDecks();
 
         for (Deck d : decks) {
-            boolean contains = false;
-            for (Deck dl : modelDecks) {
-                contains = contains || (
-                        dl.mDeckInfo.mSource.equals(d.mDeckInfo.mSource) &&
-                                dl.mTitle.equals(d.mTitle));
-            }
-            if (!contains) {
+
+            int index = modelDecks.indexOf(d);
+
+            if (index < 0) {
                 modelDecks.add(d);
+                continue;
+            }
+
+            if(d.mDeckInfo.mState == DeckInfo.State.DISK) {
+                modelDecks.set(index, d);
             }
         }
-
-        mModel.update();
-    }
-
-    /**
-     * This method will be called when the download of a deck is completed.
-     *
-     * @param oldDeck the original Deck from the model
-     * @param newDeck the new Deck that is stored in the database
-     */
-    @Override
-    public void onDeckDownloaded(Deck oldDeck, Deck newDeck) {
-
-        if(newDeck == null) {
-            return;
-        }
-
-        ArrayList<Deck> decks = mModel.getDecks();
-        int oldIndex = decks.indexOf(oldDeck);
-
-        decks.remove(oldDeck);
-        decks.add(oldIndex, newDeck);
 
         mModel.update();
     }

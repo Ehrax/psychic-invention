@@ -97,4 +97,16 @@ public class DecksRequest extends AuthRequest<List<Deck>> {
 
         mListener.onResponse(response);
     }
+
+    /**
+     * This request gets immediate Priority. Otherwise currently running
+     * downloads may block the Deck View from being filled.
+     *
+     * @return Priority.IMMEDIATE
+     */
+    @Override
+    public Priority getPriority() {
+
+        return Priority.IMMEDIATE;
+    }
 }
