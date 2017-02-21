@@ -8,15 +8,16 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
+
+
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
+import android.support.v7.preference.EditTextPreference;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ import de.in.uulm.map.quartett.views.CircularImageView;
 
 import java.io.IOException;
 
-public class SettingsFragment extends PreferenceFragment implements
+public class SettingsFragment extends PreferenceFragmentCompat implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int SELECT_FILE = 0;
@@ -190,12 +191,26 @@ public class SettingsFragment extends PreferenceFragment implements
         editor.apply();
     }
 
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        //setPreferencesFromResource(R.xml.preference, rootKey);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View view =
+                inflater.inflate(R.layout.fragment_settings, container, false);
+        ViewGroup frame = (ViewGroup) view.findViewById(R.id.settings_frame);
+        View inner = super.onCreateView(inflater, frame, savedInstanceState);
+
+        if(inner != null) {
+            frame.addView(inner);
+        }
+
+        return view;
     }
 
     /**

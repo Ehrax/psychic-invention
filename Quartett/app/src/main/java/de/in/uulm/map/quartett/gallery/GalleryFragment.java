@@ -1,5 +1,7 @@
 package de.in.uulm.map.quartett.gallery;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,37 +12,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.orm.dsl.NotNull;
+
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Deck;
-
-import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import de.in.uulm.map.quartett.game.GameContract;
 
 /**
  * Created by maxka on 25.12.2016. This fragment uses a simple RecyclerView to
  * display all deck images + title
  */
-
 public class GalleryFragment extends Fragment implements GalleryContract.View {
 
-    private GalleryContract.Presenter mPresenter;
     private RecyclerView mRecyclerView;
+
     private RecyclerView.Adapter mAdapter;
+
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private List<Deck> deckList;
-
-    /**
-     * This listener method is called by the GalleryAdapter to switch to the
-     * deckDetail fragment.
-     */
-    GalleryItemListener mItemListener = new GalleryItemListener() {
-        @Override
-        public void showDeckDetailView(long deckID) {
-            mPresenter.onDeckClicked(deckID);
-        }
-    };
+    private GalleryContract.Presenter mPresenter;
 
     public static GalleryFragment newInstance() {
 
@@ -50,7 +40,12 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
     @Override
     public void setPresenter(@NonNull GalleryContract.Presenter presenter) {
 
-        mPresenter = checkNotNull(presenter);
+        mPresenter = presenter;
+    }
+
+    public void setAdapter(@NotNull GalleryAdapter adapter) {
+
+        mAdapter = adapter;
     }
 
     @Override
@@ -58,22 +53,15 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
 
         super.onActivityCreated(savedInstance);
 
-        deckList = mPresenter.populateDeckList();
-
         mRecyclerView = (RecyclerView) getActivity().findViewById(R.id
                 .recycler_view_gallery);
-
-        /*set "has fixed size" to improve performance because the layout size
-        will never change*/
-        mRecyclerView.setHasFixedSize(true);
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new GalleryAdapter(deckList, mItemListener,getContext());
+        mRecyclerView.setHasFixedSize(true);
+
         mRecyclerView.setAdapter(mAdapter);
-
-
     }
 
     @Nullable
@@ -84,10 +72,41 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
         return inflater.inflate(R.layout.fragment_gallery, container, false);
     }
 
-    public interface GalleryItemListener {
+    @Override
+    public void showDownloadDialog(final Deck deck) {
 
-        void showDeckDetailView(long deckID);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        builder.setTitle(R.string.gallery_download_title);
+        builder.setMessage(R.string.gallery_download_msg);
+        builder.setNegativeButton(R.string.gallery_btn_cancel, null);
+        builder.setPositiveButton(R.string.gallery_btn_ok,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        mPresenter.onDownloadDialogOk(deck);
+                    }
+                });
+
+        builder.show();
     }
 
+    public void showDeleteDialog(final Deck deck) {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        builder.setTitle(R.string.gallery_delete_title);
+        builder.setMessage(R.string.gallery_delete_msg);
+        builder.setNegativeButton(R.string.gallery_btn_cancel, null);
+        builder.setPositiveButton(R.string.gallery_btn_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                mPresenter.onDeleteDialogOk(deck);
+            }
+        });
+
+        builder.show();
+    }
 }

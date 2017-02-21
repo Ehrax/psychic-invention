@@ -34,6 +34,8 @@
                         android:layout_height="0dp"
                         android:id="@+id/btn_new_local_game"
                         android:layout_weight="0.9"
+                        android:scaleX="0.9"
+                        android:scaleY="0.9"
                         app:srcCompat="@drawable/ic_open_in_new"
                         android:scaleType="fitCenter"
                         android:tint="@color/colorTableDivider" />
@@ -64,6 +66,8 @@
                         android:layout_height="0dp"
                         android:id="@+id/btn_achievements"
                         android:layout_weight="0.9"
+                        android:scaleX="0.9"
+                        android:scaleY="0.9"
                         app:srcCompat="@drawable/ic_menu_achievements"
                         android:scaleType="fitCenter"
                         android:tint="@color/colorTableDivider" />
@@ -103,6 +107,8 @@
                         android:layout_height="0dp"
                         android:id="@+id/btn_new_online_game"
                         android:layout_weight="0.9"
+                        android:scaleX="0.9"
+                        android:scaleY="0.9"
                         app:srcCompat="@drawable/ic_account_multiple"
                         android:scaleType="fitCenter"
                         android:tint="@color/colorTableDivider" />
@@ -135,6 +141,8 @@
                         android:id="@+id/btn_settings"
                         android:layout_weight="0.9"
                         app:srcCompat="@drawable/ic_menu_settings"
+                        android:scaleX="0.9"
+                        android:scaleY="0.9"
                         android:scaleType="fitCenter"
                         android:tint="@color/colorTableDivider" />
 
@@ -150,33 +158,27 @@
 
         </LinearLayout>
     </LinearLayout>
-    <View
-            android:id="@+id/divider_main_menu_bottom"
-            style="@style/VerticalDivider"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp" />
+
     <LinearLayout
-            android:id="@+id/btn_continue_game"
+            android:id="@+id/layout_continue_game"
+            android:orientation="vertical"
+            android:background="?android:attr/listDivider"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
-        <ImageButton
+        <Button
+                android:id="@+id/btn_continue_game"
                 style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_weight="0.33"
-
-                app:srcCompat="@drawable/ic_continue_game" />
-
-        <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/continue_game"
-                android:textSize="18sp"
-                android:textAlignment="gravity"
-                android:gravity="center"
-                android:paddingEnd="150dp" />
+                android:layout_height="60dp"
+                android:paddingLeft="100dp"
+                android:paddingRight="100dp"
+                android:textSize="17sp"
+                android:drawableLeft="@drawable/ic_continue_game"
+                android:textAllCaps="false"
+                android:text="@string/continue_game" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -28,7 +28,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.gallery.GalleryActivity;
 import de.in.uulm.map.quartett.mainmenu.MainMenuActivity;
 
@@ -36,6 +38,9 @@ import de.in.uulm.map.quartett.stats.StatsActivity;
 
 import de.in.uulm.map.quartett.settings.SettingsActivity;
 import de.in.uulm.map.quartett.settings.SettingsFragment;
+import de.in.uulm.map.quartett.stats.TabFactoryFragment;
+import de.in.uulm.map.quartett.stats.achievements.AchievementsFragment;
+import de.in.uulm.map.quartett.stats.stats.StatsFragment;
 import de.in.uulm.map.quartett.views.CircularImageView;
 
 import java.io.IOException;
@@ -50,6 +55,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
     protected DrawerLayout mDrawer;
     private CircularImageView mProfilePic;
+    private TextView mUserTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +76,11 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
                 .drawer_layout_main);
 
         //Setting profile pic
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences
+        final SharedPreferences sp = PreferenceManager
+                .getDefaultSharedPreferences
                 (this);
 
-        View drawerHeader = getLayoutInflater().inflate(R.layout
+        final View drawerHeader = getLayoutInflater().inflate(R.layout
                 .drawer_header, (ViewGroup) this.mDrawer.findViewById(R.id
                 .drawer_view));
         mProfilePic = (CircularImageView)
@@ -84,9 +91,24 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
                     .PROFILE_URI, null)));
         }
 
+        mUserTextView = (TextView) drawerHeader.findViewById
+                (R.id.txt_drawer_username);
+
+        if (sp.contains("user_name")) {
+            mUserTextView.setText(sp.getString("user_name", "Quartet"));
+        }
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawer,
                 toolbar, R.string.navigation_drawer_open, R.string
-                .navigation_drawer_close);
+                .navigation_drawer_close){
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+                mUserTextView.setText(sp.getString
+                        ("user_name",null));
+                super.onDrawerStateChanged(newState);
+            }
+        };
         mDrawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -129,6 +151,15 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         switch (id) {
             case R.id.nav_achievements:
+                if (!this.getClass().getSimpleName().equals("StatsActivity")) {
+                    Intent intent = new Intent(this, StatsActivity.class);
+                    intent.putExtra(TabFactoryFragment.TAB_TITLE,
+                            AchievementsFragment.TAB_ACHIEVEMENTS);
+                    ActivityOptionsCompat options = ActivityOptionsCompat
+                            .makeSceneTransitionAnimation(this);
+
+                    startActivity(intent, options.toBundle());
+                }
                 break;
             case R.id.nav_editor:
                 break;
@@ -165,6 +196,8 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             case R.id.nav_statistic:
                 if (!this.getClass().getSimpleName().equals("StatsActivity")) {
                     Intent intent = new Intent(this, StatsActivity.class);
+                    intent.putExtra(TabFactoryFragment.TAB_TITLE,
+                            StatsFragment.TAB_STATISTICS);
                     ActivityOptionsCompat options = ActivityOptionsCompat
                             .makeSceneTransitionAnimation(this);
 

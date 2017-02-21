@@ -12,6 +12,7 @@ import com.github.lzyzsd.circleprogress.DonutProgress;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.stats.StatsContract;
+import de.in.uulm.map.quartett.views.BetterArcProgress;
 
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class AchievementsAdapter extends RecyclerView
 
         Achievement achievement = mAchievements.get(position);
 
-        mPresenter.setAchievementDonut(holder.mAchievDonout, achievement);
+        mPresenter.setAchievementDonut(holder.mProgress, achievement);
         mPresenter.setAchievementRowTitle(holder.mTitle, achievement);
         mPresenter.setAchievementRowDescription(holder.mDescription, achievement);
     }
@@ -80,14 +81,14 @@ public class AchievementsAdapter extends RecyclerView
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public DonutProgress mAchievDonout;
+        public BetterArcProgress mProgress;
         public TextView mTitle;
         public TextView mDescription;
 
         public ViewHolder(View itemView) {
 
             super(itemView);
-            mAchievDonout = (DonutProgress) itemView.findViewById
+            mProgress = (BetterArcProgress) itemView.findViewById
                     (R.id.achievement_row_circle);
             mTitle = (TextView) itemView.findViewById
                     (R.id.achievement_row_title);

@@ -22,5 +22,11 @@ public class Statistic extends SugarRecord {
         this.mValue = value;
         this.mDescription = description;
     }
+
+    @Override
+    public String toString() {
+
+        return mTitle+": "+mValue;
+    }
 }
 

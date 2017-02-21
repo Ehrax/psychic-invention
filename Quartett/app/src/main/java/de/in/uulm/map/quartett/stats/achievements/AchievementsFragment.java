@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.stats.StatsContract;
 import de.in.uulm.map.quartett.stats.TabFactoryFragment;
 

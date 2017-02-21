@@ -5,8 +5,10 @@
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardElevation="5dp"
-        android:layout_marginTop="5dp">
+        card_view:cardElevation="2dp"
+        android:layout_marginTop="5dp"
+        android:clickable="true"
+        android:background="?android:attr/selectableItemBackground">
 
     <ImageView
             android:id="@+id/img_deck_gallery"
@@ -15,13 +17,53 @@
             card_view:srcCompat="@drawable/main_menu_car"
             android:scaleType="centerCrop" />
 
-    <TextView
-            style="@style/ImageTitleTextView"
-            android:id="@+id/txt_deck_title_gallery"
+    <RelativeLayout
+            style="@style/DeckTextBox"
+            android:layout_gravity="bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            />
+        <TextView
+                style="@style/DeckTitle"
+                android:id="@+id/txt_deck_title_gallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"/>
+
+        <TextView
+                style="@style/DeckDescription"
+                android:id="@+id/txt_deck_desc_gallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_deck_title_gallery"/>
+
+        <ImageView
+                android:id="@+id/download_icon"
+                android:src="@drawable/ic_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
+
+        <ProgressBar
+                style="?android:attr/progressBarStyle"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:id="@+id/download_progress" />
+
+        <ImageButton
+                android:id="@+id/btn_delete_deck"
+                android:src="@drawable/ic_delete"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/ic_delete"
+                android:layout_width="24dp"
+                android:layout_height="24dp" />
+
+    </RelativeLayout>
 
 
 </android.support.v7.widget.CardView>

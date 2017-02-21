@@ -44,6 +44,7 @@ public class GameEndActivity extends DrawerActivity implements GameEndContract.B
                         this, LocalGameState.listAll(LocalGameState.class)
                         .get(0));
         LocalGameState.deleteAll(LocalGameState.class);
+        presenter.start();
         gameEndFragment.setPresenter(presenter);
 
 
