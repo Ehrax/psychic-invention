@@ -18,17 +18,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/txt_attribute_title"
-            android:text="Leistung"
-            android:textSize="20sp" />
+            style="@style/TextViewCardAttributesTitle" />
 
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txt_attribute_value"
-            android:text="234PS"
-            android:gravity="end"
-            android:textAlignment="textEnd"
-            android:textSize="20sp" />
+            style="@style/TextViewCardAttributesValue" />
 
 
 </LinearLayout>

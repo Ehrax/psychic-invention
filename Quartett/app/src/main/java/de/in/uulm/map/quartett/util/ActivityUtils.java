@@ -15,18 +15,17 @@
  */
 package de.in.uulm.map.quartett.util;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.annotation.NonNull;
-import android.support.v4.view.ViewPager;
-import android.transition.TransitionInflater;
 
 
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.game.GameCompareFragment;
 import de.in.uulm.map.quartett.game.GameFragment;
+import de.in.uulm.map.quartett.multiplayer.MultiplayerGameCompareFragment;
+import de.in.uulm.map.quartett.multiplayer.MultiplayerGameFragment;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -54,7 +53,9 @@ public class ActivityUtils {
             transaction.add(frameId, fragment);
         } else {
             if (!(fragment instanceof GameCompareFragment) && !(fragment
-                    instanceof GameFragment)) {
+                    instanceof GameFragment) && !(fragment instanceof
+                    MultiplayerGameCompareFragment) && !(fragment instanceof
+                    MultiplayerGameFragment)) {
 
                 transaction.setCustomAnimations(R.anim.fragment_slide_left_enter,
                         R.anim.fragment_slide_left_exit, R.anim
@@ -62,6 +63,7 @@ public class ActivityUtils {
                                 .fragment_slide_right_exit);
                 transaction.addToBackStack(null);
             }
+
             transaction.replace(frameId, fragment);
 
         }

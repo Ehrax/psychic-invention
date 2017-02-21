@@ -2,19 +2,12 @@ package de.in.uulm.map.quartett.game;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.transition.TransitionManager;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.transition.Transition;
 import android.transition.TransitionInflater;
-import android.transition.TransitionValues;
-import android.util.Log;
 
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
-import de.in.uulm.map.quartett.gallery.GalleryContract;
-import de.in.uulm.map.quartett.gamesettings.GameMode;
-import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 
 /**
@@ -90,7 +83,7 @@ public class GameActivity extends DrawerActivity implements GameContract.BackEnd
         TransitionInflater inflater = TransitionInflater.from(this);
         if (lastRoundWinner != null) {
             getWindow().setEnterTransition(inflater.inflateTransition(R
-                    .transition.fade_delay_1500));
+                    .transition.fade_delay_750));
             if (lastRoundWinner == RoundWinner.USER) {
                 getWindow().setExitTransition(inflater.inflateTransition(R.transition
                         .compare_user_wins_transition));

@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_card_title"
                 android:padding="5dp"
-                android:textSize="30sp"
+                android:textSize="23sp"
                 android:background="@color/colorCardTitle"
                 android:visibility="gone" />
     </FrameLayout>

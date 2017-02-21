@@ -1,1 +1,1 @@
-include ':app', ':flippable-stack-view-library'
+include ':app', ':flippable-stack-view-library', ':BaseGameUtils'

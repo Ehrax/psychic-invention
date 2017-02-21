@@ -1,5 +1,7 @@
 package de.in.uulm.map.quartett.gallery;
 
+import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -15,16 +17,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Gravity;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
@@ -37,16 +35,12 @@ import de.in.uulm.map.quartett.game.GameContract;
 
 import de.in.uulm.map.quartett.data.Image;
 
-import de.in.uulm.map.quartett.game.GameFragment;
-import de.in.uulm.map.quartett.game.GamePresenter;
+import de.in.uulm.map.quartett.multiplayer.MultiplayerContract;
 import de.in.uulm.map.quartett.util.AssetUtils;
 import de.in.uulm.map.quartett.views.viewpagerindicator.CirclePageIndicator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by maxka on 25.12.2016. Represents a single card. Used to show cards
@@ -56,6 +50,7 @@ public class CardFragment extends Fragment {
 
     private GameContract.Presenter mGamePresenter;
     private GalleryContract.Presenter mPresenter;
+    private MultiplayerContract.Presenter mMultiplayerPresenter;
     private AsyncCardInitializer mInitializer;
 
     private long mDeckId;
@@ -78,6 +73,15 @@ public class CardFragment extends Fragment {
                             Snackbar
                                     .LENGTH_SHORT).show();
                 }
+            }else if(mMultiplayerPresenter != null){
+                if(mMultiplayerPresenter.getCurrentTurnBasedMatch()
+                        .getTurnStatus() == TurnBasedMatch.MATCH_TURN_STATUS_MY_TURN){
+                    mMultiplayerPresenter.chooseAttribute(chosenAttribute);
+                }else{
+                    Snackbar.make(getView(), R.string.not_your_turn,
+                            Snackbar
+                                    .LENGTH_SHORT).show();
+                }
             }
         }
     };
@@ -95,6 +99,18 @@ public class CardFragment extends Fragment {
     public void setPresenter(GalleryContract.Presenter presenter) {
 
         mPresenter = presenter;
+    }
+
+    /**
+     * Use this method to set the cards multiplayer presenter if you need this
+     * fragment for multiplayer purpose.
+     *
+     * @param presenter the presenter
+     */
+    public void setMultiplayerPresenter(MultiplayerContract.Presenter
+                                                presenter) {
+
+        mMultiplayerPresenter = presenter;
     }
 
     /**
@@ -183,7 +199,6 @@ public class CardFragment extends Fragment {
 
     /**
      * This Adapter populates the cards images into a viewpager.
-     *
      */
     private class ImagePagerAdapter extends PagerAdapter {
 
@@ -235,7 +250,7 @@ public class CardFragment extends Fragment {
                 imgView.setImageDrawable(drawable);
             } else {
                 imgView.setImageURI(Uri.parse(mContext.getFilesDir() +
-                            File.separator + img.mUri));
+                        File.separator + img.mUri));
             }
 
             container.addView(imgView, 0);
@@ -286,7 +301,9 @@ public class CardFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
 
             Card card = mPresenter != null ? mPresenter.getCard(mDeckId,
-                    mPosition) : mGamePresenter.getCard(mDeckId, mPosition);
+                    mPosition) : mGamePresenter != null ? mGamePresenter.getCard
+                    (mDeckId, mPosition) : mMultiplayerPresenter.getCard
+                    (mDeckId, mPosition);
 
             mTitle = card.mTitle;
             mAttributeValues = card.getAttributeValues();
@@ -311,17 +328,13 @@ public class CardFragment extends Fragment {
             view.findViewById(R.id.txt_card_title).setVisibility(View.VISIBLE);
             view.findViewById(R.id.progress_bar_card).setVisibility(View.GONE);
 
-            if (!mIsInGame) {
-                FrameLayout crdImage = (FrameLayout) view.findViewById(R.id
-                        .frame_lay_card_img);
-                ViewGroup.LayoutParams layoutParams = crdImage
-                        .getLayoutParams();
-                layoutParams.height = layoutParams.height + 750;
-                crdImage.setLayoutParams(layoutParams);
-            }
             //initializing the viewpager for multiple image support
             ViewPager viewPagerImages = (ViewPager) view.findViewById(R.id
                     .view_pager_img_card);
+
+            ViewGroup.LayoutParams params = viewPagerImages.getLayoutParams();
+            params.height = calculateImageHeight(view);
+            viewPagerImages.setLayoutParams(params);
 
             ImagePagerAdapter imgPagerAdapter =
                     new ImagePagerAdapter(getContext(), mCardImages);
@@ -353,6 +366,17 @@ public class CardFragment extends Fragment {
                     DividerItemDecoration(recyclerViewAttributes.getContext()
                     , layoutManager.getOrientation()));
             recyclerViewAttributes.setAdapter(adapter);
+
+        }
+
+        private int calculateImageHeight(View view) {
+
+            LinearLayout linearLayoutRoot = (LinearLayout) view.findViewById(R
+                    .id.lin_layout_card);
+            int cardHeight = linearLayoutRoot.getHeight();
+
+            return cardHeight * 5 / 12;
+
 
         }
     }
