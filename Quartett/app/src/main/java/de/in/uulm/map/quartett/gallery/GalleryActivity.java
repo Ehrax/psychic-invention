@@ -8,13 +8,17 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.widget.ImageView;
 
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.rest.DeckDownloadTask;
+import de.in.uulm.map.quartett.rest.DecksRequest;
+import de.in.uulm.map.quartett.rest.Network;
 import de.in.uulm.map.quartett.rest.RestLoader;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 
@@ -36,8 +40,8 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-        mRestLoader = new RestLoader(this);
+        mRestLoader = new RestLoader(this,
+                Network.getInstance(getApplicationContext()).getRequestQueue());
         mAdapter = new GalleryAdapter(this, mRestLoader);
 
         GalleryFragment galleryFragment = (GalleryFragment)
@@ -103,7 +107,10 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
     @Override
     public void loadServerImage(String url, ImageView imageView) {
 
-        mRestLoader.loadImage(url, imageView, R.drawable.empty, R.drawable.empty);
+        Network.getInstance(getApplicationContext())
+                .getImageLoader()
+                .get(url, ImageLoader.getImageListener(
+                                imageView, R.drawable.empty, R.drawable.empty));
     }
 
     /**
@@ -123,19 +130,26 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
     @Override
     public void loadServerDecks() {
 
-        mRestLoader.loadAllDecks(new Response.Listener<List<Deck>>() {
-            @Override
-            public void onResponse(List<Deck> response) {
+        final RequestQueue queue =
+                Network.getInstance(getApplicationContext()).getRequestQueue();
 
-                mGalleryPresenter.onDeckLoaded(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+        final DecksRequest request = new DecksRequest(
+                new Response.Listener<List<Deck>>() {
+                    @Override
+                    public void onResponse(List<Deck> decks) {
 
-                // display a snack bar or something ...
-            }
-        });
+                        mGalleryPresenter.onDeckLoaded(decks);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        // TODO: display a hint that there was an error
+                    }
+                });
+
+        queue.add(request);
     }
 
     /**

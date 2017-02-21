@@ -14,6 +14,7 @@ public class Card extends SugarRecord {
     public String mTitle;
     public Deck mDeck;
     public int mPosition;
+    public int mServerId;
 
     public Card() {
 

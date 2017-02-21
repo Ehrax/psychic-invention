@@ -54,7 +54,7 @@ public class FileRequest extends Request<String> {
     @Override
     protected Response<String> parseNetworkResponse(NetworkResponse response) {
 
-        if (response.statusCode != 200 && response.statusCode != 304) {
+        if (response.statusCode >= 400) {
             return Response.error(new VolleyError(response));
         }
 
