@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/card_view_multiplayer"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardElevation="2dp"
+        android:layout_marginTop="@dimen/multiplayer_cardview_margin_top"
+        android:clickable="true"
+        android:background="?android:attr/selectableItemBackground"
+        >
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+        <ImageView
+                android:id="@+id/img_opponent_profile_pic"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/no_picture"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="center_vertical"/>
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Du bist dran gegen"
+                    android:textColor="#88ffffff"
+                    android:id="@+id/txt_multiplayer_whos_turn"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gegner Name"
+                    android:textSize="20sp"
+                    android:id="@+id/txt_opponent_name"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tuning Deck"
+                    android:textColor="#88ffffff"
+                    android:id="@+id/txt_current_deck_multiplayer"/>
+        </LinearLayout>
+
+        <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2/10"
+                android:layout_gravity="center_vertical"
+                android:textSize="20sp"
+                android:id="@+id/txt_multiplayer_current_turn"/>
+    </LinearLayout>
+
+    <Button
+            android:id="@+id/btn_undo_leave_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/undo"
+            android:textAllCaps="true"
+            android:layout_gravity="end|center_vertical"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:visibility="gone"
+            android:paddingTop="28dp"
+            android:paddingBottom="28dp"
+
+             />
+
+</android.support.v7.widget.CardView>

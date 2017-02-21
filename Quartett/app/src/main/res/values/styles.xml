@@ -25,6 +25,10 @@
     </style>
     <!-- main menu -->
 
+    <style name="AppTheme.GameEnd">
+        <item name="android:windowEnterTransition">@transition/fade_delay_750</item>
+    </style>
+
     <!--style for the main menu buttons-->
     <style name="MainMenuButtonStyle" parent="android:Widget.Material.Button.Colored">
         <item name="android:textSize">18sp</item>

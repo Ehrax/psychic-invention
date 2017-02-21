@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+        android:transitionOrdering="together">
+    <slide android:slideEdge="top" android:duration="750">
+        <targets>
+            <target android:targetId="@id/frame_lay_compare_top_mp"/>
+        </targets>
+    </slide>
+    <slide android:slideEdge="bottom" android:duration="750">
+        <targets>
+            <target android:targetId="@id/frame_lay_compare_bottom_mp"/>
+        </targets>
+    </slide>
+</transitionSet>

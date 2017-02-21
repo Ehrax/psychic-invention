@@ -22,4 +22,5 @@
     <color name="colorLoseFrameBorder">#9f303f</color>
     <color name="colorDrawFrameBorder">#BDBDBD</color>
 
+    <color name="materialDarkBackground">#424242</color>
 </resources>

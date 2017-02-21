@@ -1,5 +1,7 @@
 package de.in.uulm.map.quartett.gallery;
 
+import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -33,6 +35,7 @@ import de.in.uulm.map.quartett.game.GameContract;
 
 import de.in.uulm.map.quartett.data.Image;
 
+import de.in.uulm.map.quartett.multiplayer.MultiplayerContract;
 import de.in.uulm.map.quartett.util.AssetUtils;
 import de.in.uulm.map.quartett.views.viewpagerindicator.CirclePageIndicator;
 
@@ -47,6 +50,7 @@ public class CardFragment extends Fragment {
 
     private GameContract.Presenter mGamePresenter;
     private GalleryContract.Presenter mPresenter;
+    private MultiplayerContract.Presenter mMultiplayerPresenter;
     private AsyncCardInitializer mInitializer;
 
     private long mDeckId;
@@ -69,6 +73,15 @@ public class CardFragment extends Fragment {
                             Snackbar
                                     .LENGTH_SHORT).show();
                 }
+            }else if(mMultiplayerPresenter != null){
+                if(mMultiplayerPresenter.getCurrentTurnBasedMatch()
+                        .getTurnStatus() == TurnBasedMatch.MATCH_TURN_STATUS_MY_TURN){
+                    mMultiplayerPresenter.chooseAttribute(chosenAttribute);
+                }else{
+                    Snackbar.make(getView(), R.string.not_your_turn,
+                            Snackbar
+                                    .LENGTH_SHORT).show();
+                }
             }
         }
     };
@@ -86,6 +99,18 @@ public class CardFragment extends Fragment {
     public void setPresenter(GalleryContract.Presenter presenter) {
 
         mPresenter = presenter;
+    }
+
+    /**
+     * Use this method to set the cards multiplayer presenter if you need this
+     * fragment for multiplayer purpose.
+     *
+     * @param presenter the presenter
+     */
+    public void setMultiplayerPresenter(MultiplayerContract.Presenter
+                                                presenter) {
+
+        mMultiplayerPresenter = presenter;
     }
 
     /**
@@ -276,7 +301,9 @@ public class CardFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
 
             Card card = mPresenter != null ? mPresenter.getCard(mDeckId,
-                    mPosition) : mGamePresenter.getCard(mDeckId, mPosition);
+                    mPosition) : mGamePresenter != null ? mGamePresenter.getCard
+                    (mDeckId, mPosition) : mMultiplayerPresenter.getCard
+                    (mDeckId, mPosition);
 
             mTitle = card.mTitle;
             mAttributeValues = card.getAttributeValues();
@@ -348,7 +375,7 @@ public class CardFragment extends Fragment {
                     .id.lin_layout_card);
             int cardHeight = linearLayoutRoot.getHeight();
 
-            return cardHeight * 5/12;
+            return cardHeight * 5 / 12;
 
 
         }

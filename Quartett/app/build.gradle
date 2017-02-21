@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'MKAndroidKey'
+            keyPassword 'fe50erpen'
+            storeFile file('C:/Users/maxka/Documents/keystores_android/android.jks')
+            storePassword 'fe20erpen'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "24.0.3"
     defaultConfig {
@@ -15,12 +23,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -35,6 +44,10 @@ dependencies {
     compile 'com.bartoszlipinski.flippablestackview:library:1.2.1'
     compile 'com.github.lzyzsd:CircleProgress:v1.2.0'
     compile 'com.theartofdev.edmodo:android-image-cropper:2.3.+'
-    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
+    compile 'com.google.android.gms:play-services-games:10.0.1'
+
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+
+    compile project(':BaseGameUtils')
     testCompile 'junit:junit:4.12'
 }
