@@ -84,18 +84,14 @@
 
     <!--Style for the card attributes title-->
     <style name="TextViewCardAttributesTitle" parent="android:Widget.TextView">
-        <item name="android:paddingTop">5dp</item>
-        <item name="android:paddingBottom">5dp</item>
-        <item name="android:paddingStart">5dp</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">20sp</item>
     </style>
 
     <!--style for the card attributes value-->
     <style name="TextViewCardAttributesValue" parent="@style/TextViewCardAttributesTitle">
-        <item name="android:textAlignment">viewEnd</item>
+        <item name="android:textAlignment">textEnd</item>
         <item name="android:gravity">end</item>
-        <item name="android:paddingEnd">10dp</item>
     </style>
 
     <!--In game header text view style for displaying opponents name and
