@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -20,8 +21,8 @@ import java.lang.ref.WeakReference;
  */
 
 /**
- * This class should be used for all ImageView that load something other than
- * a vector drawable or really small images.
+ * This class should be used for all ImageView that load something other than a
+ * vector drawable or really small images.
  */
 public class AsyncImageLoader extends AsyncTask<Void, Void, Bitmap> {
 
@@ -31,6 +32,13 @@ public class AsyncImageLoader extends AsyncTask<Void, Void, Bitmap> {
 
     final private Context mContext;
 
+    /**
+     * This constructor will set all required member variables.
+     *
+     * @param uri the uri of the image
+     * @param view the view in which the image should be loaded
+     * @param context the current context.
+     */
     public AsyncImageLoader(String uri,
                             WeakReference<ImageView> view,
                             Context context) {
@@ -50,8 +58,8 @@ public class AsyncImageLoader extends AsyncTask<Void, Void, Bitmap> {
                     .get(mUri, ImageLoader.getImageListener(
                             mView.get(), R.drawable.empty, R.drawable.empty));
         }
-
-        view.get().setTag(uri);
+      
+        view.setTag(uri);
     }
 
     @Override
@@ -61,7 +69,33 @@ public class AsyncImageLoader extends AsyncTask<Void, Void, Bitmap> {
             return null;
         }
 
-        return loadBitmap(mUri);
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        Bitmap bitmap;
+
+        try (InputStream in = getInputStream(mUri)) {
+            BitmapFactory.decodeStream(in, null, options);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        options.inSampleSize = calculateInSampleSize(options, 512, 512);
+        options.inJustDecodeBounds = false;
+
+        if (isCancelled()) {
+            return null;
+        }
+
+        try (InputStream in = getInputStream(mUri)) {
+            bitmap = BitmapFactory.decodeStream(in, null, options);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return bitmap;
     }
 
     @Override
@@ -105,53 +139,17 @@ public class AsyncImageLoader extends AsyncTask<Void, Void, Bitmap> {
     }
 
     /**
-     * This function is used to open the right input stream for any uri.
+     * This function is used to open the right input stream for a uri.
      *
      * @param mUri a valid uri to the image
      * @return an opened input stream
      */
     private InputStream getInputStream(String mUri) throws IOException {
 
-        if(mUri.contains("android_asset")) {
+        if (mUri.contains("android_asset")) {
             return mContext.getAssets().open(mUri.substring(20));
         }
 
         return mContext.openFileInput(mUri);
-    }
-
-    /**
-     * Use this to load a very low sampled version of an image.
-     *
-     * @return the loaded bitmap
-     */
-    private Bitmap loadBitmap(String uri) {
-
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-
-        Bitmap bitmap;
-
-        try (InputStream in = getInputStream(uri)) {
-            BitmapFactory.decodeStream(in, null, options);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        options.inSampleSize = calculateInSampleSize(options, 512, 512);
-        options.inJustDecodeBounds = false;
-
-        if (isCancelled()) {
-            return null;
-        }
-
-        try (InputStream in = getInputStream(uri)) {
-            bitmap = BitmapFactory.decodeStream(in, null, options);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return bitmap;
     }
 }

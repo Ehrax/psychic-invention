@@ -4,18 +4,12 @@ import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.transition.AutoTransition;
-import android.support.transition.Fade;
-import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.transition.Slide;
 import android.transition.TransitionInflater;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -25,7 +19,6 @@ import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.gallery.CardFragment;
 import de.in.uulm.map.quartett.gamesettings.GameMode;
-import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
 
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
@@ -42,6 +35,7 @@ public class GameFragment extends Fragment implements GameContract.View {
     /*
     Used to load the card fragment async
      */
+
     public static AsyncCardLoader mCardLoader;
     private CountDownLatch mCountDownLatchGame;
 
@@ -179,12 +173,7 @@ public class GameFragment extends Fragment implements GameContract.View {
         protected CardFragment doInBackground(Void... params) {
 
             CardFragment cardFragment = mPresenter.getCurrentCardFragment();
-            /*
-            try {
-                mCountDownLatchGame.await();
-            }catch(InterruptedException e){
 
-            }*/
             return isCancelled() ? null : cardFragment;
         }
 

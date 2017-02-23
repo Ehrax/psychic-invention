@@ -10,6 +10,7 @@ import de.in.uulm.map.quartett.game.GameActivity;
 import com.orm.dsl.NotNull;
 
 import de.in.uulm.map.quartett.gamesettings.GameSettingsActivity;
+import de.in.uulm.map.quartett.multiplayer.MultiplayerActivity;
 import de.in.uulm.map.quartett.settings.SettingsActivity;
 import de.in.uulm.map.quartett.stats.StatsActivity;
 import de.in.uulm.map.quartett.stats.TabFactoryFragment;
@@ -68,7 +69,7 @@ public class MainMenuPresenter implements MainMenuContract.Presenter {
     @Override
     public void startNewOnlineGame() {
         //TODO: start online game activity
-
+        mBackend.startActivity(new Intent(mCtx, MultiplayerActivity.class));
     }
 
     /**

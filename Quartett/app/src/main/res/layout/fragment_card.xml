@@ -33,9 +33,9 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_card_title"
                 android:padding="5dp"
-                android:textSize="30sp"
+                android:textSize="23sp"
                 android:background="@color/colorCardTitle"
-                android:visibility="gone"/>
+                android:visibility="gone" />
     </FrameLayout>
 
     <ProgressBar
@@ -44,13 +44,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:id="@+id/progress_bar_card" />
-    <TableLayout
+
+    <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:id="@+id/table_layout_card_attr"
-            android:layout_weight="1"
-            android:stretchColumns="*">
+            android:scrollbars="vertical"
+            android:id="@+id/recycler_view_card_attr"
+            android:layout_weight="1">
 
-    </TableLayout>
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>
