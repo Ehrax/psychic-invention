@@ -67,7 +67,7 @@ public class DecksRequest extends AuthRequest<List<Deck>> {
                         URL + "/decks/" + obj.getInt("id"),
                         obj.toString().hashCode(),
                         new Date().getTime(),
-                        DeckInfo.State.SERVER);
+                        0);
 
                 final Deck deck = new Deck(
                         obj.getString("name"),
@@ -96,5 +96,17 @@ public class DecksRequest extends AuthRequest<List<Deck>> {
     protected void deliverResponse(List<Deck> response) {
 
         mListener.onResponse(response);
+    }
+
+    /**
+     * This request gets immediate Priority. Otherwise currently running
+     * downloads may block the Deck View from being filled.
+     *
+     * @return Priority.IMMEDIATE
+     */
+    @Override
+    public Priority getPriority() {
+
+        return Priority.IMMEDIATE;
     }
 }

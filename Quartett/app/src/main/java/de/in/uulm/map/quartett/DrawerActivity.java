@@ -2,48 +2,33 @@ package de.in.uulm.map.quartett;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
-
-import android.content.pm.ActivityInfo;
-
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
-
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-
 import android.support.v4.app.ActivityOptionsCompat;
-
-import android.support.v4.content.SharedPreferencesCompat;
-
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import de.in.uulm.map.quartett.data.Achievement;
 import de.in.uulm.map.quartett.gallery.GalleryActivity;
 import de.in.uulm.map.quartett.mainmenu.MainMenuActivity;
-
-import de.in.uulm.map.quartett.stats.StatsActivity;
-
 import de.in.uulm.map.quartett.settings.SettingsActivity;
 import de.in.uulm.map.quartett.settings.SettingsFragment;
+import de.in.uulm.map.quartett.stats.StatsActivity;
 import de.in.uulm.map.quartett.stats.TabFactoryFragment;
 import de.in.uulm.map.quartett.stats.achievements.AchievementsFragment;
 import de.in.uulm.map.quartett.stats.stats.StatsFragment;
 import de.in.uulm.map.quartett.views.CircularImageView;
-
-import java.io.IOException;
 
 
 /**
@@ -160,8 +145,6 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
                     startActivity(intent, options.toBundle());
                 }
-                break;
-            case R.id.nav_editor:
                 break;
             case R.id.nav_gallery:
                 if (!this.getClass().getSimpleName().equals

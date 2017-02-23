@@ -2,16 +2,12 @@ package de.in.uulm.map.quartett.gallery;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.widget.Gallery;
 import android.widget.ImageView;
 
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.CardImage;
 import de.in.uulm.map.quartett.data.Deck;
-import de.in.uulm.map.quartett.data.DeckInfo;
 import de.in.uulm.map.quartett.data.Image;
 import de.in.uulm.map.quartett.game.GameActivity;
 import de.in.uulm.map.quartett.gamesettings.GameSettingsPresenter;
@@ -101,6 +97,26 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     }
 
     /**
+     * This method will be called by the backend if a deck download has made
+     * progress.
+     *
+     * @param deckId the server id of the deck that is downloaded
+     * @param progress the current progress
+     */
+    @Override
+    public void onDownloadProgress(int deckId, int progress) {
+
+        for(Deck d : mModel.getDecks()) {
+
+            if(d.mDeckInfo.mSource.endsWith("" + deckId)) {
+                d.mDeckInfo.mProgress = progress;
+                mModel.update(mModel.getDecks().indexOf(d), new Integer(progress));
+                break;
+            }
+        }
+    }
+
+    /**
      * This method will be called on confirmation of the download dialog.
      *
      * @param deck the deck to be downloaded
@@ -109,7 +125,7 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     public void onDownloadDialogOk(Deck deck) {
 
         mBackend.downloadDeck(deck);
-        deck.mDeckInfo.mState = DeckInfo.State.DOWNLOADING;
+        deck.mDeckInfo.mProgress = 1;
         mModel.update();
     }
 
@@ -144,37 +160,17 @@ public class GalleryPresenter implements GalleryContract.Presenter {
         ArrayList<Deck> modelDecks = mModel.getDecks();
 
         for (Deck d : decks) {
-            boolean contains = false;
-            for (Deck dl : modelDecks) {
-                contains = contains || (
-                        dl.mDeckInfo.mSource.equals(d.mDeckInfo.mSource) &&
-                                dl.mTitle.equals(d.mTitle));
-            }
-            if (!contains) {
+
+            int index = modelDecks.indexOf(d);
+
+            if (index < 0) {
                 modelDecks.add(d);
+                continue;
             }
-        }
 
-        mModel.update();
-    }
-
-    /**
-     * This method will be called when the download of a deck is completed.
-     *
-     * @param oldDeck the original Deck from the model
-     * @param newDeck the new Deck that is stored in the database
-     */
-    @Override
-    public void onDeckDownloaded(Deck oldDeck, Deck newDeck) {
-
-        if(newDeck == null) {
-            oldDeck.mDeckInfo.mState = DeckInfo.State.SERVER;
-        } else {
-            ArrayList<Deck> decks = mModel.getDecks();
-            int oldIndex = decks.indexOf(oldDeck);
-
-            decks.remove(oldDeck);
-            decks.add(oldIndex, newDeck);
+            if(d.mDeckInfo.mProgress == 100) {
+                modelDecks.set(index, d);
+            }
         }
 
         mModel.update();
@@ -213,18 +209,12 @@ public class GalleryPresenter implements GalleryContract.Presenter {
             return;
         }
 
-        switch (deck.mDeckInfo.mState) {
-
-            case DISK:
-                DeckFragment deckFragment = DeckFragment.newInstance();
-                deckFragment.setCurrentDeckID(deck.getId());
-                mBackend.switchToView(deckFragment);
-                break;
-            case SERVER:
-                mView.showDownloadDialog(deck);
-                break;
-            default:
-                break;
+        if(deck.mDeckInfo.mProgress == 100) {
+            DeckFragment deckFragment = DeckFragment.newInstance();
+            deckFragment.setCurrentDeckID(deck.getId());
+            mBackend.switchToView(deckFragment);
+        } else if (deck.mDeckInfo.mProgress == 0) {
+            mView.showDownloadDialog(deck);
         }
     }
 }

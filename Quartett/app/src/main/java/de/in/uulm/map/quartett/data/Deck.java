@@ -16,6 +16,7 @@ public class Deck extends SugarRecord {
     public Image mImage;
     public DeckInfo mDeckInfo;
 
+
     public Deck() {
 
     }
@@ -80,5 +81,18 @@ public class Deck extends SugarRecord {
     public List<Attribute> getAttributes() {
 
         return Card.find(Attribute.class, "m_deck = ?", "" + this.getId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if(!(obj instanceof Deck)) {
+            return false;
+        }
+
+        Deck d = (Deck) obj;
+
+        return d.mTitle.equals(mTitle) &&
+                d.mDeckInfo.mSource.equals(mDeckInfo.mSource);
     }
 }

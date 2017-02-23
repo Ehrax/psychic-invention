@@ -1,6 +1,9 @@
 package de.in.uulm.map.quartett.gallery;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,10 +19,9 @@ import com.android.volley.toolbox.ImageLoader;
 import de.in.uulm.map.quartett.DrawerActivity;
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Deck;
-import de.in.uulm.map.quartett.rest.DeckDownloadTask;
 import de.in.uulm.map.quartett.rest.DecksRequest;
+import de.in.uulm.map.quartett.rest.DownloadService;
 import de.in.uulm.map.quartett.rest.Network;
-import de.in.uulm.map.quartett.rest.RestLoader;
 import de.in.uulm.map.quartett.util.ActivityUtils;
 
 import java.util.List;
@@ -30,19 +32,21 @@ import java.util.List;
 
 public class GalleryActivity extends DrawerActivity implements GalleryContract.Backend {
 
+    private static final String BROADCAST_ACTION =
+            "de.in.uulm.map.quartett.rest.DOWNLOAD";
+
     private GalleryPresenter mGalleryPresenter;
 
-    private RestLoader mRestLoader;
-
     private GalleryAdapter mAdapter;
+
+    private DownloadBroadcastReceiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        mRestLoader = new RestLoader(this,
-                Network.getInstance(getApplicationContext()).getRequestQueue());
-        mAdapter = new GalleryAdapter(this, mRestLoader);
+
+        mAdapter = new GalleryAdapter(getApplicationContext());
 
         GalleryFragment galleryFragment = (GalleryFragment)
                 getSupportFragmentManager().findFragmentById(R.id.contentFrame);
@@ -61,12 +65,22 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
         mAdapter.setPresenter(mGalleryPresenter);
 
         mGalleryPresenter.start();
+
+        mReceiver = new DownloadBroadcastReceiver();
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onResume() {
 
-        super.onBackPressed();
+        registerReceiver(mReceiver, new IntentFilter(BROADCAST_ACTION));
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+
+        unregisterReceiver(mReceiver);
+        super.onPause();
     }
 
     /**
@@ -110,7 +124,7 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
         Network.getInstance(getApplicationContext())
                 .getImageLoader()
                 .get(url, ImageLoader.getImageListener(
-                                imageView, R.drawable.empty, R.drawable.empty));
+                        imageView, R.drawable.empty, R.drawable.empty));
     }
 
     /**
@@ -164,12 +178,43 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
         int id = Integer.parseInt(
                 Uri.parse(deck.mDeckInfo.mSource).getLastPathSegment());
 
-        new DeckDownloadTask(id, mRestLoader, new DeckDownloadTask.Callback() {
-            @Override
-            public void onFinished(Deck newDeck) {
+        Intent intent = new Intent(getApplicationContext(), DownloadService.class);
+        intent.putExtra("id", id);
+        intent.putExtra("title", deck.mTitle);
+        startService(intent);
+    }
 
-                mGalleryPresenter.onDeckDownloaded(deck, newDeck);
+    /**
+     * This class is used to be notified by the background service when a new
+     * deck has been fully downloaded.
+     */
+    public class DownloadBroadcastReceiver extends BroadcastReceiver {
+
+        /**
+         * Simple zero argument constructor needed for instantiation by the
+         * android system.
+         */
+        public DownloadBroadcastReceiver() {
+
+            super();
+        }
+
+        /**
+         * Actual callback. Will be called when a broadcast message is
+         * received.
+         */
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            final int deckId = intent.getIntExtra("id", -1);
+            final int progress = intent.getIntExtra("progress", 0);
+
+            if(progress >= 100) {
+                loadDecks();
+                loadServerDecks();
+            } else if (progress > 1){
+                mGalleryPresenter.onDownloadProgress(deckId, progress);
             }
-        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 }

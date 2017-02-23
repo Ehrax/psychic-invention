@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +16,19 @@ import android.widget.TextView;
 
 import de.in.uulm.map.quartett.R;
 import de.in.uulm.map.quartett.data.Deck;
+
 import de.in.uulm.map.quartett.data.DeckInfo;
 import de.in.uulm.map.quartett.rest.RestLoader;
+
 import de.in.uulm.map.quartett.util.AssetUtils;
 import de.in.uulm.map.quartett.util.AsyncImageLoader;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by maxka on 26.12.2016. Adapter for the RecyclerView in the gallery.
@@ -80,7 +86,25 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     @Override
     public void update() {
 
+        Collections.sort(mDeckList, new Comparator<Deck>() {
+            @Override
+            public int compare(Deck o1, Deck o2) {
+
+                return o1.mTitle.compareTo(o2.mTitle);
+            }
+        });
+
         notifyDataSetChanged();
+    }
+
+    /**
+     * Part of the model interface. Forces the view to update a single data
+     * element given the position in the item list.
+     * @param position
+     */
+    public void update(int position, Object payload) {
+
+        notifyItemChanged(position, payload);
     }
 
     /**
@@ -129,13 +153,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
         final Deck currentDeck = mDeckList.get(position);
 
-        viewHolder.mImageView.setImageResource(R.drawable.empty);
-
-        if(currentDeck.mImage != null) {
-            new AsyncImageLoader(currentDeck.mImage.mUri,
-                    viewHolder.mImageView, mContext, mRestLoader).
-                    executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        if(currentDeck.mImage.mUri == null || currentDeck.mImage.mUri.isEmpty()) {
+            viewHolder.mImageView.setImageResource(R.drawable.empty);
         }
+
+        new AsyncImageLoader(
+                currentDeck.mImage.mUri,
+                new WeakReference<>(viewHolder.mImageView),
+                context).execute();
 
         viewHolder.mTextView.setText(
                 currentDeck.mTitle == null ? "" : currentDeck.mTitle);
@@ -144,16 +169,23 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 currentDeck.mDescription == null ? "" : currentDeck.mDescription);
 
         viewHolder.mDownloadIcon.setVisibility(
-                currentDeck.mDeckInfo.mState == DeckInfo.State.SERVER
+                currentDeck.mDeckInfo.mProgress == 0
                         ? View.VISIBLE : View.GONE);
 
         viewHolder.mDownloadProgress.setVisibility(
-                currentDeck.mDeckInfo.mState == DeckInfo.State.DOWNLOADING
+                currentDeck.mDeckInfo.mProgress != 0 &&
+                        currentDeck.mDeckInfo.mProgress < 100
                         ? View.VISIBLE : View.GONE);
+
+        viewHolder.mDownloadProgress.setIndeterminate(
+                currentDeck.mDeckInfo.mProgress == 1);
+
+        viewHolder.mDownloadProgress.setProgress(
+                currentDeck.mDeckInfo.mProgress);
 
         viewHolder.mBtnDelete.setVisibility(
                 currentDeck.mDeckInfo.mSource.contains("http://") &&
-                        currentDeck.mDeckInfo.mState == DeckInfo.State.DISK
+                        currentDeck.mDeckInfo.mProgress == 100
                         ? View.VISIBLE : View.GONE);
 
         viewHolder.mBtnDelete.setOnClickListener(new View.OnClickListener() {
@@ -171,6 +203,32 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 mPresenter.onDeckClicked(currentDeck);
             }
         });
+    }
+
+    /**
+     * This function is needed to accept partial changed to a row item.
+     * If possible the row will only be updated in part, which is more
+     * efficient.
+     *
+     * @param holder the ViewHolder
+     * @param position the position of the underlying data element in the list
+     * @param payloads the partial change (here a Integer object with progress)
+     */
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+
+        if(payloads.isEmpty()){
+            onBindViewHolder(holder, position);
+            return;
+        }
+
+        Object p = payloads.get(0);
+        if(p instanceof Integer) {
+            holder.mDownloadProgress.setProgress((Integer) p);
+            holder.mDownloadProgress.setIndeterminate(false);
+        }
+
+        Log.d("Test", "" + payloads.size());
     }
 
     /**

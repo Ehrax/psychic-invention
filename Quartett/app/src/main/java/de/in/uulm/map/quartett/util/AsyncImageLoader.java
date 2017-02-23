@@ -7,8 +7,10 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
+import com.android.volley.toolbox.ImageLoader;
+
 import de.in.uulm.map.quartett.R;
-import de.in.uulm.map.quartett.rest.RestLoader;
+import de.in.uulm.map.quartett.rest.Network;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,36 +33,39 @@ public class AsyncImageLoader extends AsyncTask<Void, Void, Bitmap> {
     final private Context mContext;
 
     /**
-     * This constructor will set all required member variables. If the uri
-     * can contain web urls a RestLoader must be set. Else the RestLoader is
-     * not required and can be set to null.
+     * This constructor will set all required member variables.
      *
      * @param uri the uri of the image
      * @param view the view in which the image should be loaded
-     * @param context the current context
-     * @param loader a rest loader or null
+     * @param context the current context.
      */
     public AsyncImageLoader(String uri,
-                            ImageView view,
-                            Context context,
-                            @Nullable RestLoader loader) {
+                            WeakReference<ImageView> view,
+                            Context context) {
 
-        this.mView = new WeakReference<>(view);
+        this.mUri = uri;
+        this.mView = view;
         this.mContext = context;
 
-        if (uri.contains("http://") && loader != null) {
-            loader.loadImage(uri, view, R.drawable.empty, R.drawable.empty);
-            this.mUri = null;
-        } else {
-            view.setTag(uri);
-            this.mUri = uri;
+        if(view.get().getTag() != null && view.get().getTag().equals(mUri)) {
+            return;
         }
+
+        if(mUri.contains("http://")) {
+
+            Network.getInstance(mContext)
+                    .getImageLoader()
+                    .get(mUri, ImageLoader.getImageListener(
+                            mView.get(), R.drawable.empty, R.drawable.empty));
+        }
+      
+        view.setTag(uri);
     }
 
     @Override
     protected Bitmap doInBackground(Void... params) {
 
-        if (mUri == null || mUri.isEmpty()) {
+        if(mUri.contains("http://") || mUri.isEmpty()) {
             return null;
         }
 

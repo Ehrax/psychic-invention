@@ -1,8 +1,5 @@
 package de.in.uulm.map.quartett.factory;
 
-import android.support.annotation.Nullable;
-import android.telecom.Call;
-
 import com.orm.SugarRecord;
 import com.orm.SugarTransactionHelper;
 
@@ -19,8 +16,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -115,7 +112,7 @@ public class EntityFactory {
                 mJsonLoader.getSource(),
                 mJsonLoader.getHash(),
                 new Date().getTime(),
-                DeckInfo.State.DISK);
+                100);
 
         mDeck = new Deck(
                 jsonDeck.getString("name"),

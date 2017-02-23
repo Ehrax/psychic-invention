@@ -6,7 +6,6 @@ import android.widget.ImageView;
 import de.in.uulm.map.quartett.data.Card;
 import de.in.uulm.map.quartett.data.Deck;
 import de.in.uulm.map.quartett.data.Image;
-import de.in.uulm.map.quartett.gameend.GameEndContract;
 import de.in.uulm.map.quartett.util.BasePresenter;
 import de.in.uulm.map.quartett.util.BaseView;
 
@@ -23,8 +22,6 @@ public interface GalleryContract {
 
         void onDeckLoaded(List<Deck> decks);
 
-        void onDeckDownloaded(Deck oldDeck, Deck newDeck);
-
         void onDeleteDeckClicked(Deck deck);
 
         void onDeckClicked(Deck deck);
@@ -32,6 +29,8 @@ public interface GalleryContract {
         void onImageLongClicked(Image image);
 
         void loadServerImage(String url, ImageView imageView);
+
+        void onDownloadProgress(int deckId, int progress);
 
         void onDownloadDialogOk(Deck deck);
 
@@ -72,6 +71,8 @@ public interface GalleryContract {
     interface Model {
 
         void update();
+
+        void update(int position, Object payload);
 
         ArrayList<Deck> getDecks();
     }

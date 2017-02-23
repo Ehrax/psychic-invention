@@ -60,7 +60,7 @@ public class DeckRequest extends AuthRequest<Deck> {
                     getUrl(),
                     res.toString().hashCode(),
                     new Date().getTime(),
-                    DeckInfo.State.DISK);
+                    100);
 
             Deck deck = new Deck(
                     res.getString("name"),

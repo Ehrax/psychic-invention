@@ -14,6 +14,7 @@
             android:id="@+id/img_deck_gallery"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            card_view:srcCompat="@drawable/empty"
             android:scaleType="centerCrop" />
 
     <RelativeLayout
@@ -46,9 +47,9 @@
                 android:layout_centerVertical="true"/>
 
         <ProgressBar
-                style="?android:attr/progressBarStyle"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:id="@+id/download_progress" />
@@ -61,7 +62,6 @@
                 android:background="@drawable/ic_delete"
                 android:layout_width="24dp"
                 android:layout_height="24dp" />
-
 
     </RelativeLayout>
 
