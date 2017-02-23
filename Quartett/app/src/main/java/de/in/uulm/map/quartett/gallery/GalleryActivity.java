@@ -45,7 +45,7 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
 
         super.onCreate(savedInstanceState);
 
-        mAdapter = new GalleryAdapter(this);
+        mAdapter = new GalleryAdapter(getApplicationContext());
 
         GalleryFragment galleryFragment = (GalleryFragment)
                 getSupportFragmentManager().findFragmentById(R.id.contentFrame);
@@ -205,8 +205,15 @@ public class GalleryActivity extends DrawerActivity implements GalleryContract.B
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            loadDecks();
-            loadServerDecks();
+            final int deckId = intent.getIntExtra("id", -1);
+            final int progress = intent.getIntExtra("progress", 0);
+
+            if(progress >= 100) {
+                loadDecks();
+                loadServerDecks();
+            } else if (progress > 1){
+                mGalleryPresenter.onDownloadProgress(deckId, progress);
+            }
         }
     }
 }

@@ -67,7 +67,7 @@ public class DecksRequest extends AuthRequest<List<Deck>> {
                         URL + "/decks/" + obj.getInt("id"),
                         obj.toString().hashCode(),
                         new Date().getTime(),
-                        DeckInfo.State.SERVER);
+                        0);
 
                 final Deck deck = new Deck(
                         obj.getString("name"),

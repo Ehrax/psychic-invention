@@ -30,6 +30,8 @@ public interface GalleryContract {
 
         void loadServerImage(String url, ImageView imageView);
 
+        void onDownloadProgress(int deckId, int progress);
+
         void onDownloadDialogOk(Deck deck);
 
         void onDeleteDialogOk(Deck deck);
@@ -69,6 +71,8 @@ public interface GalleryContract {
     interface Model {
 
         void update();
+
+        void update(int position, Object payload);
 
         ArrayList<Deck> getDecks();
     }

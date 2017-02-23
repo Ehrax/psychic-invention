@@ -6,6 +6,11 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
+import com.android.volley.toolbox.ImageLoader;
+
+import de.in.uulm.map.quartett.R;
+import de.in.uulm.map.quartett.rest.Network;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -34,14 +39,26 @@ public class AsyncImageLoader extends AsyncTask<Void, Void, Bitmap> {
         this.mView = view;
         this.mContext = context;
 
+        if(view.get().getTag() != null && view.get().getTag().equals(mUri)) {
+            return;
+        }
+
+        if(mUri.contains("http://")) {
+
+            Network.getInstance(mContext)
+                    .getImageLoader()
+                    .get(mUri, ImageLoader.getImageListener(
+                            mView.get(), R.drawable.empty, R.drawable.empty));
+        }
+
         view.get().setTag(uri);
     }
 
     @Override
     protected Bitmap doInBackground(Void... params) {
 
-        if(mUri.contains("http://")) {
-            // load image here ...
+        if(mUri.contains("http://") || mUri.isEmpty()) {
+            return null;
         }
 
         return loadBitmap(mUri);
@@ -96,7 +113,7 @@ public class AsyncImageLoader extends AsyncTask<Void, Void, Bitmap> {
     private InputStream getInputStream(String mUri) throws IOException {
 
         if(mUri.contains("android_asset")) {
-            return mContext.getAssets().open(mUri.substring(15));
+            return mContext.getAssets().open(mUri.substring(20));
         }
 
         return mContext.openFileInput(mUri);

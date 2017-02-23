@@ -68,7 +68,7 @@ public class DownloadService extends IntentService {
     private static final int NOTIFICATION_ID = 1;
 
     /**
-     * This is the request queue, which is used make request to the server.
+     * This is the request queue, which is used to make requests to the server.
      */
     private RequestQueue mRequestQueue;
 
@@ -81,6 +81,11 @@ public class DownloadService extends IntentService {
      * This variable contains the download progress.
      */
     private float progress;
+
+    /**
+     * This variable stores the id of the deck that is currently downloaded.
+     */
+    private int id;
 
     /**
      * Simple constructor. Calls super constructor.
@@ -105,8 +110,7 @@ public class DownloadService extends IntentService {
         mRequestQueue =
                 Network.getInstance(getApplicationContext()).getRequestQueue();
 
-        final int id = intent.getIntExtra("id", -1);
-        final String title = intent.getStringExtra("title");
+        id = intent.getIntExtra("id", -1);
 
         if(builder == null) {
             builder = new Notification.Builder(this)
@@ -115,8 +119,8 @@ public class DownloadService extends IntentService {
                     .setProgress(100, 0, false);
         }
 
-        builder.setContentText("Downloading Deck: " + title);
-        showNotification();
+        builder.setContentText(intent.getStringExtra("title"));
+        updateProgress();
 
         if (id < 0) {
             return;
@@ -158,10 +162,12 @@ public class DownloadService extends IntentService {
             }
         }
 
-        closeNotification();
-
         Intent broadcastIntent = new Intent(BROADCAST_ACTION);
+        broadcastIntent.putExtra("progress", 100);
+        broadcastIntent.putExtra("id", id);
         sendBroadcast(broadcastIntent);
+
+        closeNotification();
     }
 
     /**
@@ -214,7 +220,7 @@ public class DownloadService extends IntentService {
                             c.mAttributeValues.addAll(attrs);
 
                             progress += 25.0f/(float)c.mCards.size();
-                            showNotification();
+                            updateProgress();
 
                             latch.countDown();
                         }
@@ -245,7 +251,7 @@ public class DownloadService extends IntentService {
                             }
 
                             progress += 25.0f/(float)c.mCards.size();
-                            showNotification();
+                            updateProgress();
 
                             latch.countDown();
                         }
@@ -291,7 +297,7 @@ public class DownloadService extends IntentService {
 
                             i.mUri = uri;
                             progress += 50.0f/(float)images.size();
-                            showNotification();
+                            updateProgress();
                             latch.countDown();
                         }
                     },
@@ -329,7 +335,7 @@ public class DownloadService extends IntentService {
     /**
      * This method is used to create or update the progress Notification.
      */
-    public void showNotification() {
+    public void updateProgress() {
 
         NotificationManager manager = (NotificationManager)
                 getSystemService(Context.NOTIFICATION_SERVICE);
@@ -337,6 +343,11 @@ public class DownloadService extends IntentService {
         builder.setProgress(100, (int)progress, false);
 
         manager.notify(NOTIFICATION_ID, builder.build());
+
+        Intent broadcastIntent = new Intent(BROADCAST_ACTION);
+        broadcastIntent.putExtra("progress", (int)progress);
+        broadcastIntent.putExtra("id", id);
+        sendBroadcast(broadcastIntent);
     }
 
     /**
