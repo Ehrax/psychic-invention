@@ -19,8 +19,50 @@
 
 \section{Einleitung}
 \subsection{Motivation}
+
+Um die Besonderheiten bei der Entwicklung einer Applikation für eine mobile
+Plattform kennenzulernen, sollte im Rahmen des Mobile Application Labs ein
+Quarett Spiel für das Android System entwickelt werden. Da ein Spiel viele
+verschiedene Aspekte einer Plattform benötigt und keine triviale Applikation
+darstellt, erweist sich diese Problemstellung als geeignet für den Einstieg in
+die Android Programmierung.
+
+\ \newline
+Außerdem konnten nur wenige Quartett-Apps gefunden werden, die nach gängigen
+Kritieren als spielbar empfunden werden. So sind die meisten dieser Apps weder
+optisch ansprechend noch performant oder intuitiv bedienbar. Kreative oder
+innovative Ideen sind nur bei sehr wenigen Apps vorhanden. Auch die
+Erweiterbarkeit und der generelle Umfang, also die Anzahl an spielbaren Karten,
+ist meist sehr beschränkt. Zudem werden oft unötigerweise für unterschiedliche
+Thematiken der Quartett Karten zahlreiche Apps produziert die sich lediglich
+in den vewendeten Graphiken unterscheiden. All diese Probleme motivierten somit
+die Entwicklung einer echten Alternative für Quartett-Apps.
+
 \subsection{Ziel}
+
+Das hiermit erklärte Ziel dieses Projekts ist die Entwicklung einer Quarett-App,
+welche die meisten der oben aufgelisteten Probleme der momementan verfügbaren
+Apps löst oder diese zumindest entscheidend verbessert. Außerdem sollen
+effektive Techniken für die Programmierung von Android Apps erabeitet werden.
+Auch das Android API sollte nach Beendigung des Projekts im wesentlichen bekannt
+sein. Besonderheiten im Umgang mit den begrenzten Ressourcen von mobilen
+Plattformen sollten ebenfalls erlernt werden.
+
+\ \newline
+Die App selbst sollte dabei einen klassischen Einzelspieler Modus gegen einen
+Computergegner und mindestens ein innovatives Feature aufweisen, um sich von der
+Konkurrenz abzusetzen.
+
 \subsection{Aufbau}
+
+In der nun folgenden Dokumentation werden zuerst die Grundlagen des
+Quartettspiels, der Android Plattform und die verwendeten Frameworks erklärt.
+Danach folgt eine Anforderungsanalyse, welche sowohl funktionale als auch nicht
+funktionale Anforderungen umfasst. Im nächsten Abschnitt werden einige wichtige
+Details der Implementierung sowie die übergreifende Architektur und diverse
+Besonderheiten der App beschreiben. Zuletzt werden die gestellten Anforderungen
+mit der tatsächlichen Implementierung der App verglichen und es wird
+festgestellt welche Anforderungen bis zu welchem Grad erfüllt wurden.
 
 \section{Grundlagen}
 \subsection{Quartettspiel}
@@ -116,7 +158,7 @@ soll eine Langzeitmotivation erreicht werden.
 Es ist über ein Netzwerk möglich gegen andere Benutzer der App anzutreten.
 
 
-\subsection{Nichtfunktionale Anforderungen}
+\subsection{Nicht Funktionale Anforderungen}
 
 \textbf{NFA1 Robustheit} \newline
 Das Spiel soll eine gewisse Robustheit aufweisen, also auf fehlerhafte Eingaben
@@ -144,7 +186,6 @@ und benutzerfreundliche Oberfläche ohne weitere Anleitung bedienen können.
 \section{Konzept und Entwurf}
 \subsection{Mockups}
 
-\newpage
 \section{Implementierung}
 \subsection{Ausgewählte Implementierungsdetails}
 \subsubsection{Gallerie}
@@ -235,6 +276,9 @@ Zustand der Datenbank erreicht und Fehler können einfacher abgefangen werden.
   \caption{ER Diagramm des Datenmodells}
 \end{figure}
 
+DAS DIAGRAMM IST SO NOCH NICHT KORREKT! HIER SIND NOCH DIE ATTRIBUTE EINER KARTE
+ZUGEORDNET STATT EINEM DECK!
+
 \noindent
 Im obigen ER Diagramm ist die Struktur unseres Datenmodells dargestellt. Zur
 Realisierung wurde die in Android integrierte SQL Datenbank SQLite in
@@ -250,9 +294,137 @@ SharedPreferences ist eine einfach Key-Value Datenbank für kleine Datenmengen,
 wie z.B. die Einstellungen einer App.
 
 \subsubsection{Klassenstruktur}
+
+Um die Applikation zu strukturieren wurde hier das Model-View-Presenter Pattern
+angewendet. Mit diesem Pattern wird jede Activity in Model-, View- und Presenter-
+Komponenten zerlegt. Die Model Komponenten beinhalten die Zugriffsschicht auf
+die Datenbank mit allen zugehörigen Klassen. In der hier vorgestellten App wird
+das Model durch Sugar ORM bzw. durch dessen Entitätsklassen dargestellt. Damit
+existiert auch nur ein gemeinsames Model für alle Activities. Auf das Model
+kann nur vom Presenter aus zugegriffen werden. Dieser verwaltet die
+eigentlich Logik einer Activity. Dabei ist der Presenter selbst eine einfache
+Java Klasse ohne direktes Wissen über das Android System oder die Datenbank.
+Events der View werden an den Presenter weitergeleitet und dort bearbeitet. Der
+Presenter kann zur Bearbeitung von Events sowohl auf das Model als auch auf die
+View Komponente zugreifen. Diese Komponenten beinhaltet die Anzeigeschicht und
+verwaltet die einzelnen GUI-Elemente. In unserer App wird die View von einer
+Fragment Klasse implementiert. Direkt kommuniziert die View nur mit dem
+Presenter und greift nicht auf das Model zu. In der Praxis gibt es dabei
+allerdings einige Ausnahmen.
+
+\ \newline
+Um z.B. das Anzeigen von Listen in Android
+effizient zu realisieren werden sogenannte Adapter verwendet. Diese greifen
+meist direkt auf die Datenbank zu und stellen die erhaltenen Daten direkt in
+einer ListView da. Damit können diese Klassen nicht eindeutig der Model oder
+View Kompomenten zugeordnet werden. Daher implementieren diese meist sowohl die
+Eigenschaften des Models als auch der View.
+
+\ \newline
+Durch die klare und immer gleichförmige Strukturierung in Model, View und
+Presenter, wird das Erstellen von neuen Activities vereinfacht, da somit ein
+klarer Arbeitsablauf gegeben ist. Auch das lesen und editieren von fremden Code
+wird erleichtert, da von vornherein anhand der Benennung der einzelnen Klassen
+klar ist welche Aufgaben diese Komponenten übernehmen.
+
 \subsection{Besonderheiten}
-\subsubsection{Model-View-Presenter}
+
+Eventuell können wir hier den Multiplayer einfügen. Oder wir lassen den
+Abschnitt einfach weg und erklären den Muliplayer in Implementierungsdetails.
+
 \section{Anforderungsabgleich}
 
+Im Folgenden werden die gegebenen Anforderungen mit der tatsächlichen
+Implementierung verglichen. Es wird festgestellt ob eine Anforderung ganz,
+teilweise oder gar nicht erfüllt wurde.
+
+\subsection{Funktionale Anforderungen}
+
+\textbf{FA1 Hauptmenü - erfüllt} \newline
+Das Hauptmenü wurde wie in der Anforderung beschrieben implementiert.
+
+\ \newline
+\textbf{FA2 Spielmodi - erfüllt} \newline
+Alle Spielmodi wurden wie gefordert implementiert und können vor jedem Spiel
+ausgewählt werden.
+
+\ \newline
+\textbf{FA3 Computergegner - erfüllt} \newline
+Für den Einzelspielermodus wurde ein Computergegner implementiert, der ein
+faires Spielerlebnis bietet. Diese \enquote{KI} kann je nach Schwierigkeitsgrad
+unterschiedlich gut abschätzen welche Attribut einer Karte die höchsten
+Gewinnchancen hat, und imitiert so das Verhalten eines menschlichen Spielers.
+
+\ \newline
+\textbf{FA4 Schwierigkeitsgrad - erfüllt} \newline
+Die geforderten Schwierigkeitsgrade wurden implementiert und können vor dem
+Beginn eines neuen Spiels ausgewählt werden. Die Wahl des Schwierigkeitsgrads
+beinflusst das Verhalten der KI.
+
+\ \newline
+\textbf{FA5 Spiel fortsetzen - erfüllt} \newline
+Nach jedem Spielzug wird der komplette Zustand des Spiels in die interne
+Datenbank geschreiben und damit persistent gespeichert.
+
+\ \newline
+\textbf{FA6 Gallerie - erfüllt} \newline
+Die Gallerie wurde wie in \enquote{Implementierungsdetails} beschreiben
+implementiert.
+
+\ \newline
+\textbf{FA7 Deck Download - erfüllt} \newline
+Der Deckdownload wurde wie in \enquote{Implementierungsdetails} beschreiben in
+die Gallerie integriert.
+
+\ \newline
+\textbf{FA8 Statistiken - erfüllt} \newline
+Die Statistiken wurden implementiert und werden graphisch aufbereitet in einer
+speziellen Ansicht dargestellt.
+
+\ \newline
+\textbf{FA9 Rangliste - erfüllt} \newline
+Die beschreibene Ranglist wurde implementiert. Der Spieler wird mit dem Namen
+der zu Beginn eines Spiels eingegeben wurde, automatisch mit seiner erreichten
+Punktezahl in die Rangliste aufgenommen
+
+\ \newline
+\textbf{FA10 Achievements - teilweise erfüllt} \newline
+Es wurde eine Oberfläche zur Anzeige der Achievments implementiert. Ein fertiges
+Achievementsystem ist allerdings nicht in der App vorhanden.
+
+\ \newline
+\textbf{FA11 Quartetteditor - nicht erfüllt} \newline
+Der Quartetteditor wurde zu Gunsten des Multiplayers entfernt.
+
+\ \newline
+\textbf{FA12 Levelsystem - nicht erfüllt} \newline
+Das Levelsystem wurde zu Gunsten des Multiplayers entfernt.
+
+\ \newline
+\textbf{FA13 Multiplayer - erfüllt} \newline
+Der Multiplayer wurde mit Hilfe der Google Play Services implementiert und
+erlaubt es zwei Benutzer der App über das Internet gegeneinander anzutreten.
+
+\subsection{Nicht Funktionale Anforderungen}
+
+\textbf{NFA1 Robustheit - teilweise} \newline
+Der Multiplayer weist aufgrund der Komplexität und fehlender Entwicklungszeit
+noch einige Stabilitätprobleme auf. Ansonsten konnten während der Entwicklung
+keine Fehler festgestellt werden die Robostheit der App beinträchtigen.
+
+\ \newline
+\textbf{NFA2 Erweiterbarkeit - erfüllt} \newline
+Durch die Verwendung des Model-View-Presenter Patterns ist eine einfache
+Erweiterbarkeit gegeben.
+
+\ \newline
+\textbf{NFA3 Responsiveness - erfüllt} \newline
+Durch den permanenten Einsatz von asynchronen Programmiertechniken wurde
+sichergestellt, dass die Applikation immer entsprechend schnell reagiert.
+
+\ \newline
+\textbf{NFA4 Usability - erfüllt} \newline
+Um die Usability sicher zu stellen wurden die Google Human Interface Guidelines
+als Referenz für die Gestaltung der Oberflächen verwendet.
 
 \end{document}
