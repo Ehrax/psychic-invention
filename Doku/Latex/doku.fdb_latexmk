@@ -1,11 +1,11 @@
 # Fdb version 3
-["pdflatex"] 1491752307 "doku.tex" "doku.pdf" "doku" 1491752425
-  "./doku.out" 1491752309 1599 97a0e62e5b70ee25209f1b57bacfe648 ""
+["pdflatex"] 1492252741 "doku.tex" "doku.pdf" "doku" 1492252744
+  "./doku.out" 1492252744 1599 97a0e62e5b70ee25209f1b57bacfe648 ""
   "./img/gallery_cards.png" 1491662383 420914 13a9c7f2698ab22b0f99d4f5e8cbdffb ""
   "./img/gallery_decks.png" 1491662383 765258 0b44e6406f461463ff7cfb20dd024a17 ""
   "./img/gallery_dialog.png" 1491662383 477010 1d9bb13c397ee4e396aebbc5c800c5a9 ""
   "./img/gallery_download.png" 1491662383 765441 937197cbf8e1390a7774b663c9ba5a88 ""
-  "./img/map_er.png" 1491662383 87071 18577987fc5bd974d6f71a2c088adc10 ""
+  "./img/map_er.png" 1492252550 133799 c00897a98daa7549082dcaa9e0534ef4 ""
   "/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2015/texmf-dist/fonts/map/fontname/texfonts.map" 1272929888 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/local/texlive/2015/texmf-dist/fonts/tfm/adobe/helvetic/phvb7t.tfm" 1136768653 2240 eb56c13537f4d8a0bd3fafc25572b1bd ""
@@ -90,14 +90,14 @@
   "/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1432479641 1764542 91654ba72bdb667e84ea24f076ae16d8 ""
   "/usr/local/texlive/2015/texmf-var/web2c/pdftex/pdflatex.fmt" 1434987579 3849859 fb8665c18d890dd9576b37c7b5e3012f ""
   "/usr/local/texlive/2015/texmf.cnf" 1432479636 577 0d611272082f3cdb8e80e09a3c69cf07 ""
-  "doku.aux" 1491752309 3929 ceb8818c5bc1ee5b48b0305ebe5b7eec ""
-  "doku.out" 1491752309 1599 97a0e62e5b70ee25209f1b57bacfe648 ""
-  "doku.tex" 1491752425 18888 7b11219435138c4ff680cb61cd9d89bd ""
+  "doku.aux" 1492252744 3929 ceb8818c5bc1ee5b48b0305ebe5b7eec ""
+  "doku.out" 1492252744 1599 97a0e62e5b70ee25209f1b57bacfe648 ""
+  "doku.tex" 1492252741 18777 4a338dec1724a54c0620469a75431c51 ""
   "img/gallery_cards.png" 1491662383 420914 13a9c7f2698ab22b0f99d4f5e8cbdffb ""
   "img/gallery_decks.png" 1491662383 765258 0b44e6406f461463ff7cfb20dd024a17 ""
   "img/gallery_dialog.png" 1491662383 477010 1d9bb13c397ee4e396aebbc5c800c5a9 ""
   "img/gallery_download.png" 1491662383 765441 937197cbf8e1390a7774b663c9ba5a88 ""
-  "img/map_er.png" 1491662383 87071 18577987fc5bd974d6f71a2c088adc10 ""
+  "img/map_er.png" 1492252550 133799 c00897a98daa7549082dcaa9e0534ef4 ""
   (generated)
   "doku.pdf"
   "doku.aux"
