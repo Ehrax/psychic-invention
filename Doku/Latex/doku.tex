@@ -292,13 +292,21 @@ wie z.B. die Einstellungen einer App.
 
 \subsubsection{Klassenstruktur}
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{img/class_structure.png}
+  \caption{Schematische Klassenstrukur der App mit MVP-Pattern}
+\end{figure}
+
 Um die Applikation zu strukturieren wurde hier das Model-View-Presenter Pattern
-angewendet. Mit diesem Pattern wird jede Activity in Model-, View- und Presenter-
-Komponenten zerlegt. Die Model Komponenten beinhalten die Zugriffsschicht auf
-die Datenbank mit allen zugehörigen Klassen. In der hier vorgestellten App wird
-das Model durch Sugar ORM bzw. durch dessen Entitätsklassen dargestellt. Damit
-existiert auch nur ein gemeinsames Model für alle Activities. Auf das Model
-kann nur vom Presenter aus zugegriffen werden. Dieser verwaltet die
+angewendet. Mit diesem Pattern wird jede Activity in Model-, View- und
+Presenter- Komponenten zerlegt. Die Model Komponenten beinhalten die
+Zugriffsschicht auf die Datenbank mit allen zugehörigen Klassen. In der hier
+vorgestellten App wird das Model durch Sugar ORM bzw. durch dessen
+Entitätsklassen dargestellt. Außerdem wird die Serveranbindung, welche durch das
+Volley Framework realisiert wird, ebenfalls zum Model gezählt. existiert auch
+nur ein gemeinsames Model für alle Activities. Auf das Model kann nur vom
+Presenter aus zugegriffen werden. Dieser verwaltet die
 eigentlich Logik einer Activity. Dabei ist der Presenter selbst eine einfache
 Java Klasse ohne direktes Wissen über das Android System oder die Datenbank.
 Events der View werden an den Presenter weitergeleitet und dort bearbeitet. Der

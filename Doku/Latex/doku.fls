@@ -173,6 +173,9 @@ INPUT ./img/gallery_download.png
 INPUT img/map_er.png
 INPUT ./img/map_er.png
 INPUT ./img/map_er.png
+INPUT img/class_structure.png
+INPUT ./img/class_structure.png
+INPUT ./img/class_structure.png
 INPUT doku.aux
 INPUT ./doku.out
 INPUT ./doku.out
