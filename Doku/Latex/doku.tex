@@ -466,6 +466,11 @@ Implementierung auch nicht mehr Informationen als ein menschlicher Spieler.
 Unfaires Verhalten wird somit verhindert.
 
 \subsubsection{Multiplayer}
+Der Multiplayer bietet den Spielern die Möglichkeit über eine Internetverbindung gegeneinander zu spielen. Entscheidet sich der Nutzer zu einem Multiplayer Spiel gelangt dieser zu erst auf eine Activity die ihm eine Liste aller Spiele anzeigt die er gerade spielt und auch die Möglichkeit gibt ein neues Spiel zu starten. Wählt der Nutzer ein neues Spiel kann er sich entscheiden ob er automatisch einem anderen Spieler zugeteilt werden möchte oder gezielt mit einer bestimmten Person spielen möchte.
+
+Im Mulitplayer modus wird im Gegensatz zum herkömmlichen Quartett immer abwechselnd gespielt egal wer die vorherige Runde gewonnen hat. Dies ist eine Designentscheidung die aus Usability Gründen getroffen wurde. Andernfalls könnte es vorkommen ein Spieler macht einen Zug, schließt die App um später weiter zu spielen aber in der Zwischenzeit gewinnt sein Gegner alle folgenden runden und beendet das Spiel ohne, dass der erste Spieler etwas mitbekommt.
+
+Die technische Umsetzung wurde durch die bereits im Kapitel Libaries und Frameworks erwähnten Google Play Services extrem erleichtert. Durch die Verwendung dieser services mussten wir uns nur noch um den Client seitigen Teil der Anwendung kümmern. Hier war der anspruchsvollste Teil jedes mögliche Szenario abzudecken. Also entsprechend zu reagieren wenn einer der Spieler einen Zug gemacht hat und der andere zum Beispiel gerade noch das Ergebnis des vorherigen Zuges angeschaut hat oder gar nicht mehr innerhalb der App war. Da Quartett ein rundenbasiertes Spiel ist war die Synchronisation eher trivial.    
 \subsection{Architektur}
 \subsubsection{Datenmodell}
 
