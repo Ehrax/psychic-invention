@@ -67,6 +67,84 @@ bis zu welchem Grad erfüllt wurden.
 
 \section{Grundlagen}
 \subsection{Quartettspiel}
+
+% TODO: quelle setzten Quelle: https://de.wikipedia.org/wiki/Quartett_(Kartenspiel)
+% TODO: quelle setzten Quelle: https://de.wikipedia.org/wiki/Supertrumpf
+
+Das klassische Quartettspiel ist bei Kindern ein beliebites Kartenspiel. Das 
+Spielziel besteht darin möglichst viele Quartette, von vier  zusammengehörigen 
+Karten zu sammlen. In unserer App spielen wir eine Abwandlung von dem klassischen
+Quartett das sich Supertrumpf nennt bzw im Umgangsprachlichen als Autoquartett 
+bezeichent wird. Im folgenden werden die Spielregeln und der Spielverlauf eines 
+Quartettspiels erklärt.
+
+\subsubsection{Quartettkarte}
+
+%TODO: quellenangabe anpassen, 
+
+%QUELLE: https://www.google.de/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=0ahUKEwja49HNxK7TAhVENxQKHZLCD8YQjRwIBw&url=http%3A%2F%2Fautogramm.volkswagen.de%2F10_12%2Fautoundtechnik%2Fautoundtechnik_03.html&psig=AFQjCNFkG_BumLaztguoSMh90FYloFPB4g&ust=1492623128576287
+
+%Bin mir außerdem nicht sicher ob wir das Bild verwenden dürfen :D
+
+\begin{figure}[!ht]
+\begin{center}
+    \includegraphics[scale=0.6]{img/quartett_card.png}
+    \caption{Golf GTI Quartettkarte aus einem Autoquartett}
+\end{center}
+
+%Außerdem soll das Bild über dem Text sein, vll macht Latex was kaputtt
+In der oberen Abbildung wird eine Quartettkarte dargestellt. Diese beinhaltet 
+ein Bild. Das Bild zeigt einen Gegenstand, dass zum Gengere des Quartettdeckes
+passst, in unserem Fall ein Auto, dass zu einem Autoquartett gehöhrt. In der 
+mitte befindet sich der Name des Gegenstandes, hierbei handelt es sich um einen
+Golf GTI. Der untere Teil besteht aus Attributen mit ihren Attributwerten, 
+auf denen im Spielverlauf vergliechen wird.
+
+\subsubsection{Spielverlauf}
+
+Am Spiel nehmen zwei Personen teil, der Benutzer der App und als zweiteres
+ein Computergegener oder über den Multiplayer eine weitere Person. Der Benutzer
+entscheit sich für ein Quartett. Die Karten werden gemischt und gleichmäßig unter 
+den beiden Spielern verteilt. Beide Spieler haben nun einen umgedrehten Stapel 
+an Karten. Die oberste Karte ist aufgedeckt, diese Karte ist nur für die jeweilige
+Person sichtbar. Der Benutzer wählt ein Attribut der Karte aus, dass er mit der 
+anderen Person vergleichen möchte. Nun werden die beiden Attribute auf ihren 
+Wert verglichen. Gewinner der Runde ist die Person, die den besseren 
+Attributswert hat, dieser gewinnt die Karte. Klassisch wird gespielt bis einer 
+der beiden Personen keine Karten mehr hat. 
+
+\begin{figure}[!ht]
+\begin{center}
+    \includegraphics[scale=0.6]{img/map_quartett.png}
+    \caption{Darstellung eines Quartettspielverlaufes}
+\end{center}
+
+\ \newline
+In unserem Fall haben wir uns gegen 
+den klassischen Spielmodi entschieden, da dieser im Kontext einer Mobilen 
+Anwendung ungeeignet sind. Gründe dafür sind, zum einen ist die Länge eines 
+Spieles bis einer der beiden Personen keine Karten mehr hat und andererseits 
+könnte dadurch auch ein Endlosspiel resultieren.
+\newline
+Daher haben wir uns für 4 unterschiedlichen Spielmodi entschieden die im 
+Nachfolgenden erklärt werden.
+
+\subsubsection{Spielmodi}
+
+\textbf{Rundenbasiert:}
+Gewonnen hat derjenige, mit den am meisten Gewonnenen Runden. Zu berücksichtigen
+ist das Rundenlimit, dass bevor das Spiel beginnt gesetzt wird.
+
+\ \newline
+\textbf{Punktebasiert}:
+Vor dem Spiel wird eine Punktegränze bestimmt. Gewinner ist derjenige der diese
+Punktegränze zuerst erreicht hat.
+
+\ \newline
+\textbf{Zeitbasiert:}
+Es wird ein Zeitlimit vor dem Spiel gesetzt. Gewonnen hat die Person die 
+am meisten Punkte erreicht hat, bevor dass Zeitlimit abgelaufen ist.
+
 \subsection{Mobile Plattform}
 Der Kerngedanke dieses Projekts war das Kennenlernen einer Mobilen Plattform und ihrer Besonderheiten im Zusammenhang mit der Anwendungsentwicklung für diese Plattform.
 Wir haben uns für Android als Zielplattform entschieden.
