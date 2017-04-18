@@ -242,6 +242,57 @@ und benutzerfreundliche Oberfläche ohne weitere Anleitung bedienen können.
 
 \section{Konzept und Entwurf}
 \subsection{Mockups}
+Vor dem eigentlichen Implementieren der App wurden Mockups erstellt. Diese sollten einen ersten Eindruck für das User Interface geben und dienten als Orientierung während der eigentlichen Implementierung.
+
+An jeder beliebigen Stelle der App hat man Zugriff auf den Navigation Drawer. Dieser ist ein Menü welches sich von der linken Seite durch eine Wischgeste herausziehen lässt. Abbildung ~\ref{drawer} zeigt das Konzept dieses Menüs.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.75]{img/mockup_drawer.png}
+	\caption{Navigation Drawer}
+	\label{drawer}
+\end{figure}
+
+Abbildung ~\ref{singleplayer1} skizziert den Prozess den der Benutzer vollführen muss um vom Hauptmenü zum Einzelspieler Modus zu gelangen.
+
+\begin{figure}[h]
+	\includegraphics[scale=0.7]{img/mockup_game_process_1.png}
+	\caption{Singleplayer Einstellungen}
+	\label{singleplayer1}
+\end{figure}
+
+Nach dem das Deck ausgewählt wurde befindet sich der Spieler im eigentlichen Einzelspieler Modus. Abbildung ~\ref{singleplayer2} skizziert das Spielgeschehen.
+
+\begin{figure}[h]
+	\includegraphics[scale=0.55]{img/mockup_game_process_2.png}
+	\caption{Singleplayer}
+	\label{singleplayer2}
+\end{figure}
+
+Einstellungen kann der Benutzer in der Settings Activity vornehmen. Allerdings sind die Möglichkeiten bei unserer App sehr beschränkt wie Abbildung ~\ref{settings} zeigt.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.6]{img/mockup_settings.png}
+	\caption{Settings Activity}
+	\label{settings}
+\end{figure}
+
+Außerdem haben wir Mockups zu den Statistiken erstellt. Hier kann der Benutzer seine bisherigen Erfolge einsehen. Diese Activity ist auf den Abbildungen ~\ref{stats1} und ~\ref{stats2} zu sehen
+
+\begin{figure}
+	\includegraphics[scale=0.58]{img/mockup_stats_1.png}
+	\caption{Statistics Activity}
+	\label{stats1}
+\end{figure}
+
+\begin{figure}
+\centering
+	\includegraphics[scale=0.75]{img/mockup_stats_2.png}
+	\caption{Statistics Activity}
+	\label{stats2}
+\end{figure}
+
 
 \section{Implementierung}
 \subsection{Ausgewählte Implementierungsdetails}
@@ -421,11 +472,7 @@ wie z.B. die Einstellungen einer App.
 
 \subsubsection{Klassenstruktur}
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\textwidth]{img/class_structure.png}
-  \caption{Schematische Klassenstrukur der App mit MVP-Pattern}
-\end{figure}
+
 
 Um die Applikation zu strukturieren wurde hier das Model-View-Presenter Pattern
 angewendet. Mit diesem Pattern wird jede Activity in Model-, View- und
