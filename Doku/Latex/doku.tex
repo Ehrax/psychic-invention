@@ -67,7 +67,97 @@ bis zu welchem Grad erfüllt wurden.
 
 \section{Grundlagen}
 \subsection{Quartettspiel}
+
+% TODO: quelle setzten Quelle: https://de.wikipedia.org/wiki/Quartett_(Kartenspiel)
+% TODO: quelle setzten Quelle: https://de.wikipedia.org/wiki/Supertrumpf
+
+Das klassische Quartettspiel ist bei Kindern ein beliebites Kartenspiel. Das 
+Spielziel besteht darin möglichst viele Quartette, von vier  zusammengehörigen 
+Karten zu sammlen. In unserer App spielen wir eine Abwandlung von dem klassischen
+Quartett das sich Supertrumpf nennt bzw im Umgangsprachlichen als Autoquartett 
+bezeichent wird. Im folgenden werden die Spielregeln und der Spielverlauf eines 
+Quartettspiels erklärt.
+
+\subsubsection{Quartettkarte}
+
+%TODO: quellenangabe anpassen, 
+
+%QUELLE: https://www.google.de/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=0ahUKEwja49HNxK7TAhVENxQKHZLCD8YQjRwIBw&url=http%3A%2F%2Fautogramm.volkswagen.de%2F10_12%2Fautoundtechnik%2Fautoundtechnik_03.html&psig=AFQjCNFkG_BumLaztguoSMh90FYloFPB4g&ust=1492623128576287
+
+%Bin mir außerdem nicht sicher ob wir das Bild verwenden dürfen :D
+
+\begin{figure}[!ht]
+\begin{center}
+    \includegraphics[scale=0.6]{img/quartett_card.png}
+    \caption{Golf GTI Quartettkarte aus einem Autoquartett}
+\end{center}
+
+%Außerdem soll das Bild über dem Text sein, vll macht Latex was kaputtt
+In der oberen Abbildung wird eine Quartettkarte dargestellt. Diese beinhaltet 
+ein Bild. Das Bild zeigt einen Gegenstand, dass zum Gengere des Quartettdeckes
+passst, in unserem Fall ein Auto, dass zu einem Autoquartett gehöhrt. In der 
+mitte befindet sich der Name des Gegenstandes, hierbei handelt es sich um einen
+Golf GTI. Der untere Teil besteht aus Attributen mit ihren Attributwerten, 
+auf denen im Spielverlauf vergliechen wird.
+
+\subsubsection{Spielverlauf}
+
+Am Spiel nehmen zwei Personen teil, der Benutzer der App und als zweiteres
+ein Computergegener oder über den Multiplayer eine weitere Person. Der Benutzer
+entscheit sich für ein Quartett. Die Karten werden gemischt und gleichmäßig unter 
+den beiden Spielern verteilt. Beide Spieler haben nun einen umgedrehten Stapel 
+an Karten. Die oberste Karte ist aufgedeckt, diese Karte ist nur für die jeweilige
+Person sichtbar. Der Benutzer wählt ein Attribut der Karte aus, dass er mit der 
+anderen Person vergleichen möchte. Nun werden die beiden Attribute auf ihren 
+Wert verglichen. Gewinner der Runde ist die Person, die den besseren 
+Attributswert hat, dieser gewinnt die Karte. Klassisch wird gespielt bis einer 
+der beiden Personen keine Karten mehr hat. 
+
+\begin{figure}[!ht]
+\begin{center}
+    \includegraphics[scale=0.6]{img/map_quartett.png}
+    \caption{Darstellung eines Quartettspielverlaufes}
+\end{center}
+
+\ \newline
+In unserem Fall haben wir uns gegen 
+den klassischen Spielmodi entschieden, da dieser im Kontext einer Mobilen 
+Anwendung ungeeignet sind. Gründe dafür sind, zum einen ist die Länge eines 
+Spieles bis einer der beiden Personen keine Karten mehr hat und andererseits 
+könnte dadurch auch ein Endlosspiel resultieren.
+\newline
+Daher haben wir uns für 4 unterschiedlichen Spielmodi entschieden die im 
+Nachfolgenden erklärt werden.
+
+\subsubsection{Spielmodi}
+
+\textbf{Rundenbasiert:}
+Gewonnen hat derjenige, mit den am meisten Gewonnenen Runden. Zu berücksichtigen
+ist das Rundenlimit, dass bevor das Spiel beginnt gesetzt wird.
+
+\ \newline
+\textbf{Punktebasiert}:
+Vor dem Spiel wird eine Punktegränze bestimmt. Gewinner ist derjenige der diese
+Punktegränze zuerst erreicht hat.
+
+\ \newline
+\textbf{Zeitbasiert:}
+Es wird ein Zeitlimit vor dem Spiel gesetzt. Gewonnen hat die Person die 
+am meisten Punkte erreicht hat, bevor dass Zeitlimit abgelaufen ist.
+
 \subsection{Mobile Plattform}
+Der Kerngedanke dieses Projekts war das Kennenlernen einer Mobilen Plattform und ihrer Besonderheiten im Zusammenhang mit der Anwendungsentwicklung für diese Plattform.
+Wir haben uns für Android als Zielplattform entschieden.
+
+Die wichtigsten Eigenarten von Android, im Vergleich zu der Entwicklung von Software auf Computern, sind das sogenannte Sandbox-Prinzip des Betriebssystems, die viel größere Abhängigkeit von Multithreading für ein performantes System und die sogenannten Activities und deren Lifecycle.
+
+Kommen wir zunächst zu Androids Sandbox-Prinzip. Android führt Anwendungen in einer Sandbox aus, einer eingeschränkten Laufzeitumgebung, in der bestimmte Funktionen verboten sind. Dazu gehört beispielsweise der direkte Zugriff auf Daten einer anderen Anwendung. Dies führt dazu, dass Anwendungen Berechtigungen einholen müssen um Beispielsweise eine Internetverbindung aufzubauen oder eine SMS zu verschicken. Diese Berechtigungen werden im Android-Manifest gepflegt, dass diese dem System zum Installationszeitpunkt bereits bekannt sind. Während der Entwicklung ist man immer wieder auf das Problem gestoßen, dass man vergessen hat die entsprechenden Berechtigungen zu setzen.
+
+Besonders wichtig war während der Entwicklung niemals zu viel Arbeit auf dem Main-Thread zu erledigen. Der Main-Thread, in der Android Welt auch UI-Thread genannt, ist der Thread der sich vor allem um das User Interface kümmert in Form von Eventhandling und Interaktionen mit Views im User Interface. Alle Komponenten die gestartet werden laufen standardmäßig auf diesem Thread. Wird nun vom Programmierer nicht darauf geachtet diesen Thread nicht zu überlasten, kann er nicht mehr genug Leistung erbringen um die Views auf dem User Interface flüssig zu animieren oder um sofort auf Benutzereingaben zu reagieren. Diese Verzögerungen fallen dem Benutzer bei Geräten mit Touchscreens als Eingabemedium besonders auf. Durch die spezielle Art der Eingabe ist es überaus wichtig dafür sorge zu tragen, dass das User Interface stets auf Eingaben durch den Benutzer reagiert. 
+
+Android wurde dafür konzipiert um auf Smartphones und Embedded Systemen zu laufen. Da diese Geräte im Vergleich zu modernen PCs kleine Prozessoren und wenig Hauptspeicher haben und meist auch noch mit einem Akku als Stromquelle laufen, welcher bei intensivem Gebrauch schnell erschöpft ist mussten sich die Android Entwickler etwas ausdenken um dem Rechnung zu tragen.
+Ihre Lösung war, dass Android in die Lebensdauer von Komponenten einer Anwendung und von Prozessen eingreift. Im Falle knapper Ressourcen können einzelne Activities, Services oder auch ganze Prozesse beendet werden. Diesem Umstand müssen wir als Programmierer wiederum Rechnung tragen. Da wir davon ausgehen müssen, dass unsere Komponenten zur Laufzeit beendet werden. Um Datenverlust zu vermeiden bietet uns Android jedoch den sogenannten Activity Lifecycle. Das Betriebssystem "verspricht" uns sozusagen, dass gewisse Methoden einer Activity in bestimmter Reihenfolge durchlaufen werden wenn diese beendet wird oder eben auch wenn diese wieder neu gestartet wird. 
+
 \subsection{Libraries und Frameworks}
 Um einige Funktionen der Applikation nicht selbst implementieren zu müssen
 wurden folgende zusätzliche Programmbibliotheken und Frameworks verwendet:
