@@ -25,8 +25,10 @@
     </style>
     <!-- main menu -->
 
-    <style name="AppTheme.GameEnd">
-        <item name="android:windowEnterTransition">@transition/fade_delay_750</item>
+    <style name="drawerTextAppearance">
+
+        <item name="android:textColorSecondary">@color/colorAccent</item>
+
     </style>
 
     <!--style for the main menu buttons-->

@@ -56,18 +56,75 @@ Konkurrenz abzusetzen.
 \subsection{Aufbau}
 
 In der nun folgenden Dokumentation werden zuerst die Grundlagen des
-Quartettspiels, der Android Plattform und die verwendeten Frameworks erklärt.
-Danach folgt eine Anforderungsanalyse, welche sowohl funktionale als auch nicht
-funktionale Anforderungen umfasst. Im nächsten Abschnitt werden einige wichtige
-Details der Implementierung sowie die übergreifende Architektur und diverse
-Besonderheiten der App beschreiben. Zuletzt werden die gestellten Anforderungen
-mit der tatsächlichen Implementierung der App verglichen und es wird
-festgestellt welche Anforderungen bis zu welchem Grad erfüllt wurden.
+Quartettspiels, der Android Plattform und die verwendeten Frameworks und
+Libraries erklärt. Danach folgt eine Anforderungsanalyse, welche sowohl
+funktionale als auch nicht funktionale Anforderungen umfasst. Im nächsten
+Abschnitt werden einige wichtige Details der Implementierung sowie die
+übergreifende Architektur und diverse Besonderheiten der App beschreiben.
+Zuletzt werden die gestellten Anforderungen mit der tatsächlichen
+Implementierung der App verglichen und es wird festgestellt welche Anforderungen
+bis zu welchem Grad erfüllt wurden.
 
 \section{Grundlagen}
 \subsection{Quartettspiel}
 \subsection{Mobile Plattform}
-\subsection{Frameworks}
+\subsection{Libraries und Frameworks}
+Um einige Funktionen der Applikation nicht selbst implementieren zu müssen
+wurden folgende zusätzliche Programmbibliotheken und Frameworks verwendet:
+
+\noindent
+\ \newline
+\textbf{Sugar ORM, http://satyan.github.io/sugar/} \newline
+Eine sehr einfach zu konfigurierende ORM Bibliothek, welche allerdings nur
+simple Relationen abbilden kann. Sugar ORM wurde verwendet um die interne SQLite
+Datenbank des Android Systems direkt über Objekte anzusprechen. Somit mussten
+keine SQL Befehle zur Steuerung der Datenbank verwendet werden.
+
+\ \newline
+\textbf{Volley, https://github.com/google/volley} \newline
+Volley ist eine Netzwerkbibliothek welche die Kommunikation mit Webservices
+erheblich erleichtert. Alle requests und responses werden asynchron behandelt
+und als abstrakte Objekte repräsentiert. Diverse Datenformate wie JSON werden
+direkt in eine Objektrepräsentation umgewandelt und sind somit im Programm ohne
+weitere Umwandlung zugänglich. Auch das direkte Laden von Bildern in Widgets
+(z.B. ImageView) und das dazugehörige Caching wird von Volley übernommen. Volley
+wurde verwendet um die Kommunikation mit dem bereitgestellten Quartett Server zu
+implementieren.
+
+\ \newline
+\textbf{FlippableStackView, https://github.com/blipinsk/FlippableStackView} \newline
+Diese Bibliothek stellt ein Widget bereit, in welchem einzelne Views wie in
+einem Kartendeck durchgeblätter werden können. FlippableStackView wurde
+verwendet um die Detailansicht eines Decks in der Gallerie zu erstellen.
+
+\ \newline
+\textbf{CircleProgress, https://github.com/lzyzsd/CircleProgress} \newline
+CircleProgress stellt eine Reihe an kreisförmigen Fortschrittsanzeigen bereit.
+Diese wurden verwendet um die Anzeige der Spielstatistiken zu realisieren.
+
+\ \newline
+\textbf{Android Image Cropper, https://github.com/ArthurHub/Android-Image-Cropper} \newline
+Android Image Cropper stellt eine Ansicht bereit in welcher zuvor aufgenommen
+Bilder zugeschnitten und gedreht werden können. Diese Bibliothek wurde zur
+Implementierung des Profilbilds in den Spieleinstellungen verwendet.
+
+\ \newline
+\textbf{CircleImageView, https://github.com/hdodenhof/CircleImageView} \newline
+Diese Bibliothek beinhaltet ein modifiziertes ImageView Widget, welches statt
+einem Rechteck einen Kreis als Grundfläche besitzt. Mit Hilfe von
+CircleImageView wurde die Anzeige des Profilbilds in den Spieleinstellungen und
+im Navigation Drawer realisiert.
+
+\ \newline
+\textbf{Google Play Services API, https://developers.google.com/games/services/} \newline
+Diese Framework ermöglich den Zugriff auf die Google Play Services und somit
+eine einfache Online-Anbindung für Spiele. Neben einem Programmiermodell für
+Multiplayerspiele stellt das Framework auch Ranglisten, ein Freundesystem und
+Einladungen für Spiele bereit. Die Google Play Services wurden für den
+Multiplayer der App verwendet.
+
+
+\textbf{}
 
 \section{Anforderungsanalyse}
 \subsection{Funktionale Anforderungen}
